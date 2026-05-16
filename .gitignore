@@ -1,0 +1,4 @@
+laplace_torch/data/
+laplace_torch/data/wilds/poverty_v1.1/images/landsat_poverty_img_17.npz
+laplace_torch/data/wilds/poverty_v1.1/images/landsat_poverty_img_0.npz
+laplace_torch/data/wilds/poverty_v1.1/images/landsat_poverty_img_0.npz

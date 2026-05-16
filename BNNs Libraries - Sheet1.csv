@@ -1,0 +1,7 @@
+Library,Based on,Implementation,,
+BI,"leverages the power and efficiency of established Probabilistic Programming Languages (PPLs) like NumPyro and TFP, both of which are built upon the JAX framework for high-performance numerical computation and automatic differentiation",,,
+PyMC,PyTensor,Variational Inference / MCMC sampling ,MCMC and ADVI ,
+Bayes-Torch,PyTorch,stochastic VI (BBB) ,,reparam MC estinators and flipout
+Laplace-Torch ,PyTorch,Laplace approx,,
+TyXe,PyTorch,VI / MCMC,,
+BLiTZ,PyTorch,VI BBB,,
