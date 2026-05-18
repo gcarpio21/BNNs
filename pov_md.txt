@@ -1,0 +1,116 @@
+# College Project: Comparative Analysis of BNNs on PovertyMap (WILDS)
+
+
+
+## 1. Introduction and Theoretical Background
+
+In this project, we compare two distinct approaches to estimating epistemic and aleatoric uncertainty in Bayesian Neural Networks (BNNs) on the **PovertyMap** dataset from the WILDS benchmark. This task involves predicting the asset wealth index from satellite imagery using a ResNet-18 architecture, and evaluating in-distribution (ID) versus out-of-distribution (OOD) generalization across different country folds.
+
+
+
+**Laplace method (following Daxberger et al. "Laplace Redux"):**
+
+- *Theory*: Last-layer Laplace with **full** covariance approximation ($\mathcal{N}(w_{MAP}, H^{-1})$).
+
+- *Inference*: Performed using a **GLM** predictive distribution (2,000 samples). Hyperparameters tuned by minimizing NLL on the ID validation set.
+
+
+
+**Bayesian-Torch (SVI via Flipout):**
+
+- *Theory*: Variational posterior learned via Stochastic Variational Inference (SVI) using Flipout estimators over the model weights.
+
+- *Inference*: Uses MC sampling (50 samples for validation).
+
+
+
+Through multi-fold validation (Folds A-E), this notebook structurally compiles theoretical capabilities, training/inference time overheads, RMSE, Negative Log-Likelihood (NLL), and Calibration Error to benchmark these Bayesian approaches.
+## 1. Imports & Setup
+
+
+
+**First time:** uncomment and run `pip install wilds` below, then restart kernel.
+## 2. Load PovertyMap Dataset (WILDS Official)
+
+
+
+Loads the official **PovertyMap** dataset from the WILDS benchmark. Satellite images (224×224, 8 multi-spectral bands, already mean/std normalized) with target `wealthpooled` (asset wealth index).
+
+
+
+**WILDS splits (by country):**
+
+- `train`: 5 countries in-distribution
+
+- `id_val`: ID validation (subset)
+
+- `id_test`: ID test (subset)
+
+- `val`: OOD validation (held-out country)
+
+- `test`: OOD test (held-out countries)
+
+
+
+Folds A-E correspond to 5 different country splits (used as seeds per paper).
+
+
+
+**Download:** ~13GB on first run (one-time).
+## 3. Model: ResNet-18 for Multi-Spectral Satellite Imagery
+
+
+
+ResNet-18 adapted for 8-channel inputs. Matches the architecture used in Daxberger et al. (2021) and the WILDS benchmark. First conv layer adapted from 3→8 channels, final FC layer replaced with single-output regression head.
+## 4. MAP Training
+
+
+
+Train the deterministic MAP model on the WILDS official training split. This serves as the shared starting point for both Laplace and Bayesian-Torch.
+## 5. Laplace Approximation (Full Last-Layer + GLM Predictive)
+
+
+
+Following Daxberger et al. (2021):
+
+- **Full covariance** over last layer (ResNet-18 last layer is 512×1 — small enough for full Hessian)
+
+- Hyperparameters (prior precision, noise sigma) tuned by **minimizing NLL on ID validation** set
+
+- **GLM** predictive with **2,000 samples**
+## 6. Bayesian-Torch (Flipout + MOPED + SVI)
+
+
+
+Variational Bayes baseline using Bayesian-Torch. Initialized from MAP via MOPED, fine-tuned with ELBO loss.
+## 7. Evaluation Metrics
+
+
+
+Following Daxberger et al. (2021): **MSE**, **NLL**, and **Regression Calibration Error** (Kuleshov et al. 2018).
+## 8. Main Run: 5 Folds (Seeds)
+
+
+
+Loops over WILDS folds A-E (equivalent to 5 seeds per Daxberger et al. 2021). For each fold:
+
+1. Train MAP on the fold's training countries
+
+2. Fit Laplace (full last-layer + GLM predictive) with hyperparams tuned on ID val
+
+3. Train Bayesian-Torch (Flipout + MOPED) initialized from MAP
+
+4. Evaluate on both ID and OOD test splits
+## 9. Results Summary and Metrics Export
+
+
+
+Aggregates theoretical and computed metrics over all folds (A-E) into a structured DataFrame to measure training time overhead, test set RMSE/NLL, calibration error, and inference efficiency across strategies. Finally, exports to CSV.
+## 10. Results Visualization
+
+
+
+Bar charts comparing Laplace vs Bayesian-Torch on ID and OOD splits.
+## 11. Additional Statistics & Further Analysis
+
+*(This section is intentionally left blank for future inclusion of robust statistical measurements, OOD breakdown analysis, or additional validation plots as requested).*

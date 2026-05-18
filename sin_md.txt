@@ -1,0 +1,109 @@
+# College Project: Comparative Analysis of Bayesian Neural Networks
+
+
+
+## 1. Introduction and Theoretical Background
+
+In this project, we compare two distinct approaches to estimating epistemic and aleatoric uncertainty in Bayesian Neural Networks (BNNs) on a **sinusoidal regression** task. BNNs extend standard neural networks by placing a prior distribution over their weights and computing a posterior distribution, allowing the model to express uncertainty in its predictions.
+
+
+
+### Methods Compared:
+
+1. **MAP Baseline (Maximum A Posteriori)**: 
+
+   - A single point estimate for network weights (deterministic network). While lacking structural uncertainty, it serves as a baseline for accuracy and training time comparison.
+
+2. **Laplace-Torch (Post-hoc Approximation)**: 
+
+   - *Theory*: Approximates the posterior around a pre-trained MAP estimate with a Gaussian distribution $\mathcal{N}(w_{MAP}, H^{-1})$. $H$ is the Hessian of the loss with respect to the parameters. 
+
+   - *Inference*: Performed in closed-form via a Generalized Linear Model (GLM) predictive approach.
+
+3. **Bayesian-Torch (SVI via Flipout)**:
+
+   - *Theory*: Learns a variational posterior alongside the network weights using Stochastic Variational Inference (SVI). We employ the Flipout estimator to lower variance during Monte Carlo sampling.
+
+   - *Inference*: Uses MC sampling (e.g., 100 samples) to approximate predictive distributions.
+
+
+
+In this notebook, we systematically track metrics such as dataset complexity, model parameters, baseline training time, BNN training/fitting time, inference time, model RMSE, Negative Log-Likelihood (NLL), and Calibration Error. This comprehensive benchmark mirrors common profiling in standard Bayesian evaluation.
+## 1. Imports & Setup
+
+## 2. Data: Sinusoidal Regression
+
+
+
+Both methods use the same sinusoidal dataset with known noise level σ=0.3.
+
+## 3. Shared Model Architecture
+
+
+
+Both methods use the same network: `Linear(1,50) → Tanh → Linear(50,1)`
+
+## 4. Phase 1: MAP Training
+
+
+
+Both methods start from the same MAP-trained deterministic network.
+
+## 5. Method A: Laplace Approximation
+
+
+
+- Take MAP weights, approximate posterior N(w_MAP, H⁻¹) with full Hessian
+
+- Optimize prior precision and noise std via marginal likelihood
+
+- GLM predictive for closed-form variance
+
+## 6. Method B: Bayesian-Torch (Flipout + MOPED + SVI)
+
+
+
+- Copy MAP model, convert to BNN with Flipout layers
+
+- MOPED: initialize posterior mean = MAP weights
+
+- ELBO fine-tuning: MSE + KL/batch_size
+
+- MC sampling (100 passes) for predictive distribution
+
+## 7. Evaluation Metrics
+
+
+
+- **RMSE**: Root Mean Squared Error (point prediction accuracy, lower = better)
+
+- **NLL**: Negative Log-Likelihood (predictive distribution quality, lower = better)
+
+- **Calibration Error**: Uncertainty calibration quality (lower = better)
+
+## 8. Comparison Visualizations
+
+## 9. Uncertainty Calibration
+
+## 10. Summary and Export
+
+
+
+| Metric | Laplace-Torch | Bayesian-Torch | MAP (Baseline) |
+
+|--------|:------------:|:--------------:|:--------------:|
+
+| **Type** | Post-hoc Laplace | SVI (Flipout) | Deterministic |
+
+| **Inference** | Closed-form (GLM) | MC sampling | Simple Feed-Forward |
+
+| **Uncertainty** | Local Gaussian approx | Learned variational | None |
+
+| **Time taken**| Measured locally | Measured locally | Measured locally |
+
+
+
+Below, we aggregate all theoretical and compute metrics tracked into a single tabular DataFrame for easier project evaluation and export it to a CSV file.
+## 11. Additional Statistics & Further Analysis
+
+*(This section is intentionally left blank for future inclusion of robust statistical measurements, e.g., standard deviations of multiple seeds, inference bounds limits, memory footprint logging).*

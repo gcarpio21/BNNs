@@ -1,0 +1,41 @@
+# Comparative Analysis of BNN Implementations 
+
+This document synthesizes the core methodologies, configurations, and performance metrics from the experimental notebooks, focusing specifically on Bayesian parameters for regression tasks. It is formatted for easy adaptation into a LaTeX report.
+
+## 1. Introduction: BNNs for Regression Tasks
+The primary focus of this analysis is the evaluation of different Bayesian Neural Network (BNN) implementations applied to regression tasks. While deterministic Maximum A Posteriori (MAP) estimations serve as a foundational baseline, the emphasis lies in quantifying epistemic and aleatoric uncertainty through diverse BNN strategies, specifically contrasting post-hoc approximations (Laplace-Torch) with learned variational posteriors (Bayesian-Torch).
+
+## 2. BNN Implementations and Configurations
+
+### 2.1 Laplace Approximation (Laplace-Torch)
+* Formulation: A post-hoc method that fits a Gaussian distribution \(\mathcal{N}(w_{MAP}, H^{-1})\) around a pre-trained MAP estimate.
+* Hessian Approximations: 
+  * Full Hessian: Computes the full covariance matrix over parameters (e.g., used in Last-Layer Laplace for the final regression head).
+  * Diagonal Hessian: Assumes independence between weights for greater scalability on larger parameter spaces.
+* Inference Pipeline: Utilizes a Generalized Linear Model (GLM) predictive approach for highly efficient, closed-form predictive variance.
+* Hyperparameter Tuning: Prior precision and noise standard deviation (\(\sigma\)) are optimized iteratively by minimizing the Negative Log-Likelihood (NLL) / marginal likelihood on validation sets.
+
+### 2.2 Stochastic Variational Inference (Bayesian-Torch)
+* Formulation: Learns a variational posterior alongside the network weights natively during the training loop.
+* Estimators: Employs Stochastic Variational Inference (SVI) with **Flipout** layers to de-correlate gradients within mini-batches and lower variance during Monte Carlo (MC) sampling.
+* Initialization: Uses MOPED to initialize the posterior mean directly from the pre-trained MAP weights, significantly stabilizing training.
+* Training Objective: Fine-tuned by maximizing the Evidence Lower Bound (ELBO), explicitly balancing Mean Squared Error (MSE) and the KL-divergence penalty. 
+* Inference Pipeline: Dependent on Monte Carlo sampling (e.g., 50-100 passes) to approximate predictive distributions.
+
+## 3. Performance Metrics and Computational Overhead
+
+### 3.1 Predictive Quality and Calibration
+* Negative Log-Likelihood (NLL): The primary metric used to evaluate the quality of the predictive probability distribution. Lower NLL indicates better captured uncertainty bounds.
+* Regression Calibration Error: Measures the reliability of the predicted uncertainty intervals against actual empirical coverage.
+* RMSE: Tracked to ensure point-prediction accuracy does not degrade unacceptably when introducing Bayesian stochasticity compared to the MAP baseline.
+
+### 3.2 Computational Efficiency & Overhead
+* Training Time Overhead: 
+  * Laplace-Torch requires standard MAP training followed by a relatively fast post-hoc Hessian computation and inversion (especially fast when constrained to the Last-Layer).
+  * Bayesian-Torch incurs a continuous overhead per epoch during ELBO fine-tuning due to weight sampling, making it comparatively more expensive to train.
+* Inference Latency:
+  * Laplace's GLM predictive formulation offers fast, closed-form evaluation.
+  * Bayesian-Torch (Flipout) requires multiple forward MC passes (e.g., 100 samples) per input, substantially increasing inference latency and memory footprint proportional to the sample size.
+
+## 4. Summary
+The evaluation directly bridges the theoretical trade-offs between these two packages: prioritizing highly scalable, rapidly fitted closed-form estimations via Laplace-Torch versus deeply learned, flexible variational posteriors via Bayesian-Torch with Flipout, benchmarked empirically on training overhead, NLL, and calibration bounds.

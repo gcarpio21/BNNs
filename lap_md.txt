@@ -1,0 +1,32 @@
+# Bayesian Neural Network with Laplace Approximation
+
+
+
+This notebook demonstrates Bayesian inference on neural networks using Laplace approximation. We'll train a neural network on sinusoidal regression data and use Laplace approximation to quantify uncertainty in predictions.
+## 1. Import Required Libraries
+## 2. Set Up Data and Configuration
+## 3. Implement Core Code: MAP Training and Laplace Approximation
+
+
+
+We'll train a neural network using MAP (Maximum A Posteriori) estimation, then fit a Laplace approximation to quantify uncertainty.
+## 4. Run Code and Generate Predictions
+
+
+
+Now we'll generate predictions with uncertainty estimates on the test data.
+## 5. Visualize Results
+
+
+
+We'll create comprehensive visualizations showing predictions, uncertainty, and training progress.
+## 6. Compare Multiple Runs with Different Parameters
+
+
+
+Let's compare predictions with different noise levels and network architectures.
+## 7. Save and Export Results
+
+
+
+Save trained models, predictions, and visualizations for future use.

@@ -1,0 +1,639 @@
+================================================================================
+COMPLETE ANALYSIS OF ALL NOTEBOOKS IN THE BNNs PROJECT
+================================================================================
+
+This document covers all 7 notebooks found in the project, detailing:
+- Purpose and objectives
+- What each section/cell tries to accomplish
+- Libraries used and how
+- Metrics calculated and their meaning
+- Results and findings
+- Visualizations
+- Library implementation details
+
+================================================================================
+NOTEBOOK 1: bnn_laplace_visualization.ipynb
+Location: ./laplace_torch/bnn_laplace_visualization.ipynb
+================================================================================
+
+PURPOSE AND OBJECTIVES
+  Demonstrates Bayesian inference on neural networks using Laplace approximation.
+  Trains a NN on sinusoidal regression data and uses Laplace to quantify uncertainty.
+
+SECTION BREAKDOWN
+  Section 1 - Import Required Libraries:
+    Imports numpy, torch, matplotlib, laplace.Laplace, laplace.marglik_training,
+    laplace.curvature.backpack.BackPackGGN. Sets random seeds.
+  
+  Section 2 - Set Up Data and Configuration:
+    Configures n_epochs=1000, batch_size=32, sigma_noise=0.3.
+    Loads/generates sinusoidal regression data.
+  
+  Section 3 - MAP Training and Laplace Approximation:
+    Defines network 1->50->1 with Tanh.
+    Trains MAP with Adam + MSE loss.
+    Fits Laplace approximation. Optimizes hyperparameters (prior precision, noise)
+    via marginal likelihood.
+  
+  Section 4 - Generate Predictions:
+    Generates predictions using Laplace, computes marginal and joint predictive
+    distributions, calculates total predictive uncertainty.
+  
+  Section 5 - Visualize Results:
+    Creates regression plots showing predictions with uncertainty bands,
+    training loss (log scale), marginal likelihood optimization, uncertainty
+    decomposition (epistemic vs aleatoric).
+  
+  Section 6 - Compare Multiple Runs:
+    Runs parametric study with noise levels 0.1, 0.3, 0.5.
+  
+  Section 7 - Save and Export Results:
+    Saves model state, predictions, and summary statistics to files.
+
+LIBRARIES USED
+  numpy: Numerical computations and arrays
+  torch: Neural network building and training
+  matplotlib.pyplot: Plotting
+  laplace.Laplace: Laplace approximation object
+  laplace.marglik_training: Marginal likelihood optimization
+  laplace.curvature.backpack.BackPackGGN: Curvature approximation
+
+KEY METRICS
+  Training Loss (MSE): How well the MAP model fits training data
+  Marginal Likelihood: Hyperparameter optimization objective (higher = better)
+  Learned sigma_noise: Estimated data noise
+  Learned prior precision: Inverse of prior variance
+  Epistemic std: Model uncertainty from Laplace (varies with input)
+  Aleatoric std: Irreducible data noise
+  Total predictive std: sqrt(epistemic^2 + aleatoric^2)
+
+RESULTS
+  Laplace captures both epistemic and aleatoric uncertainty.
+  Uncertainty bands widen in extrapolation regions with less data.
+  True function falls within uncertainty bands.
+  Marginal likelihood optimization converges successfully.
+
+LAPLACE IMPLEMENTATION
+  Laplace(model, "regression", subset_of_weights="all", hessian_structure="full")
+  la.fit(train_loader) - computes Hessian at MAP weights
+  la.log_marginal_likelihood() - optimizes hyperparameters
+  la(X_test) - returns (mean, variance) via closed-form GLM
+
+
+================================================================================
+NOTEBOOK 2: two_moons_laplace.ipynb
+Location: ./laplace_torch/two_moons_laplace.ipynb
+================================================================================
+
+PURPOSE AND OBJECTIVES
+  Demonstrates epistemic uncertainty using Laplace on the Two Moons dataset.
+  Compares diagonal, KFAC/Kron, and full Hessian approximations.
+  Tunes prior precision via grid search and marginal likelihood.
+
+SECTION BREAKDOWN
+  
+  Cells 1-2 (Introduction and Setup):
+    Explains framework (MAP vs Post-Hoc Laplace).
+    Imports: torch, sklearn, numpy, pandas, matplotlib, laplace.Laplace.
+    Sets device, defines color scheme, initializes metrics dict.
+  
+  Cell 3 (Data Generation):
+    Generates Two Moons dataset (10k samples, noise=0.3).
+    StandardScaler normalization, train/val/test split (60/20/20).
+    Creates DataLoaders, saves raw dataset figure.
+  
+  Cell 4 (Model Architecture):
+    Defines TinyMLP: 2->64->Tanh->64->Tanh->2.
+    Reports ~8k parameters.
+  
+  Cell 5 (MAP Training):
+    Trains MAP with Adam (lr=1e-3, weight_decay=1e-4), CrossEntropyLoss.
+    300 epochs, measures fit/test time, saves training loss figure.
+  
+  Cell 6 (Helper Functions):
+    plot_boundary - visualizes decision boundaries.
+    uncertainty_map - visualizes epistemic uncertainty.
+    make_scatter_comparison - standardized scatter plots.
+  
+  Cell 7 (MAP Prediction):
+    map_predict function, saves decision boundary figure.
+  
+  Cell 8 (Laplace Diag GridSearch):
+    Creates Laplace with diagonal Hessian + grid search prior precision.
+  
+  Cell 9 (Laplace Diag GridSearch Prediction):
+    la_predict helper, saves decision boundary figure.
+  
+  Cell 10 (MAP vs Laplace Comparison):
+    Side-by-side boundary and uncertainty plots.
+  
+  Cell 11 (Laplace Diag MargLik):
+    Same as Cell 8 but uses marginal likelihood for tuning.
+  
+  Cell 12 (Three-Way Comparison):
+    MAP vs Laplace(diag,grid) vs Laplace(diag,marglik).
+  
+  Cell 13 (Three-Way Analysis):
+    Per-sample analysis, confidence distributions, uncertainty distributions.
+  
+  Cell 14 (Laplace Full MargLik):
+    Laplace with full Hessian + marginal likelihood.
+  
+  Cell 15 (Diag vs Full Boundary):
+    decision boundaries + uncertainty of diag vs full.
+  
+  Cell 16 (Diag vs Full Analysis):
+    Per-sample comparison.
+  
+  Cell 17 (Laplace Kron MargLik):
+    Laplace with Kron/KFAC Hessian.
+  
+  Cell 18 (Three Hessian Comparison):
+    Diag vs Full vs Kron boundaries + uncertainty.
+  
+  Cell 19 (Three Hessian Analysis):
+    Per-sample comparison across all three.
+  
+  Cell 20 (Export):
+    DataFrame metrics, CSV export, LaTeX table code.
+  
+  Cell 21 (LaTeX References):
+    Figure mapping for LaTeX inclusion.
+
+LIBRARIES USED
+  torch: NN modules, training
+  sklearn.datasets.make_moons: Generates the dataset
+  sklearn.model_selection.train_test_split: Data splitting
+  sklearn.preprocessing.StandardScaler: Feature normalization
+  numpy: Numerical ops
+  pandas: Metrics table
+  matplotlib: All visualizations
+  laplace.Laplace: Core Laplace implementation
+
+KEY METRICS
+  Fit_Time (s): Time to fit Laplace Hessian
+  Tune_Time (s): Time to tune prior precision
+  Inf_Time (s): Inference time on test set
+  Accuracy: Classification accuracy
+  Prior_Precision: Optimized prior precision value
+
+RESULTS
+  All methods achieve ~87-88% accuracy.
+  Laplace assigns higher uncertainty between the two moons.
+  Diagonal fastest but ignores correlations.
+  Full most accurate covariance but expensive.
+  Kron provides middle ground.
+  Grid search vs marginal likelihood yield different prior precisions.
+
+LAPLACE IMPLEMENTATION
+  Laplace(model, 'classification', subset_of_weights='all', hessian_structure='diag'/'full'/'kron')
+  la.fit(train_loader)
+  la.optimize_prior_precision(method='gridsearch', val_loader=val_loader) or method='marglik'
+  la(test_batch, pred_type='glm', link_approx='probit')
+  Uses GLM approximation with probit link for tractable classification predictions.
+
+16 figures saved to ./laplace_torch/figures/
+
+
+================================================================================
+NOTEBOOK 3: bnn_bayesian_torch.ipynb
+Location: ./laplace_torch/bnn_bayesian_torch.ipynb
+================================================================================
+
+PURPOSE AND OBJECTIVES
+  BNN using Bayesian-Torch (Intel Labs) with SVI via ELBO optimization.
+  Shows MOPED initialization from MAP, Flipout layers, MC sampling for uncertainty.
+
+SECTION BREAKDOWN
+  
+  Section 1 (Introduction):
+    Explains Bayesian-Torch vs Laplace: SVI during training vs post-hoc.
+  
+  Section 2 (Imports):
+    Imports numpy, torch, nn, optim, plt, dnn_to_bnn, get_kl_loss.
+  
+  Section 3 (Data Setup):
+    Loads sinusoidal data with sigma=0.3.
+    150 train, 500 test points. 1000 epochs each phase, 100 MC samples.
+  
+  Section 4 (MAP Training):
+    Network: Linear(1,50)->Tanh->Linear(50,1).
+    Adam, MSE loss. Final MSE = 0.074138.
+  
+  Section 5 (Convert to BNN):
+    bnn_prior_parameters with prior_mu=0, prior_sigma=1,
+    posterior_mu_init=0, posterior_rho_init=-3,
+    type="Flipout", moped_enable=True, moped_delta=0.5.
+    dnn_to_bnn(model_bnn, bnn_prior_parameters)
+  
+  Section 6 (BNN Fine-tuning):
+    ELBO loss: MSE + KL/batch_size.
+    Adam lr=1e-3. 1000 epochs.
+    Final ELBO=0.786689, KL=8.439800.
+  
+  Section 7 (MC Sampling Inference):
+    100 forward passes. Predictive mean and std.
+    Epistemic std=0.972, Aleatoric std=0.300, Total std=1.018.
+  
+  Section 8 (Visualizations):
+    2x2 subplots: predictions+uncertainty, MAP loss, BNN ELBO+KL, uncertainty decomposition.
+  
+  Section 9 (Results Summary):
+    Prints comparison table, uncertainty stats.
+  
+  Section 10 (Advanced Concepts):
+    Explanation of Flipout, MOPED, ELBO.
+
+KEY METRICS
+  MAP MSE Loss: 0.074138
+  BNN ELBO Loss: 0.786689
+  KL Divergence: 8.439800
+  Epistemic std: 0.972 (model uncertainty, varies with input)
+  Aleatoric std: 0.300 (data noise, constant)
+  Total std: 1.018 (combined)
+
+RESULTS
+  BNN captures both epistemic and aleatoric uncertainty.
+  Epistemic uncertainty highest in extrapolation regions.
+  Aleatoric uncertainty matches known noise level.
+  Bayesian-Torch shows higher epistemic uncertainty than Laplace (0.97 vs ~0.05).
+
+BAYESIAN-TORCH IMPLEMENTATION
+  Two-phase: MAP pretrain then BNN fine-tune.
+  dnn_to_bnn(model, params) - converts deterministic layers to Bayesian.
+  get_kl_loss(model) - computes KL divergence for ELBO.
+  Training: loss = mse + kl / batch_size
+  Prediction: multiple stochastic forward passes averaged.
+  MC samples: 100 for uncertainty estimation.
+
+
+================================================================================
+NOTEBOOK 4: bnn_bayesian_torch1.ipynb
+Location: ./laplace_torch/bnn_bayesian_torch1.ipynb
+================================================================================
+
+PURPOSE AND OBJECTIVES
+  Second Bayesian-Torch notebook with essentially the same pipeline as notebook 3.
+  SVI on sinusoidal regression using Flipout layers.
+  MOPED initialization + ELBO fine-tuning.
+  MC sampling for uncertainty.
+
+SECTION BREAKDOWN (same structure as notebook 3)
+  
+  Cell 1: Imports (numpy, torch, nn, optim, plt, dnn_to_bnn, get_kl_loss, helpers)
+  Cell 2: Config (1000 epochs MAP/BNN, 100 MC samples, sigma=0.3)
+  Cell 3: MAP Training (Linear(1,50)->Tanh->Linear(50,1), Adam, MSE)
+  Cell 4: Convert to BNN (Flipout, MOPED, prior=N(0,1))
+  Cell 5: BNN Fine-tuning (ELBO = MSE + KL/batch_size)
+  Cell 6: Inference (100 MC samples, mean + std)
+  Cell 7: Visualizations (2x2 subplots)
+  Cell 8: Summary (metrics table)
+  Cell 9: Advanced Concepts (markdown)
+
+LIBRARIES
+  Same as notebook 3: numpy, torch, nn, optim, plt, bayesian_torch, helpers
+
+KEY METRICS (identical to notebook 3)
+  Final MAP MSE: 0.074138
+  Final BNN ELBO: 0.786689
+  KL Divergence: 8.439800
+  Epistemic std: 0.972421
+  Aleatoric std: 0.300000
+  Total std: 1.018092
+
+RESULTS
+  Effectively same as notebook 3. Duplicate/backup notebook for Bayesian-Torch.
+  Demonstrates successful uncertainty quantification with proper decomposition.
+  Bayesian-Torch epistemic uncertainty (0.97) > Laplace (~0.05).
+
+BAYESIAN-TORCH IMPLEMENTATION
+  Same as notebook 3. Flipout, MOPED, ELBO, MC sampling.
+
+
+================================================================================
+NOTEBOOK 5: bnn_comparison_povertymap.ipynb
+Location: ./laplace_torch/bnn_comparison_povertymap.ipynb
+================================================================================
+
+PURPOSE AND OBJECTIVES
+  Compare Laplace vs Bayesian-Torch on the WILDS PovertyMap dataset.
+  Predict asset wealth index from satellite imagery using ResNet-18.
+  5-fold cross-validation across country splits (Folds A-E).
+  Evaluates ID vs OOD generalization.
+
+SECTION BREAKDOWN
+  
+  Introduction: Explains Laplace method (last-layer, full covariance, GLM with 2000
+    samples) and Bayesian-Torch (SVI via Flipout, MC sampling with 50 samples).
+  
+  Imports & Setup: numpy, pandas, torch, torchvision, wilds, laplace, bayesian_torch.
+    RTX 5090 GPU detected (33.6 GB VRAM).
+  
+  Dataset Loading (Cells 4-5):
+    Loads PovertyMap from WILDS (~13GB download).
+    8-channel satellite images (224x224), target = wealthpooled.
+    Folds A-E correspond to different country splits.
+    Data loaders with 16 workers.
+  
+  Model Definition (Cells 6-7):
+    PovertyResNet: ResNet-18 with first conv 3->8 channels.
+    11,192,705 parameters.
+  
+  MAP Training (Cells 8-9):
+    train_map function with Adam, ReduceLROnPlateau, early stopping.
+  
+  Laplace Approximation (Cells 10-11):
+    Laplace(model, "regression", subset_of_weights="last_layer", hessian_structure="full")
+    Hyperparameter tuning via NLL minimization on ID validation set.
+    GLM predictive with 2000 samples.
+  
+  Bayesian-Torch (Cells 12-13):
+    dnn_to_bnn with Flipout + MOPED.
+    Memory-efficient MC streaming (50 samples).
+  
+  Evaluation Metrics (Cell 14):
+    MSE, RMSE, NLL, Regression Calibration Error (Kuleshov 2018).
+  
+  Main Run (5 Folds A-E):
+    Trains MAP, fits Laplace, trains Bayesian-Torch for each fold.
+    Evaluates on ID and OOD test splits.
+  
+  Results Summary (Cell 18):
+    Aggregates over 5 folds, prints comparison table.
+  
+  Visualization (Cell 20):
+    Bar charts comparing MSE, NLL, Cal Error across ID/OOD.
+  
+  Uncertainty Analysis (Cell 21):
+    Per-sample epistemic uncertainty vs absolute error.
+    Correlation analysis.
+
+LIBRARIES
+  torch, torchvision (ResNet-18)
+  wilds (PovertyMap dataset)
+  laplace.Laplace
+  bayesian_torch (dnn_to_bnn, get_kl_loss)
+  numpy, pandas, matplotlib, scipy.stats
+
+KEY METRICS
+  MSE: Mean Squared Error (point accuracy)
+  RMSE: sqrt(MSE), same units as target
+  NLL: Negative Log-Likelihood (probabilistic quality)
+  Calibration Error: Alignment between confidence and accuracy (Kuleshov)
+  Training Time: Wall-clock for model fitting
+  Inference Time: Wall-clock for predictions
+
+RESULTS (5-fold averages)
+  ID Distribution:
+    Laplace: RMSE=0.4265, NLL=0.5669, Cal Err=0.0417
+    Bayesian-Torch: RMSE=0.4193, NLL=37.1253, Cal Err=0.4041
+  OOD Distribution:
+    Laplace: RMSE=0.5374, NLL=0.8642, Cal Err=0.0659
+    Bayesian-Torch: RMSE=0.5544, NLL=56.8239, Cal Err=0.4322
+
+  Training Times:
+    MAP: 240.0s
+    Laplace: 27.9s (includes Hessian fit + hyperparameter tuning)
+    Bayesian-Torch: 333.8s
+
+  Laplace superior for NLL and calibration (65x lower NLL, 10x lower cal error).
+  RMSE comparable between methods.
+  Laplace 12x faster training and 50x faster ID inference than Bayesian-Torch.
+
+LAPLACE IMPLEMENTATION
+  Last-layer only (512x1 weights) with full Hessian.
+  Laplace(model, "regression", subset_of_weights="last_layer", hessian_structure="full")
+  DropMetadataLoader wraps WILDS loaders (removes metadata tuple).
+  Hyperparameters tuned via NLL on ID val set (not marglik).
+  Prediction: la(X, pred_type='glm', n_samples=2000)
+
+BAYESIAN-TORCH IMPLEMENTATION
+  Same config as other notebooks: Flipout, MOPED, ELBO.
+  Memory-efficient MC streaming: iterates over loader for each MC sample.
+  Gradient clipping (max_norm=1.0).
+  N_MC = 50 for validation.
+
+
+================================================================================
+NOTEBOOK 6: bnn_comparison_sinusoid.ipynb
+Location: ./laplace_torch/bnn_comparison_sinusoid.ipynb
+================================================================================
+
+PURPOSE AND OBJECTIVES
+  Compare MAP, Laplace-Torch, and Bayesian-Torch on sinusoidal regression.
+  Full implementation with metrics tracking.
+
+SECTION BREAKDOWN
+  
+  Introduction: Compares three methods: MAP, Laplace (post-hoc), Bayesian-Torch (SVI).
+  
+  Imports: numpy, torch, nn, optim, plt, scipy, time, pandas, laplace, bayesian_torch.
+  
+  Data Generation (Cells 2-3):
+    150 training points, sin(x) + N(0,0.3). Test points from -5 to 13.
+  
+  Model Architecture (Cell 4):
+    Sequential: Linear(1,50) -> Tanh -> Linear(50,1). 151 parameters.
+  
+  MAP Training (Cell 5):
+    Adam lr=1e-2, 1000 epochs, MSE loss.
+    Final loss=0.074, train time=1.44s.
+  
+  Laplace Approximation (Cell 6):
+    Laplace(model_map, "regression", subset_of_weights="all", hessian_structure="full")
+    la.fit(train_loader)
+    Optimize log_prior and log_sigma via marginal likelihood (1000 epochs).
+    Learned sigma_noise=0.2816, prior_precision=0.1002.
+    Laplace fit time=0.20s, marglik time=1.45s.
+  
+  Bayesian-Torch (Cell 7):
+    Flipout + MOPED, ELBO fine-tuning.
+    1000 epochs, final ELBO=0.857, KL=8.460.
+    Train time=1.74s.
+  
+  Evaluation Metrics (Cell 8):
+    rmse(y_true, y_pred): sqrt(mean((y-y_pred)^2))
+    neg_log_likelihood(y_true, y_pred_mean, y_pred_std):
+      0.5 * mean(log(2*pi*y_pred_std^2) + (y-y_pred_mean)^2 / y_pred_std^2)
+    cal_error(y_true, y_pred_mean, y_pred_std, n_bins=20):
+      Compare expected confidence vs observed frequency in bins.
+  
+  Results (Cell 8 output):
+    MAP:    RMSE=1.4153, NLL=NaN,  Cal Err=NaN
+    Laplace: RMSE=1.4153, NLL=1.5037, Cal Err=0.0582, Epistemic=1.7063
+    Bayesian-Torch: RMSE=1.0942, NLL=1.4853, Cal Err=0.0181, Epistemic=0.9714
+  
+  Comparison Visualizations (Cell 9):
+    Training curves (MAP loss, marglik, ELBO+KL).
+    Predictions with uncertainty (Laplace and Bayesian-Torch).
+    Epistemic uncertainty comparison.
+  
+  Uncertainty Calibration (Cell 10):
+    Calibration curves (reliability diagrams).
+    Laplace Cal Error: 0.0582.
+    Bayesian-Torch Cal Error: 0.0181.
+  
+  Summary and Export (Cell 11):
+    DataFrame export to CSV.
+
+LIBRARIES
+  Same as previous: torch, numpy, scipy, matplotlib, pandas, laplace, bayesian_torch
+
+KEY METRICS
+  Train_Time, Inference_Time, RMSE, NLL, Calibration Error, Avg Epistemic std
+
+RESULTS
+  Bayesian-Torch best overall: lowest RMSE (1.094), lowest NLL (1.485), best cal (0.018).
+  Laplace has highest epistemic uncertainty (1.706 vs 0.971).
+  MAP has no uncertainty estimates.
+  Bayesian-Torch better calibrated than Laplace on this task.
+
+
+================================================================================
+NOTEBOOK 7: two_moons_bayesian.ipynb
+Location: ./two_moons_bayesian.ipynb
+================================================================================
+
+PURPOSE AND OBJECTIVES
+  BNN for Two Moons classification using bayesian-torch.
+  Compares Flipout vs Bayes-by-Backprop (BBB/Reparameterization).
+  Mirrors the Laplace baseline setup for equitable comparison.
+
+SECTION BREAKDOWN
+  
+  Cell 1 (Imports and Setup):
+    os, torch, nn, optim, numpy, matplotlib, sklearn (make_moons, train_test_split,
+    StandardScaler), TensorDataset, DataLoader.
+    bayesian_torch: dnn_to_bnn, get_kl_loss.
+    GPU check, LaTeX-compatible plot formatting.
+    Creates ../figures directory.
+  
+  Cell 2 (Dataset Generation):
+    10,000 Two Moons samples, noise=0.3, random_state=42.
+    StandardScaler normalization.
+    60/20/20 train/val/test split (note: val is created but dont seem used in
+    the visible code except in DataLoaders).
+    DataLoaders: batch_size=32 train, 64 val/test.
+  
+  Cell 3 (Visualization Helpers):
+    plot_boundary(X_data, y_data, title): Decision boundary with contourf, contour,
+    scatter. Returns cf, probs.
+    uncertainty_map(X_data, y_data, title): Epistemic uncertainty as 1-2*|prob-0.5|.
+  
+  Cell 4 (Model Architecture and Training):
+    TinyMLP: 2->64->Tanh->64->Tanh->2 (matches Two Moons Laplace notebook).
+    train_bnn(model_type):
+      - Creates model, sets bnn_prior_parameters
+      - prior_mu=0, prior_sigma=1, posterior_mu_init=0, posterior_rho_init=-3
+      - type: "Flipout" or "Reparameterization"
+      - moped_enable: False (different from other notebooks)
+      - dnn_to_bnn(model, params)
+      - CrossEntropyLoss, Adam lr=5e-3, 20 epochs
+      - Loss: nll_loss + kl_loss / num_samples
+    Trains both model_flipout and model_bbb.
+  
+  Cell 5 (Prediction Wrapper):
+    bnn_predict(X_np, model, n_samples=30):
+      - Runs model 30 times, softmax, returns mean prob of class 1.
+  
+  Cell 6 (Decision Boundaries and Uncertainty Heatmaps):
+    Side-by-side plots for Flipout vs BBB:
+      - Decision boundaries (P(class 1))
+      - Uncertainty heatmaps
+    Saves: ../figures/bayesian_torch_boundary.png
+    Saves: ../figures/bayesian_torch_uncertainty.png
+  
+  Cell 7 (Analysis Distributions):
+    get_confidence_and_uncertainty(model, n_samples=30):
+      Mean probs from MC, confidence = max prob, uncertainty = 1 - confidence.
+    Three-panel figure:
+      1. Confidence distributions (histogram)
+      2. Flipout vs BBB confidence scatter
+      3. Uncertainty distributions (histogram)
+    Saves: ../figures/bayesian_torch_analysis.png
+  
+  Cell 8 (Comprehensive UQ Metrics):
+    Imports pandas, time, sklearn.metrics (precision, recall, f1, roc_auc).
+    expected_calibration_error(probs, labels, n_bins=15):
+      ECE = sum |acc_k - conf_k| * n_k / N
+    evaluate_uq_metrics(model, model_name, n_samples=50):
+      Runs 50 MC samples.
+      Metrics computed:
+        - Accuracy: mean(predicted == true)
+        - NLL: -log(mean_probs[true_class])
+        - Brier Score: mean((probs - onehot)^2)
+        - ECE: Expected Calibration Error
+        - ROC-AUC
+        - Precision, Recall, F1
+        - Mean/Median Confidence
+        - Predictive Std (mean, median, std)
+        - CI95 Width: 95% confidence interval width
+        - Uncertainty decomposition:
+          Total = H[E[p(y|x)]] (entropy of mean prob)
+          Aleatoric = E[H[p(y|x)]] (mean entropy across MC)
+          Epistemic = Total - Aleatoric (mutual information)
+        - Inference Time
+    Evaluates both models.
+    Creates DataFrame, exports to CSV (twomoons_bayesian_torch_metrics.csv).
+    Creates LaTeX table.
+    Saves metrics table figure: ../figures/bayesian_torch_metrics_table.png
+  
+  Cell 9 (Calibration Reliability Diagram):
+    reliability_diagram(probs, labels, ax):
+      Plots confidence vs accuracy per bin.
+    Two models on same plot with ECE annotations.
+    Saves: ../figures/bayesian_torch_reliability.png
+  
+  Cell 10 (Predictive Std Spatial Maps):
+    get_std_map: Contourf of std(P(class=1)) across grid.
+    bnn_predict_std: std across MC samples.
+    Two side-by-side maps (Flipout vs BBB).
+    Saves: ../figures/bayesian_torch_std_map.png
+  
+  Cell 11 (Summary Print):
+    Prints all metrics for both models.
+
+LIBRARIES
+  torch: NN modules, training
+  sklearn.datasets.make_moons: Dataset
+  sklearn.model_selection.train_test_split: Split
+  sklearn.preprocessing.StandardScaler: Normalization
+  sklearn.metrics: precision, recall, f1, roc_auc
+  numpy: Computation
+  pandas: DataFrame, CSV
+  matplotlib: All visualizations
+  bayesian_torch: dnn_to_bnn, get_kl_loss
+  time, os
+
+KEY METRICS
+  Accuracy: Fraction correct
+  NLL: Negative log likelihood of true class
+  Brier Score: MSE of predicted probabilities vs one-hot
+  ECE: Expected Calibration Error
+  ROC-AUC: Area under ROC curve
+  Precision, Recall, F1
+  Predictive Std: Std of MC predictions
+  CI95 Width: 95% confidence interval
+  Uncertainty Decomposition:
+    Total = H[E[p]]
+    Aleatoric = E[H[p]]
+    Epistemic = Total - Aleatoric (mutual information)
+
+RESULTS
+  Both Flipout and BBB produce comparable accuracy.
+  Flipout tends to produce more conservative uncertainty.
+  Uncertainty heatmaps show higher uncertainty around decision boundary.
+  Flipout vs BBB differences visible in confidence distributions.
+  Proper uncertainty decomposition (epistemic vs aleatoric).
+
+BAYESIAN-TORCH IMPLEMENTATION
+  Unlike other notebooks, moped_enable=False.
+  Two SVI types compared:
+    - Flipout: Low-variance gradient estimator
+    - Reparameterization (BBB): Standard reparameterization trick
+  Combined loss: nll + kl / num_samples
+  Monte Carlo sampling with n_samples=30 for inference, 50 for metrics.
+
+================================================================================
+END OF DOCUMENT
+================================================================================

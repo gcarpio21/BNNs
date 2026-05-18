@@ -1,0 +1,150 @@
+LIBRARY USAGE SUMMARY - BAYESIAN NEURAL NETWORKS PROJECT
+========================================================
+
+1. LAPLACE TORCH LIBRARY
+-------------------------
+Import: from laplace import Laplace
+
+Usage in sinusoidal notebook:
+- Laplace(model_map, "regression", subset_of_weights="all", hessian_structure="full")
+  Creates Laplace approximation object around MAP model
+- la.fit(train_loader) 
+  Fits the Hessian (second derivative of loss) on training data
+- Hyperparameter optimization via marginal likelihood maximization:
+  - Optimizes log_prior and log_sigma using Adam to maximize log_marginal_likelihood
+  - Trains for n_epochs_marglik iterations (default 1000)
+- Prediction: la(X_test) returns (mean, variance) in closed-form via GLM
+- For PovertyMap: Uses subset_of_weights="last_layer" (only last layer weights)
+  - pred_type='glm' with n_samples=2000 for predictive distribution
+  - Hyperparameters tuned by minimizing NLL on ID validation set
+
+Usage in poverty map notebook:
+- Same core Laplace usage but with last-layer only approximation
+- Hyperparameter tuning via validation NLL minimization instead of marginal likelihood
+- GLM predictive with 2000 samples for uncertainty estimation
+
+2. BAYESIAN TORCH LIBRARY
+-------------------------
+Imports: 
+  from bayesian_torch.models.dnn_to_bnn import dnn_to_bnn, get_kl_loss
+
+Usage in sinusoidal notebook:
+- Convert deterministic model to BNN:
+  bnn_prior_parameters = {
+      "prior_mu": 0.0,
+      "prior_sigma": 1.0,
+      "posterior_mu_init": 0.0,
+      "posterior_rho_init": -3.0,
+      "type": "Flipout",
+      "moped_enable": True,
+      "moped_delta": 0.5,
+  }
+  dnn_to_bnn(model_bnn, bnn_prior_parameters)
+- MOPED initialization: Copy MAP weights to posterior mean
+- Training: ELBO loss = MSE + KL/batch_size
+  - KL divergence computed via get_kl_loss(model_bnn)
+  - Optimized with Adam for n_epochs_bnn iterations (default 1000)
+- Prediction: MC sampling with model_bnn(X_test) repeated num_mc_samples times (default 100)
+  - Mean = average of MC samples
+  - Variance = variance of MC samples
+
+Usage in poverty map notebook:
+- Similar conversion but with different hyperparameters:
+  - posterior_rho_init: -3.0
+  - moped_enable: True, moped_delta: 0.5
+  - type: "Flipout"
+- Training: Same ELBO approach but with gradient clipping (max_norm=1.0)
+- Prediction: Memory-efficient MC streaming to avoid large matrices
+  - Uses n_mc=50 samples for validation
+  - Computes mean and variance incrementally
+
+3. METRICS BEING USED
+--------------------
+Common to both notebooks:
+- RMSE (Root Mean Squared Error): 
+  sqrt(mean((y_true - y_pred)^2))
+  Measures point prediction accuracy (lower = better)
+  
+- NLL (Negative Log-Likelihood):
+  0.5 * mean(log(2 * pi * y_pred_std^2) + (y_true - y_pred_mean)^2 / y_pred_std^2)
+  Measures predictive distribution quality (lower = better)
+  
+- Calibration Error:
+  Based on Kuleshov et al. 2018 for regression
+  z = |y_true - y_pred_mean| / y_pred_std
+  Compare expected confidence vs observed frequency in bins
+  Lower = better calibrated uncertainty
+
+4. WHAT EACH CELL IS TRYING TO ACCOMPLISH
+-----------------------------------------
+Sinusoidal Notebook:
+- Cells 1-18: Introduction and theoretical background
+- Cells 19-48: Imports, setup, and random seeds
+- Cells 54-83: Generate sinusoidal dataset with noise sigma=0.3
+- Cells 86-115: Define shared model architecture (Linear(1,50)->Tanh->Linear(50,1))
+- Cells 118-163: Train MAP model via Adam optimization for 1000 epochs
+- Cells 166-226: Fit Laplace approximation (Hessian + hyperparameter optimization)
+- Cells 228-304: Convert to Bayesian-Torch, MOPED init, ELBO fine-tuning
+- Cells 307-361: Define evaluation metrics (RMSE, NLL, Calibration Error)
+- Cells 363-371: Compute and display comparison results table
+- Cells 374-443: Generate prediction visualization plots
+- Cells 450-488: Generate uncertainty calibration plots
+- Cells 496-554: Summary table and CSV export of metrics
+
+PovertyMap Notebook:
+- Cells 1-15: Introduction and theoretical background
+- Cells 16-54: Imports, warnings, device setup (CUDA detection)
+- Cells 57-115: Load PovertyMap dataset from WILDS (~13GB download)
+- Cells 118-147: Define image transforms and data loaders
+- Cells 150-183: Define ResNet-18 model adapted for 8-channel input
+- Cells 186-246: MAP training function with early stopping and LR scheduling
+- Cells 248-358: Laplace approximation training (full last-layer + GLM)
+- Cells 360-437: Bayesian-Torch training (Flipout + MOPED + SVI)
+- Cells 439-473: Memory-efficient Bayesian-Torch prediction
+- Cells 476-503: Define evaluation metrics (MSE, RMSE, NLL, Cal Error)
+- Cells 504-523: Function to print results in formatted table
+- Cells 525-628: Main experiment loop over 5 folds (A-E)
+- Cells 630-726: Experimental output showing per-fold results
+- Cells 728-782: Results summary, averaging, and CSV export
+- Cells 784-861: Results visualization (bar charts and uncertainty analysis)
+
+5. KEY FINDINGS FROM METRICS
+---------------------------
+Sinusoidal Regression:
+- Laplace: RMSE=1.4153, NLL=1.5037, Cal Err=0.0582, Epistemic=1.7063
+- Bayesian-Torch: RMSE=1.0942, NLL=1.4853, Cal Err=0.0181, Epistemic=0.9714
+- MAP: RMSE=1.4153 (no uncertainty metrics)
+- Bayesian-Torch has best RMSE and calibration, Laplace has best NLL
+
+PovertyMap (5-fold average):
+ID Distribution:
+- Laplace: RMSE=0.4265, NLL=0.5669, Cal Err=0.0417
+- Bayesian-Torch: RMSE=0.4193, NLL=37.1253, Cal Err=0.4041
+- Laplace better for NLL and calibration, similar RMSE
+
+OOD Distribution:
+- Laplace: RMSE=0.5374, NLL=0.8642, Cal Err=0.0659
+- Bayesian-Torch: RMSE=0.5544, NLL=56.8239, Cal Err=0.4322
+- Laplace superior across all metrics OOD
+
+Training Times:
+- Laplace much faster to train (~28s) than Bayesian-Torch (~334s)
+- MAP slowest due to many epochs (240s) but no uncertainty overhead
+
+6. HOW TO USE EACH LIBRARY IN YOUR OWN CODE
+------------------------------------------
+Laplace Torch:
+1. Train standard neural network to get MAP weights
+2. la = Laplace(model, likelihood="regression", subset_of_weights="all|last_layer", hessian_structure="full|diag")
+3. la.fit(train_loader)  # Compute Hessian
+4. # Optional: Optimize hyperparameters via marginal likelihood or validation
+5. mu, var = la(X_test)  # Get predictions with uncertainty
+
+Bayesian Torch:
+1. Define your deterministic model architecture
+2. bnn_params = {"prior_mu": 0.0, "prior_sigma": 1.0, "posterior_mu_init": 0.0, 
+                "posterior_rho_init": -3.0, "type": "Flipout", "moped_enable": True}
+3. bnn_model = copy of your model
+4. dnn_to_bnn(bnn_model, bnn_params)  # Convert to BNN
+5. Train using ELBO loss: loss = MSE + KL/batch_size
+6. For prediction: Run model multiple times and average results
