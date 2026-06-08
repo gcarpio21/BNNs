@@ -1,0 +1,25 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Theoretical Background}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Bayesian Deep Learning}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Stochastic Variational Inference}{2}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Bayes by Backprop}{2}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Flipout}{2}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}MOPED Initialisation}{3}{subsubsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {2.2.4}AvUC Loss}{3}{subsubsection.2.2.4}%
+\contentsline {paragraph}{AvUC objective.}{3}{section*.2}%
+\contentsline {subsection}{\numberline {2.3}Epistemic and Aleatoric Uncertainty Decomposition}{3}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Laplace Approximation}{3}{subsection.2.4}%
+\contentsline {paragraph}{Marginal likelihood tuning.}{3}{section*.3}%
+\contentsline {section}{\numberline {3}Evaluation Metrics}{4}{section.3}%
+\contentsline {paragraph}{Brier Score.}{4}{section*.4}%
+\contentsline {paragraph}{Mean Confidence / Mean Entropy / $1 - \text {Confidence}$.}{4}{section*.5}%
+\contentsline {paragraph}{Uncertainty calibration U MAE, U MSE, U Corr, Max Gap.}{4}{section*.6}%
+\contentsline {paragraph}{Epistemic uncertainty OOD maps.}{4}{section*.7}%
+\contentsline {section}{\numberline {4}Shared Infrastructure}{4}{section.4}%
+\contentsline {section}{\numberline {5}Two Moons Classification}{4}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Dataset and OOD Probe Design}{4}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}\texttt {bayesian-torch}: Variational BNN}{4}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}\texttt {laplace-torch}: Laplace Approximation}{5}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Discussion}{6}{section.6}%
+\contentsline {section}{\numberline {A}Appendix: Full Metric Tables and Visualizations}{6}{appendix.A}%

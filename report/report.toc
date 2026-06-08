@@ -1,0 +1,53 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Theoretical Background}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Bayesian Deep Learning}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Stochastic Variational Inference}{2}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Bayes by Backprop (BBB)}{2}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Flipout}{3}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}MOPED Initialisation}{3}{subsubsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {2.2.4}AvUC Loss}{3}{subsubsection.2.2.4}%
+\contentsline {paragraph}{Predictive quantities.}{3}{section*.2}%
+\contentsline {paragraph}{Calibration quadrants.}{3}{section*.3}%
+\contentsline {paragraph}{AvUC objective.}{4}{section*.4}%
+\contentsline {paragraph}{Full training objective.}{4}{section*.5}%
+\contentsline {paragraph}{Computational cost.}{4}{section*.6}%
+\contentsline {subsection}{\numberline {2.3}Epistemic and Aleatoric Uncertainty Decomposition}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Laplace Approximation}{5}{subsection.2.4}%
+\contentsline {paragraph}{GGN and Hessian structure.}{5}{section*.7}%
+\contentsline {paragraph}{Marginal likelihood tuning.}{5}{section*.9}%
+\contentsline {paragraph}{Predictive approximation.}{5}{section*.10}%
+\contentsline {section}{\numberline {3}Evaluation Metrics}{5}{section.3}%
+\contentsline {paragraph}{Accuracy / NLL.}{5}{section*.11}%
+\contentsline {paragraph}{Brier Score.}{5}{section*.12}%
+\contentsline {paragraph}{ECE.}{5}{section*.13}%
+\contentsline {paragraph}{Reliability diagram.}{5}{section*.14}%
+\contentsline {paragraph}{Mean Confidence / Mean Entropy / $1-\text {Confidence}$.}{5}{section*.15}%
+\contentsline {paragraph}{Uncertainty calibration (U-MAE, U-MSE, U-Corr, Max Gap).}{6}{section*.16}%
+\contentsline {paragraph}{Epistemic uncertainty (OOD maps).}{6}{section*.17}%
+\contentsline {paragraph}{Timing.}{6}{section*.18}%
+\contentsline {section}{\numberline {4}Shared Infrastructure}{6}{section.4}%
+\contentsline {paragraph}{TinyMLP.}{6}{section*.19}%
+\contentsline {paragraph}{MAP baseline.}{6}{section*.20}%
+\contentsline {section}{\numberline {5}Two Moons Classification}{6}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Dataset and OOD Probe Design}{6}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}\texttt {bayesian-torch}: Variational BNN}{7}{subsection.5.2}%
+\contentsline {paragraph}{Setup.}{7}{section*.22}%
+\contentsline {paragraph}{Results.}{7}{section*.23}%
+\contentsline {paragraph}{Key visual findings.}{9}{section*.26}%
+\contentsline {paragraph}{Observations.}{12}{section*.30}%
+\contentsline {subsection}{\numberline {5.3}\texttt {laplace-torch}: Laplace Approximation}{12}{subsection.5.3}%
+\contentsline {paragraph}{Setup.}{12}{section*.31}%
+\contentsline {paragraph}{Results.}{13}{section*.32}%
+\contentsline {paragraph}{The marginal likelihood failure case.}{13}{section*.34}%
+\contentsline {paragraph}{Characteristic uncertainty pattern.}{13}{section*.36}%
+\contentsline {paragraph}{Observations.}{15}{section*.38}%
+\contentsline {subsection}{\numberline {5.4}Cross-Library Summary}{16}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Toy Regression Experiment}{16}{section.6}%
+\contentsline {section}{\numberline {7}PovertyMap Replication (Laplace Redux)}{16}{section.7}%
+\contentsline {section}{\numberline {8}Discussion}{16}{section.8}%
+\contentsline {paragraph}{Post-hoc vs.\ by-design.}{16}{section*.40}%
+\contentsline {paragraph}{MOPED as a geometric anchor.}{16}{section*.41}%
+\contentsline {paragraph}{Hessian structure and marglik conditioning.}{16}{section*.42}%
+\contentsline {paragraph}{OOD uncertainty: a key divergence.}{17}{section*.43}%
+\contentsline {section}{\numberline {9}Conclusion}{17}{section.9}%

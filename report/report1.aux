@@ -1,0 +1,98 @@
+\relax 
+\providecommand\babel@aux[2]{}
+\@nameuse{bbl@beforestart}
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\babel@aux{english}{}
+\citation{goan2020bayesian,murphy2023pml}
+\citation{intel2021bayesiantorch}
+\citation{wen2018flipout}
+\citation{blundell2015weight}
+\citation{daxberger2021laplace,aleximmer2024laplace}
+\citation{murphy2023pml}
+\citation{blundell2015weight,goan2020bayesian}
+\citation{blundell2015weight}
+\citation{wen2018flipout}
+\citation{intel2021bayesiantorch}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{2}{Introduction}{section.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Theoretical Background}{2}{section.2}\protected@file@percent }
+\newlabel{sec:theory}{{2}{2}{Theoretical Background}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Bayesian Deep Learning}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Stochastic Variational Inference}{2}{subsection.2.2}\protected@file@percent }
+\newlabel{eq:elbo}{{1}{2}{Stochastic Variational Inference}{equation.2.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}Bayes by Backprop}{2}{subsubsection.2.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Flipout}{2}{subsubsection.2.2.2}\protected@file@percent }
+\citation{intel2021bayesiantorch}
+\citation{intel2021bayesiantorch}
+\citation{goan2020bayesian}
+\citation{daxberger2021laplace}
+\citation{daxberger2021laplace}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}MOPED Initialisation}{3}{subsubsection.2.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.4}AvUC Loss}{3}{subsubsection.2.2.4}\protected@file@percent }
+\newlabel{sec:theory:avuc}{{2.2.4}{3}{AvUC Loss}{subsubsection.2.2.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{AvUC objective.}{3}{section*.2}\protected@file@percent }
+\newlabel{eq:avuc}{{5}{3}{AvUC objective}{equation.2.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Epistemic and Aleatoric Uncertainty Decomposition}{3}{subsection.2.3}\protected@file@percent }
+\newlabel{sec:theory:unc_decomp}{{2.3}{3}{Epistemic and Aleatoric Uncertainty Decomposition}{subsection.2.3}{}}
+\newlabel{eq:mi}{{8}{3}{Epistemic and Aleatoric Uncertainty Decomposition}{equation.2.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Laplace Approximation}{3}{subsection.2.4}\protected@file@percent }
+\newlabel{sec:theory:la}{{2.4}{3}{Laplace Approximation}{subsection.2.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Marginal likelihood tuning.}{3}{section*.3}\protected@file@percent }
+\newlabel{eq:marglik}{{10}{3}{Marginal likelihood tuning}{equation.2.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Evaluation Metrics}{4}{section.3}\protected@file@percent }
+\newlabel{sec:metrics}{{3}{4}{Evaluation Metrics}{section.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Brier Score.}{4}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Mean Confidence / Mean Entropy / $1 - \text  {Confidence}$.}{4}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Uncertainty calibration U MAE, U MSE, U Corr, Max Gap.}{4}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Epistemic uncertainty OOD maps.}{4}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Shared Infrastructure}{4}{section.4}\protected@file@percent }
+\newlabel{sec:shared}{{4}{4}{Shared Infrastructure}{section.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Two Moons Classification}{4}{section.5}\protected@file@percent }
+\newlabel{sec:twomoons}{{5}{4}{Two Moons Classification}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Dataset and OOD Probe Design}{4}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}\texttt  {bayesian-torch}: Variational BNN}{4}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:bnn}{{5.2}{4}{\texttt {bayesian-torch}: Variational BNN}{subsection.5.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}{\ignorespaces BNN conversion and ELBO AvUC training.}}{4}{lstlisting.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Relevant calibration metrics for bayesian torch variants on Two Moons.}}{5}{table.caption.8}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:bnn_main_subset}{{1}{5}{Relevant calibration metrics for bayesian torch variants on Two Moons}{table.caption.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces OOD epistemic uncertainty decomposition for all bayesian torch variants.}}{5}{table.caption.9}\protected@file@percent }
+\newlabel{tab:ood}{{2}{5}{OOD epistemic uncertainty decomposition for all bayesian torch variants}{table.caption.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}\texttt  {laplace-torch}: Laplace Approximation}{5}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:la}{{5.3}{5}{\texttt {laplace-torch}: Laplace Approximation}{subsection.5.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}{\ignorespaces Laplace post hoc workflow.}}{5}{lstlisting.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Relevant calibration metrics for laplace torch on Two Moons.}}{6}{table.caption.10}\protected@file@percent }
+\newlabel{tab:la_main_subset}{{3}{6}{Relevant calibration metrics for laplace torch on Two Moons}{table.caption.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{6}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{6}{Discussion}{section.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Appendix: Full Metric Tables and Visualizations}{6}{appendix.A}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Training data and OOD probe points.}}{6}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:ood_points}{{1}{6}{Training data and OOD probe points}{figure.caption.13}{}}
+\newlabel{RF1}{7}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces All calibration metrics for bayesian torch variants on Two Moons.}}{7}{table.caption.11}\protected@file@percent }
+\newlabel{tab:bnn_main_full}{{4}{7}{All calibration metrics for bayesian torch variants on Two Moons}{table.caption.11}{}}
+\newlabel{RF2}{8}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces All calibration metrics for laplace torch variants on Two Moons.}}{8}{table.caption.12}\protected@file@percent }
+\newlabel{tab:la_main_full}{{5}{8}{All calibration metrics for laplace torch variants on Two Moons}{table.caption.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces MOPED vs scratch initialisation with AvUC loss.}}{9}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:bnn_boundaries}{{2}{9}{MOPED vs scratch initialisation with AvUC loss}{figure.caption.14}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Probability histograms and reliability diagrams.}}{10}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:bnn_histrel}{{3}{10}{Probability histograms and reliability diagrams}{figure.caption.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces OOD epistemic uncertainty.}}{10}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:bnn_ood}{{4}{10}{OOD epistemic uncertainty}{figure.caption.16}{}}
+\bibstyle{plainnat}
+\bibdata{references}
+\bibcite{blundell2015weight}{{1}{2015}{{Blundell et~al.}}{{Blundell, Cornebise, Kavukcuoglu, and Wierstra}}}
+\bibcite{daxberger2021laplace}{{2}{2021}{{Daxberger et~al.}}{{Daxberger, Kristiadi, Immer, Eschenhagen, Bauer, and Hennig}}}
+\bibcite{goan2020bayesian}{{3}{2020}{{Goan and Fookes}}{{}}}
+\bibcite{aleximmer2024laplace}{{4}{2024}{{Immer et~al.}}{{Immer, Daxberger, Kristiadi, Eschenhagen, Bauer, and Hennig}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Marginal likelihood failure for Full all LA.}}{11}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:la_failure}{{5}{11}{Marginal likelihood failure for Full all LA}{figure.caption.17}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Uncertainty patterns under marginal likelihood tuning.}}{11}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:la_stripe}{{6}{11}{Uncertainty patterns under marginal likelihood tuning}{figure.caption.18}{}}
+\bibcite{intel2021bayesiantorch}{{5}{2021}{{Intel Labs}}{{}}}
+\bibcite{murphy2023pml}{{6}{2023}{{Murphy}}{{}}}
+\bibcite{wen2018flipout}{{7}{2018}{{Wen et~al.}}{{Wen, Vicol, Ba, Tran, and Grosse}}}
+\gdef \@abspage@last{13}

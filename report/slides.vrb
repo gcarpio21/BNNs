@@ -1,0 +1,19 @@
+\frametitle{Implementation: Libraries}
+\begin{block}{laplace-torch (Post-hoc)}
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\tiny]
+la = Laplace(model, 'classification',
+             subset_of_weights='last_layer',
+             hessian_structure='kron')
+la.fit(train_loader)
+la.optimize_prior_precision(method='gridsearch') # or 'marglik'
+\end{lstlisting}
+\end{block}
+
+\begin{block}{bayesian-torch (Variational)}
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\tiny]
+dnn_to_bnn(net, {"type": "Reparameterization", # or "Flipout"
+                 "moped_enable": True,
+                 "moped_delta": 0.5})
+# Loss: ELBO or ELBO + AvUC (Accuracy vs Uncertainty)
+\end{lstlisting}
+\end{block}

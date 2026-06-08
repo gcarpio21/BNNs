@@ -10,5 +10,7 @@ from .two_moons_utils import (
     save_checkpoint,
     seed_everything,
     standard_metrics,
+    regression_metrics,
+    regression_uncertainty_stats,
     train_map,
 )

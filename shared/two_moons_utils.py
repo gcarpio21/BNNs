@@ -571,6 +571,70 @@ def standard_metrics(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) ->
     return {"Accuracy": accuracy, "NLL": nll, **summary}
 
 
+def regression_metrics(y_true, mean, total_std, n_levels: int = 11) -> dict:
+    """Scored regression metrics for the sinusoid notebooks (single source).
+
+    Needs ground-truth targets. `mean`/`total_std` are the predictive Gaussian's
+    mean and std (total = sqrt(epistemic^2 + aleatoric^2)). Mirrors the two-moons
+    metric philosophy: a point-error term (RMSE/MAE), a proper-scoring term (NLL),
+    and an actual-vs-expected calibration block.
+
+    Calibration uses the predictive CDF: for a well-calibrated model the CDF value
+    p_i = Phi((y_i - mean_i)/std_i) is Uniform(0,1). For each expected level q we
+    compare it against the *observed* fraction with p_i <= q; the gap between
+    expected (q) and actual (observed) coverage is the regression analog of the
+    expected-vs-actual uncertainty block on two moons.
+    """
+    import math
+    y = np.asarray(y_true, dtype=float).ravel()
+    mu = np.asarray(mean, dtype=float).ravel()
+    sd = np.clip(np.asarray(total_std, dtype=float).ravel(), 1e-12, None)
+    resid = y - mu
+
+    rmse = float(np.sqrt(np.mean(resid ** 2)))
+    mae = float(np.mean(np.abs(resid)))
+    # Gaussian negative log-likelihood (lower = better; punishes over- and under-confidence)
+    nll = float(np.mean(0.5 * np.log(2.0 * np.pi * sd ** 2) + resid ** 2 / (2.0 * sd ** 2)))
+
+    z = resid / sd
+    cdf = 0.5 * (1.0 + np.vectorize(math.erf)(z / np.sqrt(2.0)))   # predictive CDF at each true y
+    qs = np.linspace(0.0, 1.0, n_levels)
+    observed = np.array([float(np.mean(cdf <= q)) for q in qs])
+    gap = np.abs(observed - qs)
+    cal_corr = float(np.corrcoef(qs, observed)[0, 1]) if observed.std() > 0 else float("nan")
+
+    return {
+        "RMSE": rmse,
+        "MAE": mae,
+        "NLL": nll,
+        "Calibration_MAE": float(gap.mean()),
+        "Calibration_MSE": float((gap ** 2).mean()),
+        "Calibration_Corr": cal_corr,
+        "Max_Calibration_Gap": float(gap.max()),
+        "Coverage_68": float(np.mean(np.abs(z) <= 1.0)),
+        "Coverage_95": float(np.mean(np.abs(z) <= 1.959963984540054)),
+    }
+
+
+def regression_uncertainty_stats(epistemic_std, aleatoric_std) -> dict:
+    """Canonical uncertainty summary for the sinusoid regression notebooks.
+
+    Computed identically by both the Laplace and Bayesian notebooks so the
+    numbers cannot drift. `epistemic_std` is a per-point (N,) array (function /
+    posterior std); `aleatoric_std` is a scalar or (N,) observation-noise std.
+    Total predictive std = sqrt(epistemic^2 + aleatoric^2).
+    """
+    epi = np.asarray(epistemic_std, dtype=float).ravel()
+    ale = np.asarray(aleatoric_std, dtype=float)
+    ale = np.full_like(epi, float(ale)) if ale.ndim == 0 else ale.ravel()
+    total = np.sqrt(epi ** 2 + ale ** 2)
+    return {
+        "Mean_Epistemic_Std": float(epi.mean()),
+        "Mean_Aleatoric_Std": float(ale.mean()),
+        "Mean_Total_Std": float(total.mean()),
+    }
+
+
 def predict_probs_from_model_or_fn(model_or_fn, X_np: np.ndarray, batch_size: int = 256, device: torch.device | None = None) -> np.ndarray:
     """Return (N, C) numpy probabilities for either a callable predictor or a torch module.
 

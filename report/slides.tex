@@ -1,0 +1,131 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{bm}
+
+% Fix: Point to the correct figures directory
+\graphicspath{{../notebooks/figures/}}
+
+\title{Bayesian Neural Networks on Two Moons}
+\subtitle{Laplace vs. Variational Inference Comparison}
+\author{Deep Learning Analysis}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{Background: Bayesian Deep Learning}
+    \begin{itemize}
+        \item \textbf{Goal:} Replace point estimates $\bm{\theta}$ with a posterior $p(\bm{\theta} \mid \mathcal{D})$.
+        \item \textbf{Laplace Approximation:} Post-hoc Gaussian fit around the MAP estimate using the Hessian (GGN).
+        \item \textbf{Variational Inference:} Optimization-based approach maximizing the ELBO using the reparameterization trick.
+        \item \textbf{Metrics of interest:} Brier Score, ECE, Uncertainty Calibration (Expected vs Actual), and OOD robustness.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Implementation: Libraries}
+\begin{block}{laplace-torch (Post-hoc)}
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\tiny]
+la = Laplace(model, 'classification', 
+             subset_of_weights='last_layer', 
+             hessian_structure='kron')
+la.fit(train_loader)
+la.optimize_prior_precision(method='gridsearch') # or 'marglik'
+\end{lstlisting}
+\end{block}
+
+\begin{block}{bayesian-torch (Variational)}
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\tiny]
+dnn_to_bnn(net, {"type": "Reparameterization", # or "Flipout"
+                 "moped_enable": True,
+                 "moped_delta": 0.5})
+# Loss: ELBO or ELBO + AvUC (Accuracy vs Uncertainty)
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+\begin{frame}{Laplace Results: Relevant Configurations}
+    \textbf{Configurations:} Diag (all), Full (LL), Kron (LL) \\
+    \textbf{Tuning:} Marglik vs. Gridsearch
+    \begin{table}
+        \tiny
+        \centering
+        \begin{tabular}{llccccccc}
+            \toprule
+            Variant & Scope & Tune & BS $\downarrow$ & $1-c$ & U-MAE & U-Corr $\uparrow$ \\
+            \midrule
+            Diag / all & all & GS & 0.0564 & 0.0787 & 0.0101 & 0.9590 \\
+            Full / LL  & LL  & GS & 0.0564 & 0.0787 & 0.0101 & 0.9590 \\
+            Kron / LL  & LL  & GS & 0.0564 & 0.0787 & 0.0101 & 0.9590 \\
+            Diag / all & all & ML & 0.0567 & 0.0879 & 0.0159 & 0.9548 \\
+            Full / LL  & LL  & ML & 0.0623 & 0.1446 & 0.0703 & 0.9348 \\
+            Kron / LL  & LL  & ML & 0.0613 & 0.1381 & 0.0637 & 0.9378 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    {Gridsearch (GS) significantly outperforms Marglik (ML) on this task.}
+\end{frame}
+
+\begin{frame}{Variational Results: Brier and Calibration}
+    \begin{table}
+        \tiny
+        \centering
+        \begin{tabular}{llcccc}
+            \toprule
+            Model Type & Init & Loss & Brier Score $\downarrow$ & Mean Unc ($1-c$) & U-Corr $\uparrow$ \\
+            \midrule
+            BBB & MOPED & AvUC & 0.0567 & 0.0669 & 0.9410 \\
+            BBB & MOPED & ELBO & 0.0580 & 0.0866 & 0.9672 \\
+            Flipout & MOPED & AvUC & 0.0587 & 0.0724 & 0.9901 \\
+            BBB & scratch & AvUC & 0.0952 & 0.1526 & 0.9653 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \begin{itemize}
+        \item MOPED initialization is critical for AvUC stability.
+        \item BBB with MOPED and AvUC yields the best Brier score.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Visualizing Uncertainty: Boundaries \& Histograms}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{bbb_moped_avuc_boundary.png}
+        \\[2pt]
+        {\tiny BBB MOPED AvUC Boundary}
+        
+        \column{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{bbb_moped_avuc_histogram.png}
+        \\[2pt]
+        {\tiny Prediction Confidence Histogram}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Out-of-Distribution (OOD) Analysis}
+    \begin{table}
+        \tiny
+        \centering
+        \begin{tabular}{lccccccc}
+            \toprule
+            Variant & ID $1-c$ & OOD $1-c$ & ID Epist & OOD Epist & $\Delta$Epist \\
+            \midrule
+            Flip/MOP/AvUC & 0.0728 & 0.0041 & 0.0355 & 0.0037 & -0.0318 \\
+            BBB/MOP/AvUC  & 0.0672 & 0.0071 & 0.0347 & 0.0087 & -0.0260 \\
+            Kron/all/ML   & 0.0827 & 0.0017 & 0.0067 & 0.0021 & -0.0045 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \begin{center}
+        \includegraphics[width=0.4\linewidth]{bbb_moped_avuc_ood_epistemic.png}
+    \end{center}
+\end{frame}
+
+\end{document}
