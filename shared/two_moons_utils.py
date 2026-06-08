@@ -15,7 +15,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from sklearn.datasets import make_moons
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import log_loss
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader, TensorDataset
@@ -41,13 +41,118 @@ def checkpoint_exists(checkpoint_path: str | None) -> bool:
     return bool(checkpoint_path) and os.path.exists(checkpoint_path)
 
 
-def load_checkpoint(checkpoint_path: str, map_location: torch.device | str | None = None):
-    return torch.load(checkpoint_path, map_location=map_location)
+def load_checkpoint(
+    checkpoint_path: str,
+    map_location: torch.device | str | None = None,
+    weights_only: bool = False,
+):
+    """Load checkpoints with compatibility across PyTorch versions.
+
+    PyTorch 2.6 changed torch.load default `weights_only=True`, which breaks
+    object checkpoints (e.g., Laplace objects) unless explicitly disabled.
+    """
+    try:
+        return torch.load(
+            checkpoint_path,
+            map_location=map_location,
+            weights_only=weights_only,
+        )
+    except TypeError:
+        # Older torch versions do not support the `weights_only` argument.
+        try:
+            return torch.load(checkpoint_path, map_location=map_location)
+        except Exception as e:
+            # Bubble up for the outer handler below which will handle corrupted files.
+            last_exc = e
+    except Exception as e:
+        last_exc = e
+
+    # If we reach here, torch.load raised an exception (corrupt or unreadable file).
+    # Handle common corruption/unpickling errors gracefully so notebooks can continue
+    # and decide to recompute the checkpoint instead of crashing.
+    try:
+        msg = str(last_exc)
+    except Exception:
+        msg = repr(last_exc)
+
+    # If the file appears corrupted, move it aside and return None so callers
+    # can fallback to recomputing the checkpoint.
+    corrupt_indicators = [
+        'PytorchStreamReader failed locating file data.pkl',
+        'miniz error',
+        'file not found',
+        'UnpicklingError',
+        'pickle.UnpicklingError',
+    ]
+    if any(ind.lower() in msg.lower() for ind in corrupt_indicators):
+        try:
+            corrupt_path = checkpoint_path + '.corrupt'
+            os.replace(checkpoint_path, corrupt_path)
+        except Exception:
+            # If we can't move the file, ignore — we'll still return None.
+            pass
+        print(f"Warning: checkpoint appears corrupted. Renamed to: {corrupt_path}")
+        return None
+
+    # For other errors (permission, version mismatch, etc.), re-raise to surface
+    # unexpected conditions to the user.
+    raise last_exc
 
 
 def save_checkpoint(payload: dict, checkpoint_path: str) -> None:
+    # Always sanitize incoming payloads to avoid torch.save trying to pickle
+    # non-serialisable internals (e.g., local closures/hooks inside Laplace wrappers).
     os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
-    torch.save(payload, checkpoint_path)
+
+    def _sanitize(obj_dict: dict) -> dict:
+        safe = {}
+        for k, v in (obj_dict or {}).items():
+            # If object exposes a state_dict, store its state dict instead of the object
+            if hasattr(v, "state_dict") and callable(getattr(v, "state_dict")):
+                try:
+                    safe_key = k if k.endswith("_state_dict") else f"{k}_state_dict"
+                    safe[safe_key] = v.state_dict()
+                    continue
+                except Exception:
+                    # Skip if state_dict extraction fails
+                    continue
+
+            # Common simple types that are safe to pickle
+            try:
+                import pickle as _pickle
+
+                _pickle.dumps(v)
+                safe[k] = v
+            except Exception:
+                # Skip anything not picklable
+                continue
+        return safe
+
+    safe_payload = _sanitize(payload)
+
+    # Write atomically: save to a temp file then rename
+    tmp_path = checkpoint_path + ".tmp"
+    try:
+        torch.save(safe_payload, tmp_path)
+        try:
+            os.replace(tmp_path, checkpoint_path)
+        except Exception:
+            # Best-effort cleanup/rename
+            os.remove(tmp_path) if os.path.exists(tmp_path) else None
+            raise
+    except Exception as e:
+        # As a last resort, attempt to further prune the payload and retry
+        try:
+            pruned = {}
+            for k, v in safe_payload.items():
+                # only keep tensors and small scalars/containers
+                if isinstance(v, (torch.Tensor, int, float, str, dict, list, tuple, bool, type(None))):
+                    pruned[k] = v
+            torch.save(pruned, tmp_path)
+            os.replace(tmp_path, checkpoint_path)
+        except Exception:
+            # Give up and raise original exception to surface to user
+            raise e
 
 
 def load_two_moons(
@@ -316,21 +421,232 @@ def eval_probs(model: nn.Module, loader: DataLoader, device: torch.device | None
     return torch.cat(probs_list).numpy()
 
 
-def compute_metrics(probs: np.ndarray, labels: np.ndarray) -> Dict[str, float]:
+def predictive_entropy(probs: np.ndarray, eps: float = 1e-12) -> float:
+    """Return average predictive entropy for a (N, C) probs array."""
+    ent = -np.sum(probs * np.log(probs + eps), axis=1)
+    return float(ent.mean())
+
+
+def expected_calibration_error(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) -> float:
+    """Compute (scalar) ECE using max-prob binning.
+
+    probs: (N, C) predicted probabilities
+    labels: (N,) integer labels
+    """
+    confidences = probs.max(axis=1)
     preds = probs.argmax(axis=1)
-    acc = float(accuracy_score(labels, preds))
+    bins = np.linspace(0.0, 1.0, n_bins + 1)
+    ece = 0.0
+    N = len(labels)
+    for i in range(n_bins):
+        low, high = bins[i], bins[i + 1]
+        mask = (confidences > low) & (confidences <= high)
+        if not np.any(mask):
+            continue
+        acc_bin = (preds[mask] == labels[mask]).mean()
+        conf_bin = confidences[mask].mean()
+        ece += (mask.sum() / N) * abs(conf_bin - acc_bin)
+    return float(ece)
 
-    max_conf = probs.max(axis=1)
-    uncertainty = 1.0 - max_conf
 
+def calibration_curve_data(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) -> dict:
+    """Return calibration-bin statistics for reliability-style plots."""
+    confidences = probs.max(axis=1)
+    preds = probs.argmax(axis=1)
+    bins = np.linspace(0.0, 1.0, n_bins + 1)
+
+    centers = []
+    accuracies = []
+    mean_confidences = []
+    expected_uncertainties = []
+    actual_errors = []
+    counts = []
+
+    for i in range(n_bins):
+        low, high = bins[i], bins[i + 1]
+        mask = (confidences > low) & (confidences <= high)
+        if not np.any(mask):
+            continue
+
+        acc_bin = float((preds[mask] == labels[mask]).mean())
+        conf_bin = float(confidences[mask].mean())
+        count = int(mask.sum())
+
+        centers.append(float((low + high) / 2.0))
+        accuracies.append(acc_bin)
+        mean_confidences.append(conf_bin)
+        expected_uncertainties.append(float(1.0 - conf_bin))
+        actual_errors.append(float(1.0 - acc_bin))
+        counts.append(count)
+
+    return {
+        "bin_center": np.asarray(centers, dtype=float),
+        "accuracy": np.asarray(accuracies, dtype=float),
+        "mean_confidence": np.asarray(mean_confidences, dtype=float),
+        "expected_uncertainty": np.asarray(expected_uncertainties, dtype=float),
+        "actual_error": np.asarray(actual_errors, dtype=float),
+        "count": np.asarray(counts, dtype=int),
+    }
+
+
+def classwise_ece(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) -> float:
+    """Average one-vs-rest ECE across classes."""
+    if probs.ndim != 2 or probs.shape[1] < 2:
+        return float("nan")
+
+    values = []
+    for class_idx in range(probs.shape[1]):
+        binary_probs = np.column_stack([1.0 - probs[:, class_idx], probs[:, class_idx]])
+        binary_labels = (labels == class_idx).astype(int)
+        values.append(expected_calibration_error(binary_probs, binary_labels, n_bins=n_bins))
+    return float(np.mean(values))
+
+
+def uncertainty_calibration_summary(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) -> dict:
+    """Summarize calibration and expected-vs-actual uncertainty behavior."""
+    curve = calibration_curve_data(probs, labels, n_bins=n_bins)
+    confidences = probs.max(axis=1)
+    errors = (probs.argmax(axis=1) != labels).astype(float)
+
+    expected_uncertainty = 1.0 - confidences
+    actual_uncertainty = errors
+
+    if len(curve["count"]) > 0:
+        weights = curve["count"] / curve["count"].sum()
+        uncertainty_gap = np.abs(curve["expected_uncertainty"] - curve["actual_error"])
+        uncertainty_gap_mae = float(np.average(uncertainty_gap, weights=weights))
+        uncertainty_gap_mse = float(np.average(uncertainty_gap ** 2, weights=weights))
+
+        if len(curve["expected_uncertainty"]) > 1 and np.std(curve["expected_uncertainty"]) > 0 and np.std(curve["actual_error"]) > 0:
+            uncertainty_corr = float(np.corrcoef(curve["expected_uncertainty"], curve["actual_error"])[0, 1])
+        else:
+            uncertainty_corr = float("nan")
+
+        max_gap = float(np.max(uncertainty_gap))
+    else:
+        uncertainty_gap_mae = float("nan")
+        uncertainty_gap_mse = float("nan")
+        uncertainty_corr = float("nan")
+        max_gap = float("nan")
+
+    return {
+        "ECE": expected_calibration_error(probs, labels, n_bins=n_bins),
+        "Classwise_ECE": classwise_ece(probs, labels, n_bins=n_bins),
+        "Brier_Score": brier_score(probs, labels),
+        "Mean_Confidence": float(confidences.mean()),
+        "1 - Confidence": float(expected_uncertainty.mean()),
+        "Mean_Entropy": predictive_entropy(probs),
+        "ExpectedVsActual_Uncertainty_MAE": uncertainty_gap_mae,
+        "ExpectedVsActual_Uncertainty_MSE": uncertainty_gap_mse,
+        "ExpectedVsActual_Uncertainty_Corr": uncertainty_corr,
+        "Max_Binned_Uncertainty_Gap": max_gap,
+        "Mean_Actual_Error": float(actual_uncertainty.mean()),
+    }
+
+
+def brier_score(probs: np.ndarray, labels: np.ndarray) -> float:
+    """Return the mean Brier score for multiclass probs (averaged over classes via one-hot MSE)."""
     one_hot = np.zeros_like(probs)
     one_hot[np.arange(len(labels)), labels] = 1.0
+    return float(((probs - one_hot) ** 2).mean())
 
+
+def standard_metrics(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) -> dict:
+    """Canonical metric set computed identically for every two-moons model.
+
+    Both the Laplace and Bayesian notebooks call this so every metric has a
+    single definition. `probs` is (N, C) predicted probabilities; `labels` is
+    (N,) integer labels.
+
+    Uncertainty is defined ONE way: `1 - Confidence = mean(1 - max_prob)`.
+    Predictive entropy is reported separately as `Mean_Entropy`. All
+    calibration/Brier/ECE values come from `uncertainty_calibration_summary`
+    so they cannot drift between notebooks.
+    """
     eps = 1e-12
-    return {
-        "Accuracy": acc,
-        "Mean_Uncertainty": float(uncertainty.mean()),
-        "Std_Uncertainty": float(uncertainty.std()),
-        "Brier_Score": float(((probs - one_hot) ** 2).mean()),
-        "NLL": float(-np.log(probs[np.arange(len(labels)), labels] + eps).mean()),
-    }
+    preds = probs.argmax(axis=1)
+    accuracy = float((preds == labels).mean())
+    nll = float(-np.log(probs[np.arange(len(labels)), labels] + eps).mean())
+    summary = uncertainty_calibration_summary(probs, labels, n_bins=n_bins)
+    return {"Accuracy": accuracy, "NLL": nll, **summary}
+
+
+def predict_probs_from_model_or_fn(model_or_fn, X_np: np.ndarray, batch_size: int = 256, device: torch.device | None = None) -> np.ndarray:
+    """Return (N, C) numpy probabilities for either a callable predictor or a torch module.
+
+    If `model_or_fn` is a callable that accepts numpy arrays and returns either a (N,) class-1 prob or (N, C) probs, it will be used directly. If it is a torch.nn.Module, it will be applied in batches.
+    """
+    # Try calling as a numpy-aware predictor
+    try:
+        out = model_or_fn(X_np)
+        out = np.array(out)
+        if out.ndim == 1:
+            p1 = out
+            return np.vstack([1 - p1, p1]).T
+        return out
+    except Exception:
+        pass
+
+    # Otherwise, assume it's a torch module
+    if device is None:
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = model_or_fn
+    model = model.to(device)
+    model.eval()
+    results = []
+    with torch.no_grad():
+        X_tensor = torch.tensor(X_np, dtype=torch.float32)
+        for i in range(0, len(X_tensor), batch_size):
+            batch = X_tensor[i:i + batch_size].to(device)
+            logits = model(batch)
+            probs = F.softmax(logits, dim=1).cpu()
+            results.append(probs)
+    return torch.cat(results).numpy()
+
+
+# --- Compatibility helpers for laplace-torch state_dict loading ---
+def safe_load_laplace_state(la_obj, state_dict: dict):
+    """Load a laplace object's state_dict while avoiding feature-extractor
+    discovery from stored sample `data` which can trigger "Last layer is
+    already known." ValueError in some laplace-torch versions.
+
+    This makes a shallow copy of the dict and clears the `data` entry
+    before delegating to the laplace object's `load_state_dict`.
+    """
+    state = state_dict.copy() if isinstance(state_dict, dict) else state_dict
+    if isinstance(state, dict) and 'data' in state:
+        state['data'] = None
+    return la_obj.load_state_dict(state)
+
+
+# Monkeypatch LLLaplace.load_state_dict to be tolerant when possible.
+try:
+    from laplace.lllaplace import LLLaplace
+
+    _orig_ll_load = LLLaplace.load_state_dict
+
+    def _patched_ll_load(self, state_dict):
+        # Null out stored sample `data` to avoid triggering feature-extractor
+        # discovery that can raise when last_layer is already set.
+        sd = state_dict.copy() if isinstance(state_dict, dict) else state_dict
+        if isinstance(sd, dict) and 'data' in sd:
+            sd['data'] = None
+        try:
+            return _orig_ll_load(self, sd)
+        except ValueError as e:
+            msg = str(e)
+            if 'Last layer is already known' in msg:
+                # Try clearing instance data and retry once.
+                try:
+                    self.data = None
+                    return _orig_ll_load(self, sd)
+                except Exception:
+                    pass
+            # Re-raise if we can't handle it here.
+            raise
+
+    LLLaplace.load_state_dict = _patched_ll_load
+except Exception:
+    # laplace not available or monkeypatch failed; ignore and fall back to
+    # caller-side fixes in notebooks.
+    pass

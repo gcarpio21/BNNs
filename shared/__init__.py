@@ -1,7 +1,6 @@
 from .two_moons_utils import (
     TinyMLP,
     checkpoint_exists,
-    compute_metrics,
     eval_probs,
     load_checkpoint,
     load_sinusoid,
@@ -10,5 +9,6 @@ from .two_moons_utils import (
     save_splits,
     save_checkpoint,
     seed_everything,
+    standard_metrics,
     train_map,
 )
