@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  8 JUN 2026 12:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  8 JUN 2026 15:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**slides
+**slides.tex
 (./slides.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -760,32 +760,63 @@ Package bm Info: No bold for \U/msb/m/n, using \pmb.
 \symboldpureletters=\mathgroup10
 LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 149.
 )
+(/usr/share/texlive/texmf-dist/tex/latex/threeparttable/threeparttable.sty
+Package: threeparttable 2003/06/13  v 3.0
+\@tempboxb=\box78
+)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty
+Package: tabularx 2023/07/08 v2.11c `tabularx' package (DPC)
+
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
+Package: array 2023/10/16 v2.5g Tabular extension package (FMi)
+\col@sep=\dimen311
+\ar@mcellbox=\box79
+\extrarowheight=\dimen312
+\NC@list=\toks47
+\extratabsurround=\skip65
+\backup@length=\skip66
+\ar@cellbox=\box80
+)
+\TX@col@width=\dimen313
+\TX@old@table=\dimen314
+\TX@old@col=\dimen315
+\TX@target=\dimen316
+\TX@delta=\dimen317
+\TX@cols=\count348
+\TX@ftn=\toks48
+)
+(/usr/share/texlive/texmf-dist/tex/latex/makecell/makecell.sty
+Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
+\rotheadsize=\dimen318
+\c@nlinenum=\count349
+\TeXr@lab=\toks49
+)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count348
-\l__pdf_internal_box=\box78
+\l__color_backend_stack_int=\count350
+\l__pdf_internal_box=\box81
 )
 (./slides.aux)
 \openout1 = `slides.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -823,17 +854,17 @@ LaTeX Font Info:    ... okay on input line 19.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count349
-\scratchdimen=\dimen311
-\scratchbox=\box79
-\nofMPsegments=\count350
-\nofMParguments=\count351
-\everyMPshowfont=\toks47
-\MPscratchCnt=\count352
-\MPscratchDim=\dimen312
-\MPnumerator=\count353
-\makeMPintoPDFobject=\count354
-\everyMPtoPDFconversion=\toks48
+\scratchcounter=\count351
+\scratchdimen=\dimen319
+\scratchbox=\box82
+\nofMPsegments=\count352
+\nofMParguments=\count353
+\everyMPshowfont=\toks50
+\MPscratchCnt=\count354
+\MPscratchDim=\dimen320
+\MPnumerator=\count355
+\makeMPintoPDFobject=\count356
+\everyMPtoPDFconversion=\toks51
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -843,66 +874,66 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 19.
+Package hyperref Info: Link coloring OFF on input line 21.
 
 (./slides.out) (./slides.out)
 \@outlinefile=\write5
 \openout5 = `slides.out'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> OT1/cmss/m/n on input line 19.
+(Font)                  OT1/cmr/m/n --> OT1/cmss/m/n on input line 21.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> OT1/cmss/b/n on input line 19.
+(Font)                  OT1/cmr/bx/n --> OT1/cmss/b/n on input line 21.
 \symnumbers=\mathgroup11
-LaTeX Font Info:    Redeclaring symbol font `pureletters' on input line 19.
+LaTeX Font Info:    Redeclaring symbol font `pureletters' on input line 21.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `normal'
-(Font)                  OT1/mathkerncmss/m/sl --> OT1/cmss/m/it on input line 1
-9.
+(Font)                  OT1/mathkerncmss/m/sl --> OT1/cmss/m/it on input line 2
+1.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
 (Font)                  OT1/mathkerncmss/bx/sl --> OT1/cmss/m/it on input line 
-19.
+21.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/cmss/m/n --> OT1/cmr/m/n on input line 19.
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 19.
-LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 19.
+(Font)                  OT1/cmss/m/n --> OT1/cmr/m/n on input line 21.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 21.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> OT1/cmss/m/n on input line 19.
+(Font)                  OT1/cmss/m/n --> OT1/cmss/m/n on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> OT1/cmss/m/n on input line 19.
-LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 19.
+(Font)                  OT1/cmss/bx/n --> OT1/cmss/m/n on input line 21.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> OT1/cmss/m/it on input line 19.
+(Font)                  OT1/cmr/m/it --> OT1/cmss/m/it on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> OT1/cmss/m/it on input line 19.
-LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 19.
+(Font)                  OT1/cmr/bx/it --> OT1/cmss/m/it on input line 21.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> OT1/cmtt/m/n on input line 19.
+(Font)                  OT1/cmtt/m/n --> OT1/cmtt/m/n on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> OT1/cmtt/m/n on input line 19.
+(Font)                  OT1/cmtt/m/n --> OT1/cmtt/m/n on input line 21.
 LaTeX Font Info:    Overwriting symbol font `numbers' in version `bold'
-(Font)                  OT1/cmss/m/n --> OT1/cmss/b/n on input line 19.
+(Font)                  OT1/cmss/m/n --> OT1/cmss/b/n on input line 21.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
-(Font)                  OT1/cmss/m/it --> OT1/cmss/b/it on input line 19.
+(Font)                  OT1/cmss/m/it --> OT1/cmss/b/it on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `bold'
-(Font)                  OT1/cmss/b/n --> OT1/cmr/b/n on input line 19.
+(Font)                  OT1/cmss/b/n --> OT1/cmr/b/n on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  OT1/cmss/b/n --> OT1/cmss/b/n on input line 19.
+(Font)                  OT1/cmss/b/n --> OT1/cmss/b/n on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/m/n --> OT1/cmss/b/n on input line 19.
+(Font)                  OT1/cmss/m/n --> OT1/cmss/b/n on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmss/m/it --> OT1/cmss/b/it on input line 19.
+(Font)                  OT1/cmss/m/it --> OT1/cmss/b/it on input line 21.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> OT1/cmtt/b/n on input line 19.
-LaTeX Font Info:    Redeclaring symbol font `pureletters' on input line 19.
+(Font)                  OT1/cmtt/m/n --> OT1/cmtt/b/n on input line 21.
+LaTeX Font Info:    Redeclaring symbol font `pureletters' on input line 21.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `normal'
-(Font)                  OT1/cmss/m/it --> OT1/mathkerncmss/m/sl on input line 1
-9.
+(Font)                  OT1/cmss/m/it --> OT1/mathkerncmss/m/sl on input line 2
+1.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
-(Font)                  OT1/cmss/b/it --> OT1/mathkerncmss/m/sl on input line 1
-9.
+(Font)                  OT1/cmss/b/it --> OT1/mathkerncmss/m/sl on input line 2
+1.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
 (Font)                  OT1/mathkerncmss/m/sl --> OT1/mathkerncmss/bx/sl on inp
-ut line 19.
+ut line 21.
 
 (/usr/share/texlive/texmf-dist/tex/latex/translator/translator-basic-dictionary
 -English.dict
@@ -928,77 +959,450 @@ Dictionary: translator-numbers-dictionary, Language: English
 ry-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
 )
-\c@lstlisting=\count355
+\c@lstlisting=\count357
+ (./slides.nav) [1
 
-No file slides.nav.
-[1
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 30.
+]
+Overfull \hbox (21.47316pt too wide) in paragraph at lines 53--53
+\OT1/cmtt/m/n/10.95 sklearn.datasets.make[]moons  
+ []
 
+LaTeX Font Info:    Trying to load font information for U+msa on input line 53.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 30.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 53.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for OT1+mathkerncmss on inp
-ut line 30.
+ut line 53.
 
 (/usr/share/texlive/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
 File: ot1mathkerncmss.fd 2020/01/31 Fontinst v1.933 font definitions for OT1/ma
 thkerncmss.
 )
-[2
+<../notebooks/figures/ood_points.png, id=92, 502.0356pt x 397.9668pt>
+File: ../notebooks/figures/ood_points.png Graphic file (type png)
+<use ../notebooks/figures/ood_points.png>
+Package pdftex.def Info: ../notebooks/figures/ood_points.png  used on input lin
+e 53.
+(pdftex.def)             Requested size: 188.26346pt x 149.23718pt.
+
+[3
+
+ <../notebooks/figures/ood_points.png>]
+LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <10.95> not available
+(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 73.
+LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <8> not available
+(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 73.
+LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <6> not available
+(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 73.
+ [4
+
+] [5
+
+] [6
+
+] [7
+
+] [8
 
 ]
-\openout4 = `slides.vrb'.
+LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <10> not available
+(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 168.
 
- (./slides.vrb
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2023/02/27 1.9 listings language file
-)) [3
+LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <7> not available
+(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 168.
 
-] [4
+LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <5> not available
+(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 168.
+
+ [9
+
+] [10
+
+] [11
 
 ]
-[5
+<../notebooks/figures/gridsearch_diag_all_weights_uncertainty.png, id=381, 487.
+0998pt x 383.031pt>
+File: ../notebooks/figures/gridsearch_diag_all_weights_uncertainty.png Graphic 
+file (type png)
+<use ../notebooks/figures/gridsearch_diag_all_weights_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_diag_all_weights_uncer
+tainty.png  used on input line 227.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/gridsearch_diag_all_weights_histogram.png, id=382, 619.59
+48pt x 397.9668pt>
+File: ../notebooks/figures/gridsearch_diag_all_weights_histogram.png Graphic fi
+le (type png)
+<use ../notebooks/figures/gridsearch_diag_all_weights_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_diag_all_weights_histo
+gram.png  used on input line 227.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+
+[12
+
+ <../notebooks/figures/gridsearch_diag_all_weights_uncertainty.png> <../noteboo
+ks/figures/gridsearch_diag_all_weights_histogram.png>]
+<../notebooks/figures/gridsearch_full_all_weights_uncertainty.png, id=414, 487.
+0998pt x 383.031pt>
+File: ../notebooks/figures/gridsearch_full_all_weights_uncertainty.png Graphic 
+file (type png)
+<use ../notebooks/figures/gridsearch_full_all_weights_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_full_all_weights_uncer
+tainty.png  used on input line 239.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/gridsearch_full_all_weights_histogram.png, id=415, 619.59
+48pt x 397.9668pt>
+File: ../notebooks/figures/gridsearch_full_all_weights_histogram.png Graphic fi
+le (type png)
+<use ../notebooks/figures/gridsearch_full_all_weights_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_full_all_weights_histo
+gram.png  used on input line 239.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [13
+
+ <../notebooks/figures/gridsearch_full_all_weights_uncertainty.png> <../noteboo
+ks/figures/gridsearch_full_all_weights_histogram.png>]
+<../notebooks/figures/gridsearch_kron_all_weights_uncertainty.png, id=446, 487.
+0998pt x 383.031pt>
+File: ../notebooks/figures/gridsearch_kron_all_weights_uncertainty.png Graphic 
+file (type png)
+<use ../notebooks/figures/gridsearch_kron_all_weights_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_kron_all_weights_uncer
+tainty.png  used on input line 251.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/gridsearch_kron_all_weights_histogram.png, id=447, 619.59
+48pt x 397.9668pt>
+File: ../notebooks/figures/gridsearch_kron_all_weights_histogram.png Graphic fi
+le (type png)
+<use ../notebooks/figures/gridsearch_kron_all_weights_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_kron_all_weights_histo
+gram.png  used on input line 251.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [14
+
+ <../notebooks/figures/gridsearch_kron_all_weights_uncertainty.png> <../noteboo
+ks/figures/gridsearch_kron_all_weights_histogram.png>]
+<../notebooks/figures/gridsearch_full_last_layer_uncertainty.png, id=477, 487.0
+998pt x 383.031pt>
+File: ../notebooks/figures/gridsearch_full_last_layer_uncertainty.png Graphic f
+ile (type png)
+<use ../notebooks/figures/gridsearch_full_last_layer_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_full_last_layer_uncert
+ainty.png  used on input line 263.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/gridsearch_full_last_layer_histogram.png, id=478, 619.594
+8pt x 397.9668pt>
+File: ../notebooks/figures/gridsearch_full_last_layer_histogram.png Graphic fil
+e (type png)
+<use ../notebooks/figures/gridsearch_full_last_layer_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_full_last_layer_histog
+ram.png  used on input line 263.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [15
+
+ <../notebooks/figures/gridsearch_full_last_layer_uncertainty.png> <../notebook
+s/figures/gridsearch_full_last_layer_histogram.png>]
+<../notebooks/figures/gridsearch_kron_last_layer_uncertainty.png, id=508, 487.0
+998pt x 383.031pt>
+File: ../notebooks/figures/gridsearch_kron_last_layer_uncertainty.png Graphic f
+ile (type png)
+<use ../notebooks/figures/gridsearch_kron_last_layer_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_kron_last_layer_uncert
+ainty.png  used on input line 275.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/gridsearch_kron_last_layer_histogram.png, id=509, 619.594
+8pt x 397.9668pt>
+File: ../notebooks/figures/gridsearch_kron_last_layer_histogram.png Graphic fil
+e (type png)
+<use ../notebooks/figures/gridsearch_kron_last_layer_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/gridsearch_kron_last_layer_histog
+ram.png  used on input line 275.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+
+[16
+
+ <../notebooks/figures/gridsearch_kron_last_layer_uncertainty.png> <../notebook
+s/figures/gridsearch_kron_last_layer_histogram.png>]
+<../notebooks/figures/marglik_diag_all_weights_uncertainty.png, id=540, 487.099
+8pt x 383.031pt>
+File: ../notebooks/figures/marglik_diag_all_weights_uncertainty.png Graphic fil
+e (type png)
+<use ../notebooks/figures/marglik_diag_all_weights_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_diag_all_weights_uncertai
+nty.png  used on input line 287.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/marglik_diag_all_weights_histogram.png, id=541, 619.5948p
+t x 397.9668pt>
+File: ../notebooks/figures/marglik_diag_all_weights_histogram.png Graphic file 
+(type png)
+<use ../notebooks/figures/marglik_diag_all_weights_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_diag_all_weights_histogra
+m.png  used on input line 287.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [17
+
+ <../notebooks/figures/marglik_diag_all_weights_uncertainty.png> <../notebooks/
+figures/marglik_diag_all_weights_histogram.png>]
+<../notebooks/figures/marglik_full_all_weights_uncertainty.png, id=571, 487.099
+8pt x 383.031pt>
+File: ../notebooks/figures/marglik_full_all_weights_uncertainty.png Graphic fil
+e (type png)
+<use ../notebooks/figures/marglik_full_all_weights_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_full_all_weights_uncertai
+nty.png  used on input line 299.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/marglik_full_all_weights_histogram.png, id=572, 611.886pt
+ x 397.9668pt>
+File: ../notebooks/figures/marglik_full_all_weights_histogram.png Graphic file 
+(type png)
+<use ../notebooks/figures/marglik_full_all_weights_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_full_all_weights_histogra
+m.png  used on input line 299.
+(pdftex.def)             Requested size: 171.14764pt x 111.31456pt.
+ [18
+
+ <../notebooks/figures/marglik_full_all_weights_uncertainty.png> <../notebooks/
+figures/marglik_full_all_weights_histogram.png>]
+<../notebooks/figures/marglik_kron_all_weights_uncertainty.png, id=602, 487.099
+8pt x 383.031pt>
+File: ../notebooks/figures/marglik_kron_all_weights_uncertainty.png Graphic fil
+e (type png)
+<use ../notebooks/figures/marglik_kron_all_weights_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_kron_all_weights_uncertai
+nty.png  used on input line 311.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/marglik_kron_all_weights_histogram.png, id=603, 624.4128p
+t x 397.9668pt>
+File: ../notebooks/figures/marglik_kron_all_weights_histogram.png Graphic file 
+(type png)
+<use ../notebooks/figures/marglik_kron_all_weights_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_kron_all_weights_histogra
+m.png  used on input line 311.
+(pdftex.def)             Requested size: 171.14764pt x 109.0799pt.
+ [19
+
+ <../notebooks/figures/marglik_kron_all_weights_uncertainty.png> <../notebooks/
+figures/marglik_kron_all_weights_histogram.png>]
+<../notebooks/figures/marglik_full_last_layer_uncertainty.png, id=634, 487.0998
+pt x 383.031pt>
+File: ../notebooks/figures/marglik_full_last_layer_uncertainty.png Graphic file
+ (type png)
+<use ../notebooks/figures/marglik_full_last_layer_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_full_last_layer_uncertain
+ty.png  used on input line 323.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/marglik_full_last_layer_histogram.png, id=635, 619.5948pt
+ x 397.9668pt>
+File: ../notebooks/figures/marglik_full_last_layer_histogram.png Graphic file (
+type png)
+<use ../notebooks/figures/marglik_full_last_layer_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_full_last_layer_histogram
+.png  used on input line 323.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [20
+
+ <../notebooks/figures/marglik_full_last_layer_uncertainty.png> <../notebooks/f
+igures/marglik_full_last_layer_histogram.png>]
+<../notebooks/figures/marglik_kron_last_layer_uncertainty.png, id=665, 487.0998
+pt x 383.031pt>
+File: ../notebooks/figures/marglik_kron_last_layer_uncertainty.png Graphic file
+ (type png)
+<use ../notebooks/figures/marglik_kron_last_layer_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_kron_last_layer_uncertain
+ty.png  used on input line 335.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/marglik_kron_last_layer_histogram.png, id=666, 619.5948pt
+ x 397.9668pt>
+File: ../notebooks/figures/marglik_kron_last_layer_histogram.png Graphic file (
+type png)
+<use ../notebooks/figures/marglik_kron_last_layer_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/marglik_kron_last_layer_histogram
+.png  used on input line 335.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [21
+
+ <../notebooks/figures/marglik_kron_last_layer_uncertainty.png> <../notebooks/f
+igures/marglik_kron_last_layer_histogram.png>]
+[22
+
+] [23
+
+] [24
 
 ]
-<../notebooks/figures/bbb_moped_avuc_boundary.png, id=204, 487.0998pt x 383.031
-pt>
-File: ../notebooks/figures/bbb_moped_avuc_boundary.png Graphic file (type png)
-<use ../notebooks/figures/bbb_moped_avuc_boundary.png>
-Package pdftex.def Info: ../notebooks/figures/bbb_moped_avuc_boundary.png  used
- on input line 110.
-(pdftex.def)             Requested size: 154.03183pt x 121.12296pt.
-<../notebooks/figures/bbb_moped_avuc_histogram.png, id=206, 619.5948pt x 397.96
+<../notebooks/figures/flipout_scratch_elbo_uncertainty.png, id=777, 487.0998pt 
+x 383.031pt>
+File: ../notebooks/figures/flipout_scratch_elbo_uncertainty.png Graphic file (t
+ype png)
+<use ../notebooks/figures/flipout_scratch_elbo_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/flipout_scratch_elbo_uncertainty.
+png  used on input line 420.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/flipout_scratch_elbo_histogram.png, id=778, 619.5948pt x 
+397.9668pt>
+File: ../notebooks/figures/flipout_scratch_elbo_histogram.png Graphic file (typ
+e png)
+<use ../notebooks/figures/flipout_scratch_elbo_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/flipout_scratch_elbo_histogram.pn
+g  used on input line 420.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [25
+
+ <../notebooks/figures/flipout_scratch_elbo_uncertainty.png> <../notebooks/figu
+res/flipout_scratch_elbo_histogram.png>]
+<../notebooks/figures/flipout_scratch_avuc_uncertainty.png, id=809, 487.0998pt 
+x 383.031pt>
+File: ../notebooks/figures/flipout_scratch_avuc_uncertainty.png Graphic file (t
+ype png)
+<use ../notebooks/figures/flipout_scratch_avuc_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/flipout_scratch_avuc_uncertainty.
+png  used on input line 432.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/flipout_scratch_avuc_histogram.png, id=810, 619.5948pt x 
+397.9668pt>
+File: ../notebooks/figures/flipout_scratch_avuc_histogram.png Graphic file (typ
+e png)
+<use ../notebooks/figures/flipout_scratch_avuc_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/flipout_scratch_avuc_histogram.pn
+g  used on input line 432.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [26
+
+ <../notebooks/figures/flipout_scratch_avuc_uncertainty.png> <../notebooks/figu
+res/flipout_scratch_avuc_histogram.png>]
+<../notebooks/figures/flipout_moped_elbo_uncertainty.png, id=840, 487.0998pt x 
+383.031pt>
+File: ../notebooks/figures/flipout_moped_elbo_uncertainty.png Graphic file (typ
+e png)
+<use ../notebooks/figures/flipout_moped_elbo_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/flipout_moped_elbo_uncertainty.pn
+g  used on input line 444.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/flipout_moped_elbo_histogram.png, id=841, 619.5948pt x 39
+7.9668pt>
+File: ../notebooks/figures/flipout_moped_elbo_histogram.png Graphic file (type 
+png)
+<use ../notebooks/figures/flipout_moped_elbo_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/flipout_moped_elbo_histogram.png 
+ used on input line 444.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [27
+
+ <../notebooks/figures/flipout_moped_elbo_uncertainty.png> <../notebooks/figure
+s/flipout_moped_elbo_histogram.png>]
+<../notebooks/figures/flipout_moped_avuc_uncertainty.png, id=871, 487.0998pt x 
+383.031pt>
+File: ../notebooks/figures/flipout_moped_avuc_uncertainty.png Graphic file (typ
+e png)
+<use ../notebooks/figures/flipout_moped_avuc_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/flipout_moped_avuc_uncertainty.pn
+g  used on input line 456.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/flipout_moped_avuc_histogram.png, id=872, 619.5948pt x 39
+7.9668pt>
+File: ../notebooks/figures/flipout_moped_avuc_histogram.png Graphic file (type 
+png)
+<use ../notebooks/figures/flipout_moped_avuc_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/flipout_moped_avuc_histogram.png 
+ used on input line 456.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [28
+
+ <../notebooks/figures/flipout_moped_avuc_uncertainty.png> <../notebooks/figure
+s/flipout_moped_avuc_histogram.png>]
+<../notebooks/figures/bbb_scratch_elbo_uncertainty.png, id=903, 487.0998pt x 38
+3.031pt>
+File: ../notebooks/figures/bbb_scratch_elbo_uncertainty.png Graphic file (type 
+png)
+<use ../notebooks/figures/bbb_scratch_elbo_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/bbb_scratch_elbo_uncertainty.png 
+ used on input line 468.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/bbb_scratch_elbo_histogram.png, id=904, 619.5948pt x 397.
+9668pt>
+File: ../notebooks/figures/bbb_scratch_elbo_histogram.png Graphic file (type pn
+g)
+<use ../notebooks/figures/bbb_scratch_elbo_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/bbb_scratch_elbo_histogram.png  u
+sed on input line 468.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [29
+
+ <../notebooks/figures/bbb_scratch_elbo_uncertainty.png> <../notebooks/figures/
+bbb_scratch_elbo_histogram.png>]
+<../notebooks/figures/bbb_scratch_avuc_uncertainty.png, id=934, 487.0998pt x 38
+3.031pt>
+File: ../notebooks/figures/bbb_scratch_avuc_uncertainty.png Graphic file (type 
+png)
+<use ../notebooks/figures/bbb_scratch_avuc_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/bbb_scratch_avuc_uncertainty.png 
+ used on input line 480.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/bbb_scratch_avuc_histogram.png, id=935, 619.5948pt x 397.
+9668pt>
+File: ../notebooks/figures/bbb_scratch_avuc_histogram.png Graphic file (type pn
+g)
+<use ../notebooks/figures/bbb_scratch_avuc_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/bbb_scratch_avuc_histogram.png  u
+sed on input line 480.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [30
+
+ <../notebooks/figures/bbb_scratch_avuc_uncertainty.png> <../notebooks/figures/
+bbb_scratch_avuc_histogram.png>]
+<../notebooks/figures/bbb_moped_elbo_uncertainty.png, id=965, 487.0998pt x 383.
+031pt>
+File: ../notebooks/figures/bbb_moped_elbo_uncertainty.png Graphic file (type pn
+g)
+<use ../notebooks/figures/bbb_moped_elbo_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/bbb_moped_elbo_uncertainty.png  u
+sed on input line 492.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/bbb_moped_elbo_histogram.png, id=966, 619.5948pt x 397.96
+68pt>
+File: ../notebooks/figures/bbb_moped_elbo_histogram.png Graphic file (type png)
+
+<use ../notebooks/figures/bbb_moped_elbo_histogram.png>
+Package pdftex.def Info: ../notebooks/figures/bbb_moped_elbo_histogram.png  use
+d on input line 492.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [31
+
+ <../notebooks/figures/bbb_moped_elbo_uncertainty.png> <../notebooks/figures/bb
+b_moped_elbo_histogram.png>]
+<../notebooks/figures/bbb_moped_avuc_uncertainty.png, id=997, 487.0998pt x 383.
+031pt>
+File: ../notebooks/figures/bbb_moped_avuc_uncertainty.png Graphic file (type pn
+g)
+<use ../notebooks/figures/bbb_moped_avuc_uncertainty.png>
+Package pdftex.def Info: ../notebooks/figures/bbb_moped_avuc_uncertainty.png  u
+sed on input line 504.
+(pdftex.def)             Requested size: 171.14764pt x 134.58302pt.
+<../notebooks/figures/bbb_moped_avuc_histogram.png, id=998, 619.5948pt x 397.96
 68pt>
 File: ../notebooks/figures/bbb_moped_avuc_histogram.png Graphic file (type png)
 
 <use ../notebooks/figures/bbb_moped_avuc_histogram.png>
 Package pdftex.def Info: ../notebooks/figures/bbb_moped_avuc_histogram.png  use
-d on input line 110.
-(pdftex.def)             Requested size: 154.03183pt x 98.93279pt.
- [6
+d on input line 504.
+(pdftex.def)             Requested size: 171.14764pt x 109.93004pt.
+ [32
 
- <../notebooks/figures/bbb_moped_avuc_boundary.png> <../notebooks/figures/bbb_m
-oped_avuc_histogram.png>]
-<../notebooks/figures/bbb_moped_avuc_ood_epistemic.png, id=236, 503.481pt x 453
-.3738pt>
-File: ../notebooks/figures/bbb_moped_avuc_ood_epistemic.png Graphic file (type 
-png)
-<use ../notebooks/figures/bbb_moped_avuc_ood_epistemic.png>
-Package pdftex.def Info: ../notebooks/figures/bbb_moped_avuc_ood_epistemic.png 
- used on input line 129.
-(pdftex.def)             Requested size: 136.91603pt x 123.29112pt.
- [7
+ <../notebooks/figures/bbb_moped_avuc_uncertainty.png> <../notebooks/figures/bb
+b_moped_avuc_histogram.png>] [33
 
- <../notebooks/figures/bbb_moped_avuc_ood_epistemic.png>]
+] [34
+
+]
 \tf@nav=\write6
 \openout6 = `slides.nav'.
 
@@ -1017,28 +1421,34 @@ Package rerunfilecheck Info: File `slides.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 23657 strings out of 474222
- 447686 string characters out of 5748732
- 1952975 words of memory out of 5000000
- 45410 multiletter control sequences out of 15000+600000
- 573839 words of font info for 86 fonts, out of 8000000 for 9000
+ 24062 strings out of 474222
+ 469900 string characters out of 5748732
+ 1939975 words of memory out of 5000000
+ 45750 multiletter control sequences out of 15000+600000
+ 581061 words of font info for 107 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 128i,15n,123p,451b,1603s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmssi10.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmtt8.pfb>
-Output written on slides.pdf (7 pages, 788418 bytes).
+ 128i,15n,123p,398b,680s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib6.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmssi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+sy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on slides.pdf (34 pages, 6937830 bytes).
 PDF statistics:
- 318 PDF objects out of 1000 (max. 8388607)
- 243 compressed objects within 3 object streams
- 15 named destinations out of 1000 (max. 500000)
- 178 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1178 PDF objects out of 1200 (max. 8388607)
+ 958 compressed objects within 10 object streams
+ 69 named destinations out of 1000 (max. 500000)
+ 360 words of extra memory for PDF output out of 10000 (max. 10000000)
 

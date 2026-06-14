@@ -1,0 +1,224 @@
+\documentclass[
+portrait,
+a0paper,
+%margin=5mm,
+%draft
+]
+{baposter}
+%
+% load packages
+% already loaded some useful packages for figures, tables and layout
+% not all are needed to run this minimal example
+\usepackage{graphicx}
+\usepackage[percent]{overpic}
+\usepackage[detect-weight]{siunitx}
+\usepackage{tabto}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{qrcode}
+% add additional packages you need here
+%
+% for now usig bibitem, but if you want ...
+%\usepackage[backend=biber]{biblatex} 
+%
+% customizing 
+\newlength{\mytextsize}
+\newcommand\e{\cdot 10^}
+\setlength{\unitlength}{1.0cm}
+%
+%%%%%%%%%%% TUM COLORS %%%%%%%%%%%%%%%%
+%%% main colors %%%
+\definecolor{TUMblue}{RGB}{0, 101, 189}
+%%% Secondary colors %%%
+\definecolor{TUMdarkblue}{rgb}{0.00, 0.32, 0.576}
+\definecolor{TUMlightblue}{rgb}{0.392, 0.627, 0.784}
+\definecolor{TUMlighterblue}{rgb}{0.596, 0.776, 0.917}
+\definecolor{TUMgray}{rgb}{0.6, 0.6, 0.6}
+\definecolor{TUMlightgray}{rgb}{0.855, 0.843, 0.796}
+%%% Emphasis %%%
+\definecolor{TUMorange}{rgb}{0.89, 0.447, 0.133}
+\definecolor{TUMgreen}{rgb}{0.635, 0.678, 0.00}
+
+% fonts
+\usepackage[scaled]{helvet}
+\renewcommand*\familydefault{\sfdefault}
+%
+%
+%##################################################################################
+\begin{document}
+%##################################################################################
+\begin{poster}
+{
+  % options
+  grid=false,%true,
+  background=plain,
+  bgColorOne=white,
+  columns=6, % for flexibility changing 2/3 columns with columnspan
+  eyecatcher=false,
+  borderColor=TUMdarkblue,
+  headerColorOne=TUMdarkblue, %white,
+  headershade=plain,
+  %headerColorTwo=white,
+  headerborder=open,
+  % for rectangular boxes change the next two options, rectangular header will cause left aligning of box title 
+  textborder=rounded, %rectangle,
+  headershape=rounded, %rectangle,
+  headerfont=\bf\Large,
+  boxshade=none,
+  headerFontColor=white
+}
+{
+  %eyecatcher ...
+}
+{
+  %poster title
+  % first put graphics for header
+  \hspace*{-0.5mm}
+  \begin{picture}(23.7, 3)
+  \fboxsep0pt
+  \put(-0.196, -0.6){\colorbox{TUMdarkblue}{\rule[96pt]{675.82pt}{0pt}}}
+  \thicklines
+  % minipage box for title and authors
+  \put(2.55, 2.35){
+    \begin{minipage}[t][96pt]{0.75\textwidth}
+    % centering
+    \begin{center}
+    % Title
+    % use \LARGE instead of \Huge for long titles, you might need to modify distances or number of lines
+    % for one line title
+    %\ \vspace{0.15cm}\\
+    %\huge\bf\color{white}\selectfont Single Line Title \vspace{0.4cm}\\ 
+    % for two line title
+    \huge\bf\color{white}\selectfont First Title Line \\ 
+    \huge\bf\selectfont Second Title Line \vspace{0.15cm} \\ 
+    \small Lab course name \\
+    \small Supervisor: FirstName, LastName
+    %\small C.\ Author, Institute \\
+    %\small D.\ Author, Institute
+    % two lines
+    \end{center}
+  \end{minipage}}
+  %  
+  % left:
+  %\put(0.32,-0.24){\includegraphics[height=75pt]{logos/LogoOutline-White.eps}}
+  % right:
+  \put(18.18,1.25){\color{white}\qrcode[hyperlink,height=50pt]{https://www.ce.cit.tum.de/cps/home/}}
+  \put(18.8,-0.2){\large\bf\color{white}Unique Group Identifier}
+  \put(20.4,0.9){\includegraphics[height=40pt]{logos/TUM_Logo_weiss.png}}
+  %% DO NOT FORGET to replace QR code link and Poster ID !
+  % % poster id + qr code, for example at IPAC
+  % Modify links!!!
+  % left
+  \put(0.2,0.75){\includegraphics[height=50pt]{logos/face.png}}
+  \put(-0.2,0.45){\begin{minipage}[t][]{70pt}
+    \begin{center}
+    \large\bf\color{white}\selectfont FirstName \\ 
+    \large\bf\selectfont LastName \\ 
+    \end{center}
+  \end{minipage}}
+
+  \put(2.5,0.75){\includegraphics[height=50pt]{logos/face.png}}
+  \put(2.2,0.45){\begin{minipage}[t][]{70pt}
+    \begin{center}
+    \large\bf\color{white}\selectfont FirstName \\ 
+    \large\bf\selectfont LastName \\ 
+    \end{center}
+  \end{minipage}}
+
+  \put(5,0.75){\includegraphics[height=50pt]{logos/face.png}}
+  \put(4.7,0.45){\begin{minipage}[t][]{70pt}
+    \begin{center}
+    \large\bf\color{white}\selectfont FirstName \\ 
+    \large\bf\selectfont LastName \\ 
+    \end{center}
+  \end{minipage}}
+  % right
+  %\put(21.02,-0.25){\large\bf\color{white}Poster ID}
+  %\put(21,1.1){\color{white}\qrcode[hyperlink,height=.08\textwidth]{https://gitlab.cern.ch/mkoopman/templates}}
+  \end{picture} 
+}
+{
+	%poster authors, already in title
+}
+{
+	%logo, already in title
+}
+%
+% three part footnote box with references, logos, contact infos
+%
+\headerbox{}{headershape=rectangle, name=foottext, column=0, span=6, above=bottom, textborder=none, borderColor=TUMdarkblue,  boxheaderheight=1pt}{
+  % 1. minipage for references
+	\vspace{.3cm}
+	$\quad$\textbf{\small\color{TUMdarkblue}KEY REFERENCES}\footnotesize\\
+	\renewcommand{\section}[2]{}
+	\begin{thebibliography}{9}
+      \vspace{-0.1cm}
+	  \begin{tiny}
+	  \vspace{-0.1cm}
+
+	    \bibitem{ref1}
+        first reference
+        \vspace{-0.1cm}
+
+      \bibitem{ref2}
+        second reference
+        \vspace{-0.1cm}
+
+	  \end{tiny}
+	\end{thebibliography} 
+}
+%
+% and now the standard boxes on the poster
+% choose between 2 or 3 column layout here!
+% for 2 column layout use column=0 and column=3, respectively (always span=3)
+% for 3 column layout use column=0, column=2 and column=4, respectively (always span=2)
+% or go with 6 columns and column span ... 
+%
+% in the following is here a simple example for two column layout with
+% three boxes on the left: motivation, left box 1, left box 2 and
+% two boxes on the right: large right box, summary
+%
+\headerbox{Motivation}{name=motivation, column=0, row=0, span=3}{
+  \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
+   \item Motivation
+  \end{itemize}  
+}
+%
+%
+\headerbox{Left box 1}{name=vmeas, span=3, below=motivation, column=0}{
+  \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
+    \item left box under motivation
+    \item \vspace{8cm}
+	\end{itemize}
+}
+%
+%
+\headerbox{Left box 2}{name=2ddiag, span=3, below=vmeas, above=foottext, column=0}{
+  \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
+    \item Left box above footer
+  \end{itemize}
+}
+%
+%
+\headerbox{Large right Box}{name=resolution, span=3, row=0, column=3}{
+  \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
+    \item Large right box above summary
+    \item \vspace{15cm}
+  \end{itemize}
+}		
+%
+%
+\headerbox{Summary and Outlook}{name=summary, span=3, below=resolution, above=foottext, column=3}{
+  \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
+    \item summary
+    \item outlook
+  \end{itemize}  
+}
+%
+%
+\end{poster}
+\end{document}

@@ -1,0 +1,537 @@
+%% bare_conf.tex
+%% V1.4
+%% 2012/12/27
+%% by Michael Shell
+%% See:
+%% http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8 or later) with an IEEE conference paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/tex-archive/macros/latex/contrib/IEEEtran/
+%% and
+%% http://www.ieee.org/
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE! 
+%% User assumes all risk.
+%% In no event shall IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%
+%% File list of work: IEEEtran.cls, IEEEtran_HOWTO.pdf, bare_adv.tex,
+%%                    bare_conf.tex, bare_jrnl.tex, bare_jrnl_compsoc.tex,
+%%                    bare_jrnl_transmag.tex
+%%*************************************************************************
+
+\documentclass[conference]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{rotating}
+\usepackage{graphicx}
+\graphicspath{{../notebooks/figures/}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!70!black,
+  citecolor=green!50!black,urlcolor=blue!70!black}
+
+\definecolor{codebg}{RGB}{248,248,248}
+\lstdefinestyle{pythonstyle}{
+  backgroundcolor=\color{codebg},basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries,frame=single,breaklines=true,
+  language=Python,showstringspaces=false,
+  numbers=left,numberstyle=\tiny\color{gray},xleftmargin=2em}
+\lstset{style=pythonstyle}
+
+\newcommand{\btheta}{\bm{\theta}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\KL}{\mathrm{KL}}
+\newcommand{\ELBO}{\mathcal{L}_{\text{ELBO}}}
+\newcommand{\MAP}{\text{MAP}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\todo}[1]{\noindent\colorbox{yellow!40}{\parbox{\dimexpr\linewidth-2\fboxsep}{[TODO] #1}}}
+
+\begin{document}
+
+\title{Bayesian Neural Networks:\\
+\texttt{Implementations using Python Libraries}}
+
+\author{\IEEEauthorblockN{Anonymous Author}
+\IEEEauthorblockA{Department of Computer Science\\
+University of Example\\
+City, Country\\
+Email: author@example.com}}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:intro}
+
+Standard deep neural networks are notoriously miscalibrated: high confidence
+predictions are not guaranteed to be correct, and models frequently fail
+silently under distribution shift~\citep{goan2020bayesian,murphy2023pml}.
+Bayesian Deep Learning addresses this by replacing a deterministic weight
+estimate with a posterior distribution $p(\btheta \mid \cD)$, propagating weight
+uncertainty into calibrated predictive distributions.
+This report compares two PyTorch libraries implementing complementary paradigms:
+\begin{itemize}[leftmargin=*]
+  \item \texttt{bayesian-torch}~\citep{intel2021bayesiantorch}, a
+        Bayesian by design library from Intel Labs implementing mean field
+        Variational Inference via Flipout~\citep{wen2018flipout} and
+        Bayes by Backprop~\citep{blundell2015weight}.
+  \item \texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace},
+        a post hoc library applying the Laplace Approximation to any
+        pre trained model without modifying its training loop.
+\end{itemize}
+
+Experiments span three settings: a synthetic binary classification
+benchmark, a toy regression
+experiment, and a replication of the
+Laplace Redux PovertyMap experiment.
+Full metric tables and figure galleries for completed experiments are in the
+Appendix.
+
+\section{Theoretical Background}
+\label{sec:theory}
+
+\subsection{Bayesian Deep Learning}
+
+Given $\cD = \{(\bm{x}_n, y_n)\}_{n=1}^{N}$ and network $f_{\btheta}$, the
+posterior is $p(\btheta \mid \cD) = p(\cD|\btheta)\,p(\btheta)/p(\cD)$.
+The evidence is intractable for modern DNNs. With a Gaussian prior
+$p(\btheta)=\cN(\bm{0},\tau^{-1}\mathbf{I})$, the MAP estimate
+$\btheta_{\MAP} = \arg\max_{\btheta}[\log p(\cD|\btheta)+\log p(\btheta)]$
+corresponds to $L_2$ regularised training with weight decay
+$\lambda=\tau$~\citep{murphy2023pml}.
+
+\subsection{Stochastic Variational Inference}
+
+VI approximates the posterior with a tractable family $q_{\bm\phi}(\btheta)$
+by maximising the Evidence Lower Bound~\citep{blundell2015weight,goan2020bayesian}:
+\begin{equation}
+  \ELBO(\bm\phi)
+    = \mathbb{E}_{q}\!\bigl[\log p(\cD|\btheta)\bigr]
+    - \KL\bigl(q_{\bm\phi}\,\|\,p(\btheta)\bigr).
+\label{eq:elbo}
+\end{equation}
+A mean field Gaussian $q_{\bm\phi}(w_i) = \cN(\mu_i,\sigma_i^2)$ with
+$\sigma_i = \log(1+\exp(\rho_i))>0$ keeps the KL in~\eqref{eq:elbo} in
+closed form, but doubles the parameter count.
+
+\subsubsection{Bayes by Backprop}
+
+\citet{blundell2015weight} reparameterise each weight as
+\begin{equation}
+  w_i = \mu_i + \sigma_i\,\varepsilon_i, \qquad \varepsilon_i\sim\cN(0,1),
+\end{equation}
+enabling low variance gradient estimates of~\eqref{eq:elbo} via
+backpropagation.
+A single noise draw is shared across all examples in a
+mini batch, which inflates gradient variance at large batch sizes.
+
+\subsubsection{Flipout}
+
+\citet{wen2018flipout} reduce this variance by applying independent sign flip
+matrices $\mathbf{r}_n,\mathbf{s}_n\in\{-1,+1\}^*$ to the shared
+perturbation $\Delta\hat{\mathbf{W}}$ for each example $n$:
+\begin{equation}
+  \hat{\mathbf{W}}_n
+    = \mathbf{W}_{\MAP} + \mathbf{s}_n \odot \Delta\hat{\mathbf{W}}
+      \odot \mathbf{r}_n^{\!\top}.
+\end{equation}
+
+\subsubsection{MOPED Initialisation}
+
+Training mean field BNNs from random initialisations is fragile.
+\texttt{bayesian-torch}~\citep{intel2021bayesiantorch} addresses this via
+MOPED: the posterior means are warm started from a
+pre trained MAP checkpoint and the prior scale is set proportionally:
+\begin{equation}
+  \mu_i^{(0)} = \theta_{\MAP}^{(i)}, \qquad
+  \sigma_i^{\text{prior}} = \delta\,|\theta_{\MAP}^{(i)}|, \quad \delta=0.5.
+\end{equation}
+
+\subsubsection{AvUC Loss}
+\label{sec:theory:avuc}
+
+Standard ELBO training minimises NLL but does not explicitly calibrate the
+relationship between confidence and accuracy.
+The
+Accuracy vs Uncertainty Calibration loss, implemented in
+\texttt{bayesian-torch}~\citep{intel2021bayesiantorch}, adds a direct
+penalty for miscalibrated confidence.
+
+\paragraph{AvUC objective.}
+The AvUC loss aggregates the fractions of samples in the two
+bad quadrants~\citep{intel2021bayesiantorch}:
+\begin{equation}
+  \mathcal{L}_{\mathrm{AvUC}}
+    = \underbrace{\frac{n_{AU}}{n_{AU}+n_{AC}}}_{\text{over uncertain among correct}}
+    + \underbrace{\frac{n_{IC}}{n_{IC}+n_{IU}}}_{\text{overconfident among wrong}},
+  \label{eq:avuc}
+\end{equation}
+where $n_X$ counts samples in quadrant $X$ within the current mini batch.
+Each term lies in $[0,1]$; both are zero when calibration is perfect.
+
+\subsection{Epistemic and Aleatoric Uncertainty Decomposition}
+\label{sec:theory:unc_decomp}
+
+For MC based BNNs, the total predictive uncertainty can be decomposed into
+two orthogonal components~\citep{goan2020bayesian}:
+\begin{align}
+  \text{Total}   &= H\!\left[\frac{1}{S}\sum_{s=1}^{S} p(y|f_{\btheta_s}(\bm{x}))\right], \\
+  \text{Aleatoric}&= \frac{1}{S}\sum_{s=1}^{S} H\!\left[p(y|f_{\btheta_s}(\bm{x}))\right], \\
+  \text{Epistemic}&= \text{Total} - \text{Aleatoric}
+    = I\!\left(y;\btheta\,|\,\bm{x},\cD\right),
+  \label{eq:mi}
+\end{align}
+
+\subsection{Laplace Approximation}
+\label{sec:theory:la}
+
+The LA~\citep{daxberger2021laplace} builds a Gaussian posterior around
+$\btheta_{\MAP}$ via second order Taylor expansion:
+\begin{equation}
+  p(\btheta|\cD) \approx \cN\!\bigl(\btheta;\,\btheta_{\MAP},\,\mathbf{H}^{-1}\bigr),
+  \qquad
+  \mathbf{H} = -\nabla^2\log p(\btheta_{\MAP}|\cD) \succ 0.
+\end{equation}
+
+\paragraph{Marginal likelihood tuning.}
+The prior precision $\tau$ is selected by maximising the log evidence:
+\begin{equation}
+  \log p(\cD)
+    \approx \log p(\cD|\btheta_{\MAP})
+    + \log p(\btheta_{\MAP})
+    + \tfrac{P}{2}\log 2\pi
+    - \tfrac{1}{2}\log\det\mathbf{H},
+  \label{eq:marglik}
+\end{equation}
+which is differentiable with respect to $\tau$ and requires no validation
+data~\citep{daxberger2021laplace}. Grid search over
+a discrete set of values on validation NLL is simpler but requires a
+held out split.
+
+\section{Evaluation Metrics}
+\label{sec:metrics}
+
+\paragraph{Brier Score.}
+$\mathrm{BS}=\frac{1}{N}\sum_n\sum_c(\hat{p}_{nc}-\mathbf{1}[y_n=c])^2$;
+bounded and less sensitive to extreme probabilities than NLL.
+
+\paragraph{Mean Confidence / Mean Entropy / $1 - \text{Confidence}$.}
+Mean max class probability, mean Shannon entropy $H$, and
+$1-\max_c\hat{p}_c\in[0,0.5]$.
+
+\paragraph{Uncertainty calibration U MAE, U MSE, U Corr, Max Gap.}
+Compares expected uncertainty against empirical error rate
+per bin. Pearson correlation and max bin gap assess worst case alignment.
+
+\paragraph{Epistemic uncertainty OOD maps.}
+Mutual information $I(y;\btheta|\bm{x},\cD)$ estimated via
+equation~\eqref{eq:mi} with $S=50$ MC samples.
+
+\section{Shared Infrastructure}
+\label{sec:shared}
+
+Both notebooks share a \texttt{shared} utility package. The MAP baseline uses Adam with early stopping.
+
+\section{Two Moons Classification}
+\label{sec:twomoons}
+
+\subsection{Dataset and OOD Probe Design}
+
+2000 2D points from two interleaved half crescents.
+To probe out of distribution behaviour, 200 probe points are
+sampled in four corner clusters deliberately outside the training manifold.
+
+\subsection{\texttt{bayesian-torch}: Variational BNN}
+\label{sec:bnn}
+
+\begin{lstlisting}[caption={BNN conversion and ELBO AvUC training.}]
+dnn_to_bnn(net, {"prior_mu": 0.0, "prior_sigma": 1.0,
+    "posterior_mu_init": 0.0, "posterior_rho_init": -3.0,
+    "type": "Reparameterization",
+    "moped_enable": True, "moped_delta": 0.5})
+
+loss = CE(mean_logits, labels) + get_kl_loss(net) / N + avu
+\end{lstlisting}
+
+Table~\ref{tab:bnn_main_subset} reports the relevant calibration statistics for all \texttt{bayesian-torch} configurations.
+
+\begin{table}[H]
+  \centering
+  \caption{Relevant calibration metrics for bayesian torch variants on Two Moons.}
+  \label{tab:bnn_main_subset}
+  \small\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{llccccccc}
+    \toprule
+    Type & Init & Loss & BS & $1 - c$ & U MAE & U MSE & U Corr & MaxGap \\
+    \midrule
+    Flipout & scr & ELBO & 0.058 & 0.094 & 0.018 & 0.458 & 0.988 & 0.069 \\
+    Flipout & scr & AvUC & 0.059 & 0.072 & 0.014 & 0.840 & 0.953 & 0.134 \\
+    Flipout & MOP & ELBO & 0.059 & 0.089 & 0.019 & 0.882 & 0.935 & 0.113 \\
+    Flipout & MOP & AvUC & 0.059 & 0.072 & 0.010 & 0.294 & 0.990 & 0.078 \\
+    BBB & scr & ELBO & 0.058 & 0.088 & 0.019 & 0.582 & 0.983 & 0.051 \\
+    BBB & scr & AvUC & 0.095 & 0.153 & 0.028 & 0.918 & 0.965 & 0.102 \\
+    BBB & MOP & ELBO & 0.058 & 0.087 & 0.015 & 0.556 & 0.967 & 0.130 \\
+    BBB & MOP & AvUC & 0.057 & 0.067 & 0.014 & 0.900 & 0.941 & 0.123 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{OOD epistemic uncertainty decomposition for all bayesian torch variants.}
+  \label{tab:ood}
+  \small\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lccccccc}
+    \toprule
+    Variant & ID $1 - c$ & OOD $1 - c$ & ID Alea & OOD Alea & ID Epist & OOD Epist & $\Delta$Epist \\
+    \midrule
+    Flip scr ELBO & 0.094 & 0.005 & 0.238 & 0.028 & 0.003 & 0.001 & $-0.003$ \\
+    Flip scr AvUC & 0.072 & 0.003 & 0.177 & 0.012 & 0.008 & 0.001 & $-0.007$ \\
+    Flip MOP ELBO & 0.089 & 0.010 & 0.213 & 0.034 & 0.009 & 0.003 & $-0.006$ \\
+    Flip MOP AvUC & 0.073 & 0.004 & 0.150 & 0.018 & 0.036 & 0.004 & $-0.032$ \\
+    BBB scr ELBO  & 0.089 & 0.003 & 0.227 & 0.018 & 0.002 & 0.000 & $-0.002$ \\
+    BBB scr AvUC  & 0.153 & 0.032 & 0.359 & 0.123 & 0.003 & 0.002 & $-0.001$ \\
+    BBB MOP ELBO  & 0.086 & 0.011 & 0.202 & 0.039 & 0.014 & 0.004 & $-0.009$ \\
+    BBB MOP AvUC  & 0.067 & 0.007 & 0.140 & 0.027 & 0.035 & 0.009 & $-0.026$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Please refer to the Appendix for histograms, boundary visualizations, and full tables.
+
+\subsection{\texttt{laplace-torch}: Laplace Approximation}
+\label{sec:la}
+
+\begin{lstlisting}[caption={Laplace post hoc workflow.}]
+la = Laplace(model, 'classification',
+             subset_of_weights='last_layer', hessian_structure='kron')
+la.fit(train_loader)
+la.optimize_prior_precision(method='gridsearch', val_loader=val_loader,
+                            pred_type='glm', link_approx='probit')
+probs = la(X_test, pred_type='glm', link_approx='probit')
+\end{lstlisting}
+
+Table~\ref{tab:la_main_subset} reports the relevant subset of metrics for the requested Laplace configurations including Diagonal all weights, Full Last Layer, and Kronecker Last Layer under both Marginal Likelihood and Gridsearch tuning.
+
+\begin{table}[H]
+  \centering
+  \caption{Relevant calibration metrics for laplace torch on Two Moons.}
+  \label{tab:la_main_subset}
+  \small\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{llccccccc}
+    \toprule
+    Variant & Scope & PP & BS & $1 - c$ & U MAE & U MSE & U Corr & MaxGap \\
+    \midrule
+    Diag all GS & all & $10^4$ & 0.056 & 0.079 & 0.010 & 0.806 & 0.959 & 0.197 \\
+    Full LL GS  & LL  & $10^4$ & 0.056 & 0.079 & 0.010 & 0.806 & 0.959 & 0.197 \\
+    Kron LL GS  & LL  & $10^4$ & 0.056 & 0.079 & 0.010 & 0.806 & 0.959 & 0.197 \\
+    Diag all ML & all & 8.73  & 0.057 & 0.088 & 0.016 & 0.817 & 0.955 & 0.196 \\
+    Full LL ML  & LL  & 1.79  & 0.062 & 0.145 & 0.070 & 6.49  & 0.935 & 0.136 \\
+    Kron LL ML  & LL  & 2.04  & 0.061 & 0.138 & 0.064 & 5.50  & 0.938 & 0.141 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Please refer to the Appendix for epistemic maps, full metrics, and visualizations.
+
+\section{Discussion}
+\label{sec:discussion}
+
+MOPED is a geometric anchor. The BBB scratch AvUC failure demonstrates that AvUC calibration alone is not sufficient.
+Under marglik, full matrix GGN curvature is poorly conditioned and selects pathological prior precisions.
+All weights LA marglik variants retain some OOD epistemic sensitivity, while last layer LA and all SVI variants collapse to near zero outside the boundary.
+
+\appendix
+\section{Appendix: Full Metric Tables and Visualizations}
+
+\begin{sidewaystable}
+  \centering
+  \caption{All calibration metrics for bayesian torch variants on Two Moons.}
+  \label{tab:bnn_main_full}
+  \scriptsize\setlength{\tabcolsep}{2.5pt}
+  \begin{tabular}{
+    L{1.5cm} C{0.6cm} C{0.65cm} C{0.65cm} C{0.7cm} C{0.7cm} C{0.7cm}
+    C{0.7cm} C{0.7cm} C{0.65cm} C{0.7cm} C{0.95cm} C{0.7cm}
+    C{0.75cm} C{0.7cm} C{0.75cm} C{0.5cm} C{0.9cm} C{0.85cm}
+  }
+    \toprule
+    Type & Init & Loss & Acc & NLL & BS & ECE & Conf & Ent & $1{-}c$
+    & U MAE & U MSE & U Corr & MaxGap & ClECE & MActErr & Ep & Fit & Inf \\
+    \midrule
+    Flipout & scr & ELBO & 0.921 & 0.198 & 0.058 & 0.018 & 0.906 & 0.241 & 0.094 & 0.018 & 0.458 & 0.988 & 0.069 & 0.018 & 0.080 & 39 & 19.1 & 0.064 \\
+    Flipout & scr & AvUC & 0.918 & 0.198 & 0.059 & 0.014 & 0.928 & 0.184 & 0.072 & 0.014 & 0.840 & 0.953 & 0.134 & 0.014 & 0.082 & 38 & 80.4 & 0.065 \\
+    Flipout & MOP & ELBO & 0.918 & 0.199 & 0.059 & 0.019 & 0.911 & 0.222 & 0.089 & 0.019 & 0.882 & 0.935 & 0.113 & 0.019 & 0.083 & 39 & 20.0 & 0.063 \\
+    Flipout & MOP & AvUC & 0.920 & 0.201 & 0.059 & 0.010 & 0.928 & 0.184 & 0.072 & 0.010 & 0.294 & 0.990 & 0.078 & 0.010 & 0.081 & 40 & 90.1 & 0.064 \\
+    BBB & scr & ELBO & 0.923 & 0.197 & 0.058 & 0.019 & 0.911 & 0.229 & 0.088 & 0.019 & 0.582 & 0.983 & 0.051 & 0.019 & 0.078 & 50 & 23.2 & 0.051 \\
+    BBB & scr & AvUC & 0.866 & 0.311 & 0.095 & 0.028 & 0.847 & 0.362 & 0.153 & 0.028 & 0.918 & 0.965 & 0.102 & 0.028 & 0.134 & 32 & 73.3 & 0.050 \\
+    BBB & MOP & ELBO & 0.920 & 0.195 & 0.058 & 0.015 & 0.913 & 0.217 & 0.087 & 0.015 & 0.556 & 0.967 & 0.130 & 0.015 & 0.081 & 36 & 15.9 & 0.055 \\
+    BBB & MOP & AvUC & 0.923 & 0.192 & 0.057 & 0.014 & 0.933 & 0.173 & 0.067 & 0.014 & 0.900 & 0.941 & 0.123 & 0.014 & 0.078 & 33 & 68.7 & 0.051 \\
+    \bottomrule
+  \end{tabular}
+\end{sidewaystable}
+
+\begin{sidewaystable}
+  \centering
+  \caption{All calibration metrics for laplace torch variants on Two Moons.}
+  \label{tab:la_main_full}
+  \scriptsize\setlength{\tabcolsep}{2.5pt}
+  \begin{tabular}{
+    L{1.9cm} C{0.6cm} C{0.55cm} C{0.7cm} C{0.7cm} C{0.7cm} C{0.7cm}
+    C{0.7cm} C{0.7cm} C{0.65cm} C{0.7cm} C{0.95cm} C{0.7cm}
+    C{0.75cm} C{0.7cm} C{0.95cm} C{0.75cm} C{0.95cm}
+  }
+    \toprule
+    Variant & Hess & Sc & PP & NLL & BS & ECE & Conf & Ent & $1{-}c$
+    & U MAE & U MSE & U Corr & MaxGap & ClECE & Fit & Tune & Inf \\
+    \midrule
+    Diag all GS & diag & all & $10^4$ & 0.190 & 0.056 & 0.010 & 0.921 & 0.194 & 0.079 & 0.010 & 0.806 & 0.959 & 0.197 & 0.010 & 0.23  & 4.01 & 0.021 \\
+    Full all GS & full & all & $10^4$ & 0.190 & 0.056 & 0.010 & 0.921 & 0.194 & 0.079 & 0.010 & 0.806 & 0.959 & 0.197 & 0.010 & 1263  & 11.4 & 0.034 \\
+    Kron all GS & kron & all & $10^4$ & 0.190 & 0.056 & 0.010 & 0.921 & 0.194 & 0.079 & 0.010 & 0.806 & 0.959 & 0.197 & 0.010 & 0.54  & 5.29 & 0.022 \\
+    Full LL GS  & full & LL  & $10^4$ & 0.190 & 0.056 & 0.010 & 0.921 & 0.194 & 0.079 & 0.010 & 0.806 & 0.959 & 0.197 & 0.010 & 7.12  & 1.52 & 0.001 \\
+    Kron LL GS  & kron & LL  & $10^4$ & 0.190 & 0.056 & 0.010 & 0.921 & 0.194 & 0.079 & 0.010 & 0.806 & 0.959 & 0.197 & 0.010 & 0.43  & 1.85 & 0.001 \\
+    Diag all ML & diag & all & 8.73  & 0.192 & 0.057 & 0.016 & 0.912 & 0.219 & 0.088 & 0.016 & 0.817 & 0.955 & 0.196 & 0.016 & 0.20  & 0.06 & 0.021 \\
+    Full all ML & full & all & 0.52  & 0.307 & 0.082 & 0.152 & 0.771 & 0.500 & 0.229 & 0.152 & 26.0  & 0.913 & 0.218 & 0.152 & 1122  & 1.88 & 0.034 \\
+    Kron all ML & kron & all & 1.42  & 0.238 & 0.065 & 0.086 & 0.841 & 0.377 & 0.159 & 0.086 & 9.07  & 0.923 & 0.152 & 0.086 & 0.53  & 0.10 & 0.022 \\
+    Full LL ML  & full & LL  & 1.79  & 0.226 & 0.062 & 0.070 & 0.855 & 0.348 & 0.145 & 0.070 & 6.49  & 0.935 & 0.136 & 0.070 & 7.13  & 0.09 & 0.001 \\
+    Kron LL ML  & kron & LL  & 2.04  & 0.221 & 0.061 & 0.064 & 0.862 & 0.334 & 0.138 & 0.064 & 5.50  & 0.938 & 0.141 & 0.064 & 0.44  & 0.08 & 0.001 \\
+    \bottomrule
+  \end{tabular}
+\end{sidewaystable}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.60\linewidth]{ood_points.png}
+  \caption{Training data and OOD probe points.}
+  \label{fig:ood_points}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_moped_avuc_boundary.png}
+    \caption{BBB MOPED AvUC boundary}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_scratch_avuc_boundary.png}
+    \caption{BBB scratch AvUC boundary}
+  \end{subfigure}
+  \\[6pt]
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_moped_avuc_uncertainty.png}
+    \caption{BBB MOPED AvUC uncertainty map}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_scratch_avuc_uncertainty.png}
+    \caption{BBB scratch AvUC uncertainty}
+  \end{subfigure}
+  \caption{MOPED vs scratch initialisation with AvUC loss.}
+  \label{fig:bnn_boundaries}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_moped_avuc_histogram.png}
+    \caption{BBB MOPED AvUC histogram}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_moped_avuc_reliability.png}
+    \caption{BBB MOPED AvUC reliability}
+  \end{subfigure}
+  \\[6pt]
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_scratch_avuc_histogram.png}
+    \caption{BBB scratch AvUC histogram}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_moped_elbo_reliability.png}
+    \caption{BBB MOPED ELBO reliability}
+  \end{subfigure}
+  \caption{Probability histograms and reliability diagrams.}
+  \label{fig:bnn_histrel}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_moped_avuc_ood_epistemic.png}
+    \caption{BBB MOPED AvUC}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{bbb_scratch_elbo_ood_epistemic.png}
+    \caption{BBB scratch ELBO}
+  \end{subfigure}
+  \caption{OOD epistemic uncertainty.}
+  \label{fig:bnn_ood}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{marglik_full_all_weights_boundary.png}
+    \caption{Full all marglik boundary}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{marglik_full_all_weights_reliability.png}
+    \caption{Full all marglik reliability}
+  \end{subfigure}
+  \caption{Marginal likelihood failure for Full all LA.}
+  \label{fig:la_failure}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{marglik_kron_last_layer_uncertainty.png}
+    \caption{Kron LL marglik}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\linewidth}
+    \includegraphics[width=\linewidth]{marglik_kron_all_weights_ood_epistemic.png}
+    \caption{Kron all marglik OOD epistemic}
+  \end{subfigure}
+  \caption{Uncertainty patterns under marginal likelihood tuning.}
+  \label{fig:la_stripe}
+\end{figure}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
