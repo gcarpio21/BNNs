@@ -130,24 +130,65 @@ def load_sinusoid(
     batch_size: int = 150,
     seed: int = 42,
     device: torch.device | None = None,
+    n_val: int = 50,
+    n_test_id: int = 250,
+    n_test_ood: int = 250,
 ) -> Dict[str, object]:
-    """Generate a simple sinusoid regression dataset and return loaders + arrays."""
+    """Generate a sinusoid regression dataset with train/val/test-ID/test-OOD splits.
+
+    Train/val/test-ID are sampled uniformly from [0, 8] (in-distribution).
+    Test-OOD covers [-5, 0] (n_test_ood//2 pts) and [8, 13] (n_test_ood//2 pts).
+    All splits are labeled (y = sin(x) + noise).
+    """
     seed_everything(seed)
-
-    X_train_np = (np.random.rand(n_data, 1) * 8).astype(np.float32)
-    y_train_np = (np.sin(X_train_np) + np.random.randn(*X_train_np.shape) * sigma_noise).astype(np.float32)
-
-    X_train = torch.tensor(X_train_np, dtype=torch.float32)
-    y_train = torch.tensor(y_train_np, dtype=torch.float32)
-    train_ds     = TensorDataset(X_train, y_train)
-    train_loader = DataLoader(train_ds, batch_size=batch_size)
-    X_test       = torch.linspace(-5, 13, 500).unsqueeze(-1)
 
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    def make_split(X_np: np.ndarray) -> tuple:
+        y_np = (np.sin(X_np) + np.random.randn(*X_np.shape) * sigma_noise).astype(np.float32)
+        X_t = torch.tensor(X_np, dtype=torch.float32)
+        y_t = torch.tensor(y_np, dtype=torch.float32)
+        return X_t, y_t
+
+    # Train
+    X_train_np = (np.random.rand(n_data, 1) * 8).astype(np.float32)
+    X_train, y_train = make_split(X_train_np)
+    train_ds     = TensorDataset(X_train, y_train)
+    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
+
+    # Val (in-distribution)
+    X_val_np = (np.random.rand(n_val, 1) * 8).astype(np.float32)
+    X_val, y_val = make_split(X_val_np)
+    val_ds     = TensorDataset(X_val, y_val)
+    val_loader = DataLoader(val_ds, batch_size=n_val, shuffle=False)
+
+    # Test ID: evenly spaced in [0, 8]
+    X_test_id_np = np.linspace(0, 8, n_test_id).reshape(-1, 1).astype(np.float32)
+    X_test_id, y_test_id = make_split(X_test_id_np)
+    test_id_ds     = TensorDataset(X_test_id, y_test_id)
+    test_id_loader = DataLoader(test_id_ds, batch_size=n_test_id, shuffle=False)
+
+    # Test OOD: n_test_ood//2 pts in [-5, 0] + n_test_ood//2 pts in [8, 13]
+    half = n_test_ood // 2
+    X_ood_np = np.concatenate([
+        np.linspace(-5, 0, half).reshape(-1, 1),
+        np.linspace(8, 13, n_test_ood - half).reshape(-1, 1),
+    ], axis=0).astype(np.float32)
+    X_test_ood, y_test_ood = make_split(X_ood_np)
+    test_ood_ds     = TensorDataset(X_test_ood, y_test_ood)
+    test_ood_loader = DataLoader(test_ood_ds, batch_size=n_test_ood, shuffle=False)
+
     return {
         "X_train": X_train, "y_train": y_train,
         "train_ds": train_ds, "train_loader": train_loader,
-        "X_test": X_test, "X_test_tensor": X_test.to(device),
+        "X_val": X_val, "y_val": y_val,
+        "val_ds": val_ds, "val_loader": val_loader,
+        "X_test_id": X_test_id, "y_test_id": y_test_id,
+        "test_id_ds": test_id_ds, "test_id_loader": test_id_loader,
+        "X_test_ood": X_test_ood, "y_test_ood": y_test_ood,
+        "test_ood_ds": test_ood_ds, "test_ood_loader": test_ood_loader,
+        "X_test_id_tensor": X_test_id.to(device),
+        "X_test_ood_tensor": X_test_ood.to(device),
+        "sigma_noise": sigma_noise,
     }

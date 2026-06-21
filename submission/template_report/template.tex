@@ -542,22 +542,26 @@ an output layer. The network is parameterized by the set $\btheta = \{\mathbf{W}
 where $\mathbf{W}^{(l)}$ and $\mathbf{b}^{(l)}$ are the weight matrix and bias vector for layer $l$, respectively.
 Each neuron $i$ in layer $l$ computes a weighted sum of the activations from the previous layer, denoted
 $\mathbf{h}^{(l-1)}$, passed through a nonlinear activation function $\sigma$:\begin{equation}h_i^{(l)} =
-	\sigma!\left(\sum_j w_{ij}^{(l)} h_j^{(l-1)} + b_i^{(l)}\right),\end{equation}where $w_{ij}^{(l)}$ denotes the element
+	\sigma\left(\sum_j w_{ij}^{(l)} h_j^{(l-1)} + b_i^{(l)}\right),\end{equation}where $w_{ij}^{(l)}$ denotes the element
 in the $i$-th row and $j$-th column of $\mathbf{W}^{(l)}$.
 
 Training minimizes a loss function $\mathcal{L}(\btheta)$ (e.g., mean squared
 error, cross-entropy) via backpropagation and
-gradient-based optimization (e.g., SGD, Adam).
+gradient-based optimization (e.g., SGD, Adam). This is a frequentist setting, where the parameters are point estimates, and 
+their values get updated iteratively during this process. 
 
 The libraries discussed in this report, allow implementations in the various architectures, like
 Convolutional Neural Networks (CNNs), Recurrent Neural Networks (RNNs) and Transformers.
 
-\textbf{Bayesian Neural Networks (BNNs)~\citep{goan2020bayesian,murphy2023pml}.} In Bayesian Deep Learning, Given $\cD = \{(\bm{x}_n, y_n)\}
-_{n=1}^{N}$ and network $f_{\btheta}$, the posterior is $p(\btheta \mid \cD) = p(\cD|\btheta)\,p(\btheta)/p(\cD)$. 
-The evidence is intractable for modern DNNs. With a Gaussian prior
-$p(\btheta)=\cN(\bm{0},\tau^{-1}\mathbf{I})$, the MAP estimate $\btheta_{\MAP} = \arg\max_{\btheta}[\log p(\cD|\btheta)+\log p(\btheta)]$
-corresponds to $L_2$ regularised training with weight decay
-$\lambda=\tau$~\citep{murphy2023pml}.
+\textbf{Bayesian Neural Networks (BNNs)~\citep{goan2020bayesian,murphy2023pml}.} In Bayesian Deep Learning (BDL), 
+Given the training dataset $\cD = \{(\bm{x}_n, y_n)\}
+_{n=1}^{N}$ and network $f_{\btheta}$, the posterior distribution is \begin{equation}p(\btheta \mid \cD) = 
+	\frac{p(\cD|\btheta),p(\btheta)}{p(\cD)}. \end{equation}
+The evidence (or marginal likelihood), \begin{equation}p(\cD) = \int p(\cD|\btheta)\,p(\btheta)\,\mathrm{d}\btheta\label{eq:marginal_likelihood}\end{equation}
+is intractable for modern DNNs. The prior $p(\btheta)$ encodes the distribution of the parameters before seeing the data. 
+Initializing it depends on the characteristics of the problem, Gaussian priors $p(\btheta)=\cN(\bm{0},\tau^{-1}\mathbf{I})$ are common,
+but sparsity promoting priors can also be used. We will see that methods like grid search, as well as marginal likelihood
+\eqref{eq:marginal_likelihood} optimization, can be used to learn the prior.
 
 \subsection{Stochastic Variational Inference}
 

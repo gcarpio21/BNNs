@@ -1,0 +1,55 @@
+\begin{thebibliography}{7}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Blundell et~al.(2015)Blundell, Cornebise, Kavukcuoglu, and
+  Wierstra]{blundell2015weight}
+Charles Blundell, Julien Cornebise, Koray Kavukcuoglu, and Daan Wierstra.
+\newblock Weight uncertainty in neural networks.
+\newblock In \emph{Proceedings of the 32nd International Conference on Machine
+  Learning (ICML)}, pages 1613--1622, 2015.
+
+\bibitem[Daxberger et~al.(2021)Daxberger, Kristiadi, Immer, Eschenhagen, Bauer,
+  and Hennig]{daxberger2021laplace}
+Erik Daxberger, Agustinus Kristiadi, Alexander Immer, Runa Eschenhagen,
+  Matthias Bauer, and Philipp Hennig.
+\newblock {Laplace Redux}: Effortless {Bayesian} deep learning.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2021.
+
+\bibitem[Goan and Fookes(2020)]{goan2020bayesian}
+Ethan Goan and Clinton Fookes.
+\newblock {Bayesian} neural networks: An introduction and survey.
+\newblock In \emph{Case Studies in Applied {Bayesian} Data Science}, pages
+  45--87. Springer, 2020.
+
+\bibitem[Immer et~al.(2024)Immer, Daxberger, Kristiadi, Eschenhagen, Bauer, and
+  Hennig]{aleximmer2024laplace}
+Alexander Immer, Erik Daxberger, Agustinus Kristiadi, Runa Eschenhagen,
+  Matthias Bauer, and Philipp Hennig.
+\newblock \texttt{laplace-torch}: Laplace approximations for deep learning.
+\newblock \url{https://aleximmer.com/Laplace}, 2024.
+
+\bibitem[{Intel Labs}(2021)]{intel2021bayesiantorch}
+{Intel Labs}.
+\newblock \texttt{bayesian-torch}: A library for {Bayesian} neural network
+  layers and uncertainty estimation in deep learning.
+\newblock \url{https://github.com/IntelLabs/bayesian-torch}, 2021.
+
+\bibitem[Murphy(2023)]{murphy2023pml}
+Kevin~P. Murphy.
+\newblock \emph{Probabilistic Machine Learning: Advanced Topics}.
+\newblock MIT Press, 2023.
+\newblock Chapter 17: Bayesian neural networks.
+
+\bibitem[Wen et~al.(2018)Wen, Vicol, Ba, Tran, and Grosse]{wen2018flipout}
+Yeming Wen, Paul Vicol, Jimmy Ba, Dustin Tran, and Roger Grosse.
+\newblock Flipout: Efficient pseudo-independent weight perturbations on
+  mini-batches.
+\newblock In \emph{Proceedings of the 6th International Conference on Learning
+  Representations (ICLR)}, 2018.
+
+\end{thebibliography}
