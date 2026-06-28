@@ -21,6 +21,10 @@ a0paper,
 \usepackage{enumitem}
 \usepackage{qrcode}
 % add additional packages you need here
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\tiny, breaklines=true, frame=single, backgroundcolor=\color{TUMlightgray!40}}
 %
 % for now usig bibitem, but if you want ...
 %\usepackage[backend=biber]{biblatex} 
@@ -93,10 +97,10 @@ a0paper,
     %\ \vspace{0.15cm}\\
     %\huge\bf\color{white}\selectfont Single Line Title \vspace{0.4cm}\\ 
     % for two line title
-    \huge\bf\color{white}\selectfont First Title Line \\ 
-    \huge\bf\selectfont Second Title Line \vspace{0.15cm} \\ 
-    \small Lab course name \\
-    \small Supervisor: FirstName, LastName
+    \huge\bf\color{white}\selectfont Bayesian Neural Networks \\ 
+    \huge\bf\selectfont Implementations using Python libraries \vspace{0.15cm} \\ 
+    \small Masterpraktikum - Formal Methods for AI-Enabled Cyber-Physical Systems \\
+    \small Supervisor: Laura, L\"utzow and Victor, Schulte
     %\small C.\ Author, Institute \\
     %\small D.\ Author, Institute
     % two lines
@@ -113,29 +117,29 @@ a0paper,
   % % poster id + qr code, for example at IPAC
   % Modify links!!!
   % left
-  \put(0.2,0.75){\includegraphics[height=50pt]{logos/face.png}}
-  \put(-0.2,0.45){\begin{minipage}[t][]{70pt}
+  %\put(0.2,0.75){\includegraphics[height=50pt]{logos/face.png}}
+  %\put(-0.2,0.45){\begin{minipage}[t][]{70pt}
+  %  \begin{center}
+  %  \large\bf\color{white}\selectfont Gabriel \\
+  %  \large\bf\selectfont Carpio Saez de Nanclares \\
+  %  \end{center}
+  %\end{minipage}}
+
+  \put(2.0,0.75){\includegraphics[height=50pt]{logos/face.png}}
+  \put(-1.5,0.45){\begin{minipage}[t][]{250pt}
     \begin{center}
-    \large\bf\color{white}\selectfont FirstName \\ 
-    \large\bf\selectfont LastName \\ 
+    \large\bf\color{white}\selectfont Gabriel \\
+    \large\bf\selectfont Carpio Saez de Nanclares \\
     \end{center}
   \end{minipage}}
 
-  \put(2.5,0.75){\includegraphics[height=50pt]{logos/face.png}}
-  \put(2.2,0.45){\begin{minipage}[t][]{70pt}
-    \begin{center}
-    \large\bf\color{white}\selectfont FirstName \\ 
-    \large\bf\selectfont LastName \\ 
-    \end{center}
-  \end{minipage}}
-
-  \put(5,0.75){\includegraphics[height=50pt]{logos/face.png}}
-  \put(4.7,0.45){\begin{minipage}[t][]{70pt}
-    \begin{center}
-    \large\bf\color{white}\selectfont FirstName \\ 
-    \large\bf\selectfont LastName \\ 
-    \end{center}
-  \end{minipage}}
+  %\put(5,0.75){\includegraphics[height=50pt]{logos/face.png}}
+  %\put(4.7,0.45){\begin{minipage}[t][]{70pt}
+   % \begin{center}
+    %\large\bf\color{white}\selectfont FirstName \\ 
+    %\large\bf\selectfont LastName \\ 
+    %\end{center}
+  %\end{minipage}}
   % right
   %\put(21.02,-0.25){\large\bf\color{white}Poster ID}
   %\put(21,1.1){\color{white}\qrcode[hyperlink,height=.08\textwidth]{https://gitlab.cern.ch/mkoopman/templates}}
@@ -184,27 +188,129 @@ a0paper,
 %
 \headerbox{Motivation}{name=motivation, column=0, row=0, span=3}{
   \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
-   \item Motivation
+   \item \textbf{Neural Networks (NNs)} are widely used in many applications, but they are often overconfident in their predictions and do not provide uncertainty estimates.
+   \item These get trained in a \textbf{frequentist} manner, which means that the model parameters are fixed point estimates after training. 
+   \item \textbf{Bayesian Neural Networks (BNNs)} provide a probabilistic framework for neural networks, allowing for \textbf{uncertainty estimation} in predictions.
+   \item BNNs treat the model parameters as random variables. 
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    input/.style={circle, draw, minimum size=0.8cm},
+    weight/.style={rectangle, draw, minimum size=0.8cm},
+    bweight/.style={rectangle, draw, minimum size=0.8cm, fill=TUMlightblue!40},
+    op/.style={circle, draw, minimum size=1cm}
+]
+% --- Deterministic network (left) ---
+\node[input] (X1) {$x_1$};
+\node[below=1.0cm of X1] (dots) {$\vdots$};
+\node[input, below=1.0cm of dots] (Xn) {$x_n$};
+\node[weight, right=1.5cm of X1] (W1) {$w_1$};
+\node[weight, right=1.5cm of Xn] (Wn) {$w_n$};
+\node[op, right=2.5cm of dots] (Sum) {$\sum$};
+\node[op, right=1.5cm of Sum] (Plus) {$+$};
+\node[input, above=1.5cm of Plus] (B) {$b$};
+\node[op, right=1.5cm of Plus] (Act) {$f$};
+\draw[->] (X1) -- (W1);
+\draw[->] (Xn) -- (Wn);
+\draw[->] (W1) -- (Sum);
+\draw[->] (Wn) -- (Sum);
+\draw[->] (Sum) -- (Plus);
+\draw[->] (B) -- (Plus);
+\draw[->] (Plus) -- (Act);
+\draw[->] (Act) -- ++(0.8,0);
+
+% --- Arrow between networks ---
+\node[right=2.0cm of Act, font=\large] {$\Rightarrow$};
+
+% --- Bayesian network (right) ---
+\node[input, right=12cm of X1] (BX1) {$x_1$};
+\node[below=1.0cm of BX1] (Bdots) {$\vdots$};
+\node[input, below=1.0cm of Bdots] (BXn) {$x_n$};
+\node[bweight, right=1.5cm of BX1, label=above:{\small${\sim}p(w_1|D)$}] (BW1) {$w_1$};
+\node[bweight, right=1.5cm of BXn, label=below:{\small${\sim}p(w_n|D)$}] (BWn) {$w_n$};
+\node[op, right=2.5cm of Bdots] (BSum) {$\sum$};
+\node[op, right=1.5cm of BSum] (BPlus) {$+$};
+\node[bweight, above=1.5cm of BPlus, label=above:{\small${\sim}p(b|D)$}] (BB) {$b$};
+\node[op, right=1.5cm of BPlus] (BAct) {$f$};
+\draw[->] (BX1) -- (BW1);
+\draw[->] (BXn) -- (BWn);
+\draw[->] (BW1) -- (BSum);
+\draw[->] (BWn) -- (BSum);
+\draw[->] (BSum) -- (BPlus);
+\draw[->] (BB) -- (BPlus);
+\draw[->] (BPlus) -- (BAct);
+\draw[->] (BAct) -- ++(1,0) node[right] {Out};
+\end{tikzpicture}}
+\end{center}
   \end{itemize}  
 }
 %
 %
-\headerbox{Left box 1}{name=vmeas, span=3, below=motivation, column=0}{
+\headerbox{Approximating the Posterior}{name=vmeas, span=3, below=motivation, column=0}{
   \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
-    \item left box under motivation
-    \item \vspace{8cm}
-	\end{itemize}
-}
-%
-%
-\headerbox{Left box 2}{name=2ddiag, span=3, below=vmeas, above=foottext, column=0}{
-  \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
-    \item Left box above footer
+    \item Objective: approximate the posterior $p(\theta|D)$. Two approaches via \textbf{\texttt{bayesian-torch}} and \textbf{\texttt{laplace-torch}}.
+    \item \textbf{Variational Inference}: casts inference as optimization; minimizes KL divergence between $q(\theta)$ and the true posterior.
+    \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
+      \item \textbf{Bayes by Backprop}: uses the reparameterization trick to allow gradients to flow through stochastic weights. Instead of sampling $w \sim \mathcal{N}(\mu, \sigma^2)$ directly, write
+      \[w = \mu + \sigma \odot \varepsilon, \quad \varepsilon \sim \mathcal{N}(0, I)\]
+      making the ELBO differentiable w.r.t.\ the variational parameters $\mu, \sigma$.
+      \item \textbf{Flipout}: reduces gradient variance by applying independent sign-flip matrices $\mathbf{r}_n, \mathbf{s}_n \!\in\! \{-1,+1\}^*$ to the shared perturbation $\Delta\hat{\mathbf{W}}$ per sample:
+      $\hat{\mathbf{W}}_n = \mathbf{W}_{\mathrm{MAP}} + \mathbf{s}_n \odot \Delta\hat{\mathbf{W}} \odot \mathbf{r}_n^\top$
+    \end{itemize}
+    \item \textbf{Laplace Approximation}: fits a Gaussian to the posterior \emph{post-hoc} using the Maximum A Posteriori (MAP) estimate $\theta_{\mathrm{MAP}}$:
+    \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
+      \item \textbf{Hessian Computation}: at $\theta_{\mathrm{MAP}}$, compute $H = -\nabla^2 \log p(\theta|D)$, capturing local curvature of the loss landscape.
+      \item \textbf{Gaussian Fitting}: approximate $q(\theta) = \mathcal{N}(\theta;\,\theta_{\mathrm{MAP}},\,H^{-1})$.
+    \end{itemize}
   \end{itemize}
 }
 %
 %
-\headerbox{Large right Box}{name=resolution, span=3, row=0, column=3}{
+\headerbox{The libraries}{name=2ddiag, span=3, below=vmeas, above=foottext, column=0}{
+  \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
+    \item \textbf{\texttt{bayesian-torch}}: converts deterministic layers to Bayesian via \texttt{dnn\_to\_bnn}.
+    \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
+      \item \textbf{Method}: Flipout or Bayes by Backprop (BBB).
+      \item \textbf{Init}: from scratch, or \textbf{MOPED} (Model Priors Extracted from a pretrained Deterministic DNN).
+      \item \textbf{Loss}: ELBO or AvUC:
+      \begin{center}
+      \begin{minipage}[t]{0.48\linewidth}\centering
+        $\mathcal{L}_\text{ELBO} = \mathbb{E}_{q}[\log p(D|\theta)] - \mathrm{KL}[q(\theta)\,\|\,p(\theta)]$
+      \end{minipage}%
+      \hfill
+      \begin{minipage}[t]{0.48\linewidth}\centering
+        $\mathcal{L}_{AvUC} = \dfrac{n_{AU}}{n_{AU}+n_{AC}} + \dfrac{n_{IC}}{n_{IC}+n_{IU}}$
+      \end{minipage}
+      \end{center}
+      \item \textbf{Usage}: \parbox[t]{\linewidth}{\ttfamily\small
+        dnn\_to\_bnn(net, \{\\
+        \quad "prior\_mu": 0.0, "prior\_sigma": 1.0,\\
+        \quad "posterior\_mu\_init": 0.0, "posterior\_rho\_init": -3.0,\\
+        \quad "type": model\_type, \quad\textit{\# flipout or reparameterization}\\
+        \quad "moped\_enable": moped, "moped\_delta": moped\_delta,\\
+        \})
+      }
+    \end{itemize}
+    \item \textbf{\texttt{laplace-torch}}: post-hoc wrapper around any trained PyTorch model.
+    \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
+      \item \textbf{Scope}: last layer or all weights.
+      \item \textbf{Hessian}: full, diagonal, or Kronecker-factored (\texttt{kron}).
+      \item \textbf{Prior tuning}: optimise prior precision via marginal likelihood.
+      \item \textbf{Usage}: \parbox[t]{\linewidth}{\ttfamily\small
+        la = Laplace(model, "regression",\\
+        \quad subset\_of\_weights="last\_layer",\\
+        \quad hessian\_structure="kron")\\
+        la.fit(train\_loader)\\
+        la.optimize\_prior\_precision(method="marglik")\\
+        pred\_mean, pred\_var = la(x\_test)
+      }
+    \end{itemize}
+  \end{itemize}
+}
+%
+%
+\headerbox{Experiments}{name=resolution, span=3, row=0, column=3}{
   \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
     \item Large right box above summary
     \item \vspace{15cm}

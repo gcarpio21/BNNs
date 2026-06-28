@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  20 JUN 2026 14:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  22 JUN 2026 15:51
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1099,12 +1099,12 @@ Package caption Info: rotating package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Couldn't patch \deferred@thm@head!
 (./coverpage.tex
-<./figures/IN.pdf, id=75, 29.8716pt x 32.82263pt>
+<./figures/IN.pdf, id=55, 29.8716pt x 32.82263pt>
 File: ./figures/IN.pdf Graphic file (type pdf)
 <use ./figures/IN.pdf>
 Package pdftex.def Info: ./figures/IN.pdf  used on input line 3.
 (pdftex.def)             Requested size: 29.8715pt x 32.82254pt.
-<./figures/tumlogo.pdf, id=76, 53.24893pt x 28.45631pt>
+<./figures/tumlogo.pdf, id=56, 53.24893pt x 28.45631pt>
 File: ./figures/tumlogo.pdf Graphic file (type pdf)
 <use ./figures/tumlogo.pdf>
 Package pdftex.def Info: ./figures/tumlogo.pdf  used on input line 3.
@@ -1119,41 +1119,41 @@ Underfull \hbox (badness 10000) in paragraph at lines 6--8
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 16--17
+Underfull \hbox (badness 10000) in paragraph at lines 17--18
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 24--25
+Underfull \hbox (badness 10000) in paragraph at lines 25--26
 
  []
 
 LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <14> not available
-(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 27.
+(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 28.
 
-Underfull \hbox (badness 10000) in paragraph at lines 27--28
+Underfull \hbox (badness 10000) in paragraph at lines 28--29
 
  []
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 30.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 31.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 30.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 31.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for TS1+phv on input line 3
-7.
+8.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1phv.fd
 File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
 )
 
-LaTeX Warning: Float too large for page by 14.48912pt on input line 54.
+LaTeX Warning: Float too large for page by 37.04889pt on input line 55.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
@@ -1164,11 +1164,37 @@ LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 5
 22.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-) [2
+)
+Underfull \hbox (badness 1394) in paragraph at lines 578--580
+[]\OT1/ptm/m/n/10 There are mul-ti-ple meth-ods for ap-prox-i-mat-ing the pos-
+ []
+
+
+Underfull \hbox (badness 1577) in paragraph at lines 578--580
+\OT1/ptm/m/n/10 These are im-ple-mented by \OT1/pcr/m/n/10 bayesian-torch \OT1/
+ptm/m/n/10 [[]] and
+ []
+
+[2
 
 
 ]
-Overfull \hbox (16.81161pt too wide) detected at line 653
+Overfull \hbox (9.33235pt too wide) detected at line 595
+[][][][][]\OML/cmm/m/it/10 q[] \OMS/cmsy/m/n/10 k \OML/cmm/m/it/10 p\OT1/cmr/m/
+n/10 (\OML/cmm/b/it/10 ^^R\OMS/cmsy/m/n/10 jD\OT1/cmr/m/n/10 )[] = [][]\OML/cmm
+/m/it/10 q[] \OMS/cmsy/m/n/10 k \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OML/cmm/b/i
+t/10 ^^R\OT1/cmr/m/n/10 )[] \OMS/cmsy/m/n/10 ^^@ \U/msb/m/n/10 E[] [][] \OML/cm
+m/m/it/10 p\OT1/cmr/m/n/10 (\OMS/cmsy/m/n/10 Dj\OML/cmm/b/it/10 ^^R\OT1/cmr/m/n
+/10 )[] + [] \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OMS/cmsy/m/n/10 D\OT1/cmr/m/n/
+10 )\OML/cmm/m/it/10 :
+ []
+
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 619.
+
+
+Overfull \hbox (16.81161pt too wide) detected at line 683
 [][][]\OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OML/cmm/b/it/10 ^^R\OMS/cmsy/m/n/10 j
 D\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^Y N []\OML/cmm/b/it/10 ^^R\OT1/cmr/m/n/10
  ;  \OML/cmm/b/it/10 ^^R[]\OML/cmm/m/it/10 ;  \OT1/cmr/bx/n/10 H[][]\OML/cmm/m/
@@ -1178,7 +1204,7 @@ m/n/10 ) \OMS/cmsy/m/n/10 ^^_ \OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :
  []
 
 
-Overfull \hbox (14.02475pt too wide) detected at line 664
+Overfull \hbox (14.02475pt too wide) detected at line 694
 [][][][] \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OMS/cmsy/m/n/10 D\OT1/cmr/m/n/10 )
  \OMS/cmsy/m/n/10 ^^Y [] \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OMS/cmsy/m/n/10 Dj
 \OML/cmm/b/it/10 ^^R[]\OT1/cmr/m/n/10 ) + [] \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 
@@ -1186,48 +1212,491 @@ Overfull \hbox (14.02475pt too wide) detected at line 664
 y/m/n/10 ^^@ [] [] [] \OT1/cmr/bx/n/10 H\OML/cmm/m/it/10 ;
  []
 
-LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <10> not available
-(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 703.
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 706.
 
-Overfull \hbox (44.94481pt too wide) in paragraph at lines 722--736
- [][] 
- []
-
-
-Overfull \hbox (124.302pt too wide) in paragraph at lines 743--757
- [][] 
- []
-
-
-Overfull \hbox (2.0022pt too wide) in paragraph at lines 769--770
-[][] 
+Underfull \hbox (badness 2277) in paragraph at lines 729--735
+\OT1/ptm/m/n/10 is taken from the re-gres-sion ex-am-ple pro-vided in the
  []
 
 [3]
-Overfull \hbox (62.97218pt too wide) in paragraph at lines 780--792
- [][] 
- []
+! Undefined control sequence.
+<recently read> \multirow 
+                          
+l.748 \multirow
+               {All layers}  & Diagonal  & Marglik, Grid search \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-** WARNING: Ignoring useless \section in Appendix (line 804).
+! Undefined control sequence.
+<recently read> \multirow 
+                          
+l.752 \multirow
+               {Last layer}  & Kronecker & Marglik, Grid search, Adam loop \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-Overfull \hbox (3.15326pt too wide) in paragraph at lines 819--819
+! Undefined control sequence.
+<recently read> \multirow 
+                          
+l.766 \multirow
+               {Flipout} & Scratch & ELBO, ELBO + AvUC \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \multirow 
+                          
+l.769 \multirow
+               {BBB}     & Scratch & ELBO, ELBO + AvUC \\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.797 ...s, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.797 ...s, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.797 ...s, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.797 ...s, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.818 ...ns, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.818 ...ns, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.818 ...ns, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.818 ...ns, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.841 ...s, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.841 ...s, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.841 ...s, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.841 ...s, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.864 ...ns, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.864 ...ns, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.864 ...ns, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.864 ...ns, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.881 ...l, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.881 ...l, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.881 ...l, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.881 ...l, 5 seeds — metrics (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.898 ...al, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.898 ...al, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.898 ...al, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.898 ...al, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.923 ...SE $= 0.317 \pm 0.009$ for all variants.}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.923 ...SE $= 0.317 \pm 0.009$ for all variants.}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.923 ...SE $= 0.317 \pm 0.009$ for all variants.}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.923 ...SE $= 0.317 \pm 0.009$ for all variants.}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.948 ...al, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.948 ...al, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.948 ...al, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+
+! Package inputenc Error: Keyboard character used is undefined
+(inputenc)                in inputencoding `latin1'.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.948 ...al, 5 seeds — timing (mean $\pm$ std).}
+                                                  
+You need to provide a definition with \DeclareInputText 
+or \DeclareInputMath before using this key.
+
+[4]
+** WARNING: Ignoring useless \section in Appendix (line 960).
+
+Overfull \hbox (3.15326pt too wide) in paragraph at lines 975--975
  []|\OT1/ptm/m/n/7 MaxGap| 
  []
 
 
-Overfull \hbox (3.93015pt too wide) in paragraph at lines 819--819
+Overfull \hbox (3.93015pt too wide) in paragraph at lines 975--975
  []|\OT1/ptm/m/n/7 MActErr| 
  []
 
 
-Overfull \hbox (3.15326pt too wide) in paragraph at lines 845--845
+Overfull \hbox (3.15326pt too wide) in paragraph at lines 1001--1001
  []|\OT1/ptm/m/n/7 MaxGap| 
  []
 
 
-LaTeX Warning: File `ood_points.png' not found on input line 863.
+LaTeX Warning: File `ood_points.png' not found on input line 1019.
 
 
 ! Package pdftex.def Error: File `ood_points.png' not found: using draft settin
@@ -1237,13 +1706,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.863 ...ics[width=0.60\linewidth]{ood_points.png}
+l.1019 ...cs[width=0.60\linewidth]{ood_points.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-LaTeX Warning: File `bbb_moped_avuc_boundary.png' not found on input line 871.
+LaTeX Warning: File `bbb_moped_avuc_boundary.png' not found on input line 1027.
+
 
 
 ! Package pdftex.def Error: File `bbb_moped_avuc_boundary.png' not found: using
@@ -1253,14 +1723,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.871 ...=\linewidth]{bbb_moped_avuc_boundary.png}
+l.1027 ...\linewidth]{bbb_moped_avuc_boundary.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-LaTeX Warning: File `bbb_scratch_avuc_boundary.png' not found on input line 875
-.
+LaTeX Warning: File `bbb_scratch_avuc_boundary.png' not found on input line 103
+1.
 
 
 ! Package pdftex.def Error: File `bbb_scratch_avuc_boundary.png' not found: usi
@@ -1270,14 +1740,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.875 ...linewidth]{bbb_scratch_avuc_boundary.png}
+l.1031 ...inewidth]{bbb_scratch_avuc_boundary.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-LaTeX Warning: File `bbb_moped_avuc_uncertainty.png' not found on input line 88
-0.
+LaTeX Warning: File `bbb_moped_avuc_uncertainty.png' not found on input line 10
+36.
 
 
 ! Package pdftex.def Error: File `bbb_moped_avuc_uncertainty.png' not found: us
@@ -1287,14 +1757,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.880 ...inewidth]{bbb_moped_avuc_uncertainty.png}
+l.1036 ...newidth]{bbb_moped_avuc_uncertainty.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
 LaTeX Warning: File `bbb_scratch_avuc_uncertainty.png' not found on input line 
-884.
+1040.
 
 
 ! Package pdftex.def Error: File `bbb_scratch_avuc_uncertainty.png' not found: 
@@ -1304,15 +1774,15 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.884 ...ewidth]{bbb_scratch_avuc_uncertainty.png}
+l.1040 ...width]{bbb_scratch_avuc_uncertainty.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[4]
+[5]
 
-LaTeX Warning: File `bbb_moped_avuc_histogram.png' not found on input line 894.
-
+LaTeX Warning: File `bbb_moped_avuc_histogram.png' not found on input line 1050
+.
 
 
 ! Package pdftex.def Error: File `bbb_moped_avuc_histogram.png' not found: usin
@@ -1322,14 +1792,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.894 ...\linewidth]{bbb_moped_avuc_histogram.png}
+l.1050 ...linewidth]{bbb_moped_avuc_histogram.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-LaTeX Warning: File `bbb_moped_avuc_reliability.png' not found on input line 89
-8.
+LaTeX Warning: File `bbb_moped_avuc_reliability.png' not found on input line 10
+54.
 
 
 ! Package pdftex.def Error: File `bbb_moped_avuc_reliability.png' not found: us
@@ -1339,14 +1809,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.898 ...inewidth]{bbb_moped_avuc_reliability.png}
+l.1054 ...newidth]{bbb_moped_avuc_reliability.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-LaTeX Warning: File `bbb_scratch_avuc_histogram.png' not found on input line 90
-3.
+LaTeX Warning: File `bbb_scratch_avuc_histogram.png' not found on input line 10
+59.
 
 
 ! Package pdftex.def Error: File `bbb_scratch_avuc_histogram.png' not found: us
@@ -1356,14 +1826,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.903 ...inewidth]{bbb_scratch_avuc_histogram.png}
+l.1059 ...newidth]{bbb_scratch_avuc_histogram.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-LaTeX Warning: File `bbb_moped_elbo_reliability.png' not found on input line 90
-7.
+LaTeX Warning: File `bbb_moped_elbo_reliability.png' not found on input line 10
+63.
 
 
 ! Package pdftex.def Error: File `bbb_moped_elbo_reliability.png' not found: us
@@ -1373,14 +1843,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.907 ...inewidth]{bbb_moped_elbo_reliability.png}
+l.1063 ...newidth]{bbb_moped_elbo_reliability.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
 LaTeX Warning: File `bbb_moped_avuc_ood_epistemic.png' not found on input line 
-917.
+1073.
 
 
 ! Package pdftex.def Error: File `bbb_moped_avuc_ood_epistemic.png' not found: 
@@ -1390,14 +1860,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.917 ...ewidth]{bbb_moped_avuc_ood_epistemic.png}
+l.1073 ...width]{bbb_moped_avuc_ood_epistemic.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
 LaTeX Warning: File `bbb_scratch_elbo_ood_epistemic.png' not found on input lin
-e 921.
+e 1077.
 
 
 ! Package pdftex.def Error: File `bbb_scratch_elbo_ood_epistemic.png' not found
@@ -1407,15 +1877,15 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.921 ...idth]{bbb_scratch_elbo_ood_epistemic.png}
+l.1077 ...dth]{bbb_scratch_elbo_ood_epistemic.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
-[5]
+[6]
 
 LaTeX Warning: File `marglik_full_all_weights_boundary.png' not found on input 
-line 931.
+line 1087.
 
 
 ! Package pdftex.def Error: File `marglik_full_all_weights_boundary.png' not fo
@@ -1425,14 +1895,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.931 ...h]{marglik_full_all_weights_boundary.png}
+l.1087 ...]{marglik_full_all_weights_boundary.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
 LaTeX Warning: File `marglik_full_all_weights_reliability.png' not found on inp
-ut line 935.
+ut line 1091.
 
 
 ! Package pdftex.def Error: File `marglik_full_all_weights_reliability.png' not
@@ -1442,14 +1912,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.935 ...marglik_full_all_weights_reliability.png}
+l.1091 ...arglik_full_all_weights_reliability.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
 LaTeX Warning: File `marglik_kron_last_layer_uncertainty.png' not found on inpu
-t line 945.
+t line 1101.
 
 
 ! Package pdftex.def Error: File `marglik_kron_last_layer_uncertainty.png' not 
@@ -1459,14 +1929,14 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.945 ...{marglik_kron_last_layer_uncertainty.png}
+l.1101 ...marglik_kron_last_layer_uncertainty.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
 LaTeX Warning: File `marglik_kron_all_weights_ood_epistemic.png' not found on i
-nput line 949.
+nput line 1105.
 
 
 ! Package pdftex.def Error: File `marglik_kron_all_weights_ood_epistemic.png' n
@@ -1476,7 +1946,7 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.949 ...rglik_kron_all_weights_ood_epistemic.png}
+l.1105 ...glik_kron_all_weights_ood_epistemic.png}
                                                   
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -1499,50 +1969,48 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[6] (./template.aux)
+[7] (./template.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `template.out' has not changed.
-(rerunfilecheck)             Checksum: 8F95EE53C8DC62069289CEA22BC138D4;2817.
+(rerunfilecheck)             Checksum: 19EDB1F773EA664BC8961583B9E31011;1666.
  ) 
 Here is how much of TeX's memory you used:
- 40907 strings out of 474222
- 960318 string characters out of 5748732
- 2047975 words of memory out of 5000000
- 62434 multiletter control sequences out of 15000+600000
- 612839 words of font info for 142 fonts, out of 8000000 for 9000
+ 40490 strings out of 474222
+ 956949 string characters out of 5748732
+ 1992975 words of memory out of 5000000
+ 62023 multiletter control sequences out of 15000+600000
+ 613322 words of font info for 140 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
- 96i,14n,101p,722b,2029s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 96i,14n,101p,722b,633s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/
+/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1
 /public/amsfonts/cmextra/cmmib7.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/urw/courier/ucrro8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/he
-lvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8
-a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/ti
-mes/utmri8a.pfb>
-Output written on template.pdf (6 pages, 288697 bytes).
+/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/sh
+are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvet
+ic/uhvro8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/urw/times/utmri8a.pfb>
+Output written on template.pdf (7 pages, 276292 bytes).
 PDF statistics:
- 340 PDF objects out of 1000 (max. 8388607)
- 275 compressed objects within 3 object streams
- 76 named destinations out of 1000 (max. 500000)
- 159 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 329 PDF objects out of 1000 (max. 8388607)
+ 267 compressed objects within 3 object streams
+ 72 named destinations out of 1000 (max. 500000)
+ 119 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -553,8 +553,8 @@ their values get updated iteratively during this process.
 The libraries discussed in this report, allow implementations in the various architectures, like
 Convolutional Neural Networks (CNNs), Recurrent Neural Networks (RNNs) and Transformers.
 
-\textbf{Bayesian Neural Networks (BNNs)~\citep{goan2020bayesian,murphy2023pml}.} In Bayesian Deep Learning (BDL), 
-Given the training dataset $\cD = \{(\bm{x}_n, y_n)\}
+\textbf{Bayesian Neural Networks (BNNs)~\citep{goan2020bayesian,murphy2023pml}.} In Bayesian Deep Learning (BDL), weights and biases are handled as 
+random variables, and the goal is to infer their distribution given the data we have seen. Given the training dataset $\cD = \{(\bm{x}_n, y_n)\}
 _{n=1}^{N}$ and network $f_{\btheta}$, the posterior distribution is \begin{equation}p(\btheta \mid \cD) = 
 	\frac{p(\cD|\btheta),p(\btheta)}{p(\cD)}. \end{equation}
 The evidence (or marginal likelihood), \begin{equation}p(\cD) = \int p(\cD|\btheta)\,p(\btheta)\,\mathrm{d}\btheta\label{eq:marginal_likelihood}\end{equation}
@@ -563,31 +563,57 @@ Initializing it depends on the characteristics of the problem, Gaussian priors $
 but sparsity promoting priors can also be used. We will see that methods like grid search, as well as marginal likelihood
 \eqref{eq:marginal_likelihood} optimization, can be used to learn the prior.
 
-\subsection{Stochastic Variational Inference}
-
-VI approximates the posterior with a tractable family $q_{\bm\phi}(\btheta)$
-by maximising the Evidence Lower Bound~\citep{blundell2015weight,goan2020bayesian}:
+This approach to NNs allows us to perform predictions by calculating the expected value of a given function $f(\btheta)$ under the posterior distribution:
 \begin{equation}
-	\ELBO(\bm\phi)
-	= \mathbb{E}_{q}\!\bigl[\log p(\cD|\btheta)\bigr]
-	- \KL\bigl(q_{\bm\phi}\,\|\,p(\btheta)\bigr).
-	\label{eq:elbo}
+    \mathbb{E}_{p(\btheta|\cD)}[f(\btheta)]
+    = \int f(\btheta)\,p(\btheta|\cD)\,\mathrm{d}\btheta.
 \end{equation}
-A mean field Gaussian $q_{\bm\phi}(w_i) = \cN(\mu_i,\sigma_i^2)$ with
-$\sigma_i = \log(1+\exp(\rho_i))>0$ keeps the KL in~\eqref{eq:elbo} in
-closed form, but doubles the parameter count.
-
-\subsubsection{Bayes by Backprop}
-
-\citet{blundell2015weight} reparameterise each weight as
+One can obtain the expected value of the output of the network for a given input $\bm{x}^*$ by setting $f(\btheta) = p(y^*|\bm{x}^*, \btheta)$:
 \begin{equation}
-	w_i = \mu_i + \sigma_i\,\varepsilon_i, \qquad \varepsilon_i\sim\cN(0,1),
+    \mathbb{E}_{p(\btheta|\cD)}[p(y^*|\bm{x}^*, \btheta)]
+    = \int p(y^*|\bm{x}^*, \btheta)\,p(\btheta|\cD)\,\mathrm{d}\btheta.
 \end{equation}
-enabling low variance gradient estimates of~\eqref{eq:elbo} via
-backpropagation.
-A single noise draw is shared across all examples in a
-mini batch, which inflates gradient variance at large batch sizes.
+This integral is also intractable for modern NNs, which leads to the need of approximating it. 
 
+There are multiple methods for approximating the posterior distribution, we will discuss two of them: Variational Inference (VI) and the Laplace Approximation (LA). These 
+are implemented by \texttt{bayesian-torch}~\citep{intel2021bayesiantorch} and \texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace}, respectively.
+
+\textbf{Variational Inference (VI)~\citep{murphy2023pml,goan2020bayesian}.} VI treats the approximation as an optimization problem. We make assumptions about the structure
+of the posterior distribution and then optimize the parameters $\bm\phi$ by using the the Kullback-Leibler (KL) divergence to calculate the disimilarity of the assumed
+posterior $q_{\bm\phi}(\btheta)$ and the true one $p(\btheta|\cD)$: 
+\begin{equation}
+    \KL\bigl(q_{\bm\phi}(\btheta)\,\|\,p(\btheta|\cD)\bigr)
+    = \int q_{\bm\phi}(\btheta)\log\frac{q_{\bm\phi}(\btheta)}{p(\btheta|\cD)}\,\mathrm{d}\btheta.
+    \label{eq:kl}
+\end{equation} which can be expanded as:
+\begin{equation}
+    \KL\bigl(q_{\bm\phi}\,\|\,p(\btheta|\cD)\bigr)
+    = \KL\bigl(q_{\bm\phi}\,\|\,p(\btheta)\bigr)
+    - \mathbb{E}_{q}\!\bigl[\log p(\cD|\btheta)\bigr]
+    + \log p(\cD).
+    \label{eq:kl_expanded}
+\end{equation}
+Since $\log p(\cD)$ is constant w.r.t.\ $\bm\phi$, minimizing~\eqref{eq:kl} is
+equivalent to maximising the Evidence Lower Bound (ELBO)~\citep{blundell2015weight,goan2020bayesian, murphy2023pml}:
+\begin{equation}
+    \ELBO(\bm\phi)
+    = \mathbb{E}_{q}\!\bigl[\log p(\cD|\btheta)\bigr]
+    - \KL\bigl(q_{\bm\phi}\,\|\,p(\btheta)\bigr).
+    \label{eq:elbo}
+\end{equation}
+A common choice for $q_{\bm\phi}$ is a fully factorised Gaussian, placing an
+independent univariate Gaussian over each weight~\footnote{For convenience, we will use weights for weights and biases from now on unless stated otherwise.}, where the mean captures the
+point estimate and the variance captures its uncertainty.
+
+\textbf{Bayes by Backprop (BBB).} Building on earlier variational treatments of neural networks~\citep{murphy2023pml},
+\citet{blundell2015weight} showed that the reparameterisation of each weight as
+\begin{equation}
+    w_i = \mu_i + \sigma_i\,\varepsilon_i, \qquad \varepsilon_i\sim\cN(0,1),
+\end{equation}
+yields low-variance gradient estimates of~\eqref{eq:elbo} via backpropagation,
+making VI practical for deep networks. Notably, the parameters obtained by
+minimising~\eqref{eq:kl} differ in general from those found by the Laplace
+approximation~\citep{murphy2023pml}. 
 \subsubsection{Flipout}
 
 \citet{wen2018flipout} reduce this variance by applying independent sign flip
@@ -690,112 +716,238 @@ per bin. Pearson correlation and max bin gap assess worst case alignment.
 Mutual information $I(y;\btheta|\bm{x},\cD)$ estimated via
 equation~\eqref{eq:mi} with $S=50$ MC samples.
 
-\section{Shared Infrastructure}
-\label{sec:shared}
+\section{The Implementations}
+\label{sec:imp}
 
-Both notebooks share a \texttt{shared} utility package. The MAP baseline uses Adam with early stopping.
+We consider one classification and two regression experiments. Different 
+possible configurations of BNNs with two libraries, 
+\texttt{bayesian-torch}~\citep{intel2021bayesiantorch} and 
+\texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace}, are 
+implemented and compared for the classification and one of the regression 
+datasets.
 
-\section{Two Moons Classification}
-\label{sec:twomoons}
+For classification, we use the Two Moons dataset, which consists of an arbitrary 
+2D distribution of two interleaved half crescents.For regression, a 1D sinusoidal 
+dataset, which is taken from the regression example provided in the 
+\texttt{laplace-torch}~\citep{aleximmer2024laplace}repository. Finally, we replicate 
+the PovertyMap experiment done by Daxberger et al.~\citep{daxberger2021laplace}, 
+which consists of a regression task on satellite imagery.
 
-\subsection{Dataset and OOD Probe Design}
+We provide jupyter notebooks using just one seed for generating the Two Moons and Sinusoidal datasets, as well as versions with 5 different seeds for both. 
+For \texttt{laplace-torch}, we use the high level API, as well as a lower level one where we implement the training loop available in the examples provided in the repository.
+The different configurations of \texttt{bayesian-torch}, using both Flipout and BBB, with and without MOPED initialisation, and with ELBO and AvUC training, are implemented.
+The full configuration
+grids are shown in Tables~\ref{tab:la_variants} and~\ref{tab:bt_variants}.
 
-2000 2D points from two interleaved half crescents.
-To probe out of distribution behaviour, 200 probe points are
-sampled in four corner clusters deliberately outside the training manifold.
+\begin{table}[h]
+\centering
+\begin{tabular}{llp{5cm}}
+\hline
+\textbf{Weights} & \textbf{Hessian} & \textbf{Prior optimisation} \\
+\hline
+\multirow{All layers}  & Diagonal  & Marglik, Grid search \\
+                              & Kronecker & Marglik, Grid search, Adam loop \\
+                              & Full      & Marglik, Grid search \\
+\hline
+\multirow{Last layer}  & Kronecker & Marglik, Grid search, Adam loop \\
+                              & Full      & Marglik, Grid search \\
+\hline
+\end{tabular}
+\caption{\texttt{laplace-torch} variants evaluated in this report.}
+\label{tab:la_variants}
+\end{table}
 
-\subsection{\texttt{bayesian-torch}: Variational BNN}
-\label{sec:bnn}
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\hline
+\textbf{Layer type} & \textbf{Init} & \textbf{Loss} \\
+\hline
+\multirow{Flipout} & Scratch & ELBO, ELBO + AvUC \\
+                          & MOPED   & ELBO, ELBO + AvUC \\
+\hline
+\multirow{BBB}     & Scratch & ELBO, ELBO + AvUC \\
+                          & MOPED   & ELBO, ELBO + AvUC \\
+\hline
+\end{tabular}
+\caption{\texttt{bayesian-torch} variants evaluated in this report.}
+\label{tab:bt_variants}
+\end{table}
 
-\begin{lstlisting}[caption={BNN conversion and ELBO AvUC training.}]
-dnn_to_bnn(net, {"prior_mu": 0.0, "prior_sigma": 1.0,
-    "posterior_mu_init": 0.0, "posterior_rho_init": -3.0,
-    "type": "Reparameterization",
-    "moped_enable": True, "moped_delta": 0.5})
-
-loss = CE(mean_logits, labels) + get_kl_loss(net) / N + avu
-\end{lstlisting}
-
-Table~\ref{tab:bnn_main_subset} reports the relevant calibration statistics for all \texttt{bayesian-torch} configurations.
+\section{Results}
+\label{sec:results}
 
 \begin{table}[H]
-	\centering
-	\caption{Relevant calibration metrics for bayesian torch variants on Two Moons.}
-	\label{tab:bnn_main_subset}
-	\small\setlength{\tabcolsep}{4pt}
-	\begin{tabular}{llccccccc}
-		\toprule
-		Type    & Init & Loss & BS    & $1 - c$ & U MAE & U MSE & U Corr & MaxGap \\
-		\midrule
-		Flipout & scr  & ELBO & 0.058 & 0.094   & 0.018 & 0.458 & 0.988  & 0.069  \\
-		Flipout & scr  & AvUC & 0.059 & 0.072   & 0.014 & 0.840 & 0.953  & 0.134  \\
-		Flipout & MOP  & ELBO & 0.059 & 0.089   & 0.019 & 0.882 & 0.935  & 0.113  \\
-		Flipout & MOP  & AvUC & 0.059 & 0.072   & 0.010 & 0.294 & 0.990  & 0.078  \\
-		BBB     & scr  & ELBO & 0.058 & 0.088   & 0.019 & 0.582 & 0.983  & 0.051  \\
-		BBB     & scr  & AvUC & 0.095 & 0.153   & 0.028 & 0.918 & 0.965  & 0.102  \\
-		BBB     & MOP  & ELBO & 0.058 & 0.087   & 0.015 & 0.556 & 0.967  & 0.130  \\
-		BBB     & MOP  & AvUC & 0.057 & 0.067   & 0.014 & 0.900 & 0.941  & 0.123  \\
-		\bottomrule
-	\end{tabular}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllcccc}
+\toprule
+Type & Init & Loss & Acc & NLL & BS & ECE \\
+\midrule
+Flipout & scratch & ELBO & $0.871 \pm 0.027$ & $0.302 \pm 0.057$ & $0.093 \pm 0.019$ & $0.023 \pm 0.009$ \\
+Flipout & scratch & AvUC & $0.891 \pm 0.030$ & $0.256 \pm 0.060$ & $0.078 \pm 0.020$ & $0.020 \pm 0.007$ \\
+Flipout & MOPED   & ELBO & $0.915 \pm 0.008$ & $0.209 \pm 0.013$ & $0.062 \pm 0.005$ & $0.012 \pm 0.003$ \\
+Flipout & MOPED   & AvUC & $0.914 \pm 0.007$ & $0.212 \pm 0.015$ & $0.063 \pm 0.005$ & $0.015 \pm 0.006$ \\
+BBB     & scratch & ELBO & $0.916 \pm 0.009$ & $0.211 \pm 0.016$ & $0.063 \pm 0.005$ & $0.014 \pm 0.004$ \\
+BBB     & scratch & AvUC & $0.903 \pm 0.030$ & $0.235 \pm 0.059$ & $0.071 \pm 0.020$ & $0.018 \pm 0.008$ \\
+BBB     & MOPED   & ELBO & $0.913 \pm 0.008$ & $0.210 \pm 0.016$ & $0.063 \pm 0.005$ & $0.012 \pm 0.004$ \\
+BBB     & MOPED   & AvUC & $0.915 \pm 0.008$ & $0.214 \pm 0.015$ & $0.063 \pm 0.005$ & $0.014 \pm 0.004$ \\
+\bottomrule
+\end{tabular}}
+\caption{\texttt{bayesian-torch} on Two Moons, 5 seeds — metrics (mean $\pm$ std).}
+\label{tab:bnn_tm_5seed_metrics}
 \end{table}
 
 \begin{table}[H]
-	\centering
-	\caption{OOD epistemic uncertainty decomposition for all bayesian torch variants.}
-	\label{tab:ood}
-	\small\setlength{\tabcolsep}{4pt}
-	\begin{tabular}{lccccccc}
-		\toprule
-		Variant       & ID $1 - c$ & OOD $1 - c$ & ID Alea & OOD Alea & ID Epist & OOD Epist & $\Delta$Epist \\
-		\midrule
-		Flip scr ELBO & 0.094      & 0.005       & 0.238   & 0.028    & 0.003    & 0.001     & $-0.003$      \\
-		Flip scr AvUC & 0.072      & 0.003       & 0.177   & 0.012    & 0.008    & 0.001     & $-0.007$      \\
-		Flip MOP ELBO & 0.089      & 0.010       & 0.213   & 0.034    & 0.009    & 0.003     & $-0.006$      \\
-		Flip MOP AvUC & 0.073      & 0.004       & 0.150   & 0.018    & 0.036    & 0.004     & $-0.032$      \\
-		BBB scr ELBO  & 0.089      & 0.003       & 0.227   & 0.018    & 0.002    & 0.000     & $-0.002$      \\
-		BBB scr AvUC  & 0.153      & 0.032       & 0.359   & 0.123    & 0.003    & 0.002     & $-0.001$      \\
-		BBB MOP ELBO  & 0.086      & 0.011       & 0.202   & 0.039    & 0.014    & 0.004     & $-0.009$      \\
-		BBB MOP AvUC  & 0.067      & 0.007       & 0.140   & 0.027    & 0.035    & 0.009     & $-0.026$      \\
-		\bottomrule
-	\end{tabular}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllcc}
+\toprule
+Type & Init & Loss & Fit (s) & Inf (s) \\
+\midrule
+Flipout & scratch & ELBO & $32.8 \pm 11.0$  & $0.071 \pm 0.048$ \\
+Flipout & scratch & AvUC & $159.5 \pm 44.8$ & $0.046 \pm 0.000$ \\
+Flipout & MOPED   & ELBO & $28.4 \pm 5.9$   & $0.046 \pm 0.000$ \\
+Flipout & MOPED   & AvUC & $136.5 \pm 48.4$ & $0.047 \pm 0.000$ \\
+BBB     & scratch & ELBO & $36.8 \pm 14.6$  & $0.029 \pm 0.001$ \\
+BBB     & scratch & AvUC & $237.0 \pm 105.7$& $0.029 \pm 0.000$ \\
+BBB     & MOPED   & ELBO & $29.4 \pm 6.5$   & $0.029 \pm 0.000$ \\
+BBB     & MOPED   & AvUC & $110.0 \pm 16.2$ & $0.029 \pm 0.000$ \\
+\bottomrule
+\end{tabular}}
+\caption{\texttt{bayesian-torch} on Two Moons, 5 seeds — timing (mean $\pm$ std).}
+\label{tab:bnn_tm_5seed_timing}
 \end{table}
-
-Please refer to the Appendix for histograms, boundary visualizations, and full tables.
-
-\subsection{\texttt{laplace-torch}: Laplace Approximation}
-\label{sec:la}
-
-\begin{lstlisting}[caption={Laplace post hoc workflow.}]
-la = Laplace(model, 'classification',
-             subset_of_weights='last_layer', hessian_structure='kron')
-la.fit(train_loader)
-la.optimize_prior_precision(method='gridsearch', val_loader=val_loader,
-                             pred_type='glm', link_approx='probit')
-probs = la(X_test, pred_type='glm', link_approx='probit')
-\end{lstlisting}
-
-Table~\ref{tab:la_main_subset} reports the relevant subset of metrics for the requested Laplace configurations including Diagonal all weights, Full Last Layer, and Kronecker Last Layer under both Marginal Likelihood and Gridsearch tuning.
 
 \begin{table}[H]
-	\centering
-	\caption{Relevant calibration metrics for laplace torch on Two Moons.}
-	\label{tab:la_main_subset}
-	\small\setlength{\tabcolsep}{4pt}
-	\begin{tabular}{llccccccc}
-		\toprule
-		Variant     & Scope & PP     & BS    & $1 - c$ & U MAE & U MSE & U Corr & MaxGap \\
-		\midrule
-		Diag all GS & all   & $10^4$ & 0.056 & 0.079   & 0.010 & 0.806 & 0.959  & 0.197  \\
-		Full LL GS  & LL    & $10^4$ & 0.056 & 0.079   & 0.010 & 0.806 & 0.959  & 0.197  \\
-		Kron LL GS  & LL    & $10^4$ & 0.056 & 0.079   & 0.010 & 0.806 & 0.959  & 0.197  \\
-		Diag all ML & all   & 8.73   & 0.057 & 0.088   & 0.016 & 0.817 & 0.955  & 0.196  \\
-		Full LL ML  & LL    & 1.79   & 0.062 & 0.145   & 0.070 & 6.49  & 0.935  & 0.136  \\
-		Kron LL ML  & LL    & 2.04   & 0.061 & 0.138   & 0.064 & 5.50  & 0.938  & 0.141  \\
-		\bottomrule
-	\end{tabular}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllccc}
+\toprule
+Hessian & Scope & Tuning & NLL & BS & ECE \\
+\midrule
+Diag & all & marglik    & $0.211 \pm 0.016$ & $0.063 \pm 0.005$ & $0.017 \pm 0.005$ \\
+Diag & all & gridsearch & $0.210 \pm 0.017$ & $0.063 \pm 0.006$ & $0.013 \pm 0.002$ \\
+Kron & all & marglik    & $0.258 \pm 0.021$ & $0.071 \pm 0.006$ & $0.084 \pm 0.023$ \\
+Kron & all & gridsearch & $0.210 \pm 0.017$ & $0.063 \pm 0.006$ & $0.013 \pm 0.002$ \\
+Full & all & marglik    & $0.323 \pm 0.030$ & $0.089 \pm 0.010$ & $0.151 \pm 0.029$ \\
+Full & all & gridsearch & $0.210 \pm 0.017$ & $0.063 \pm 0.006$ & $0.013 \pm 0.002$ \\
+Kron & LL  & marglik    & $0.233 \pm 0.015$ & $0.066 \pm 0.005$ & $0.054 \pm 0.015$ \\
+Kron & LL  & gridsearch & $0.210 \pm 0.017$ & $0.063 \pm 0.006$ & $0.013 \pm 0.002$ \\
+Full & LL  & marglik    & $0.238 \pm 0.015$ & $0.067 \pm 0.005$ & $0.060 \pm 0.016$ \\
+Full & LL  & gridsearch & $0.210 \pm 0.017$ & $0.063 \pm 0.006$ & $0.013 \pm 0.002$ \\
+\bottomrule
+\end{tabular}}
+\caption{\texttt{laplace-torch} on Two Moons, 5 seeds — metrics (mean $\pm$ std).}
+\label{tab:la_tm_5seed_metrics}
 \end{table}
 
-Please refer to the Appendix for epistemic maps, full metrics, and visualizations.
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllccc}
+\toprule
+Hessian & Scope & Tuning & Fit (s) & Tune (s) & Inf (s) \\
+\midrule
+Diag & all & marglik    & $0.297 \pm 0.104$    & $0.074 \pm 0.033$  & $0.022 \pm 0.002$ \\
+Diag & all & gridsearch & $0.301 \pm 0.103$    & $5.454 \pm 1.709$  & $0.022 \pm 0.002$ \\
+Kron & all & marglik    & $0.557 \pm 0.030$    & $0.142 \pm 0.031$  & $0.023 \pm 0.002$ \\
+Kron & all & gridsearch & $0.550 \pm 0.048$    & $7.116 \pm 1.955$  & $0.023 \pm 0.002$ \\
+Full & all & marglik    & $1051.3 \pm 17.6$    & $2.183 \pm 0.268$  & $0.034 \pm 0.002$ \\
+Full & all & gridsearch & $1033.9 \pm 16.9$    & $13.758 \pm 1.799$ & $0.035 \pm 0.004$ \\
+Kron & LL  & marglik    & $0.415 \pm 0.030$    & $0.089 \pm 0.017$  & $0.001 \pm 0.000$ \\
+Kron & LL  & gridsearch & $0.501 \pm 0.108$    & $2.804 \pm 0.672$  & $0.001 \pm 0.000$ \\
+Full & LL  & marglik    & $10.971 \pm 1.407$   & $0.087 \pm 0.006$  & $0.001 \pm 0.000$ \\
+Full & LL  & gridsearch & $11.074 \pm 1.826$   & $1.936 \pm 0.342$  & $0.001 \pm 0.000$ \\
+\bottomrule
+\end{tabular}}
+\caption{\texttt{laplace-torch} on Two Moons, 5 seeds — timing (mean $\pm$ std).}
+\label{tab:la_tm_5seed_timing}
+\end{table}
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Type & Init & RMSE & NLL & Cal MAE & Cov 95 \\
+\midrule
+Flipout & scratch & $0.594 \pm 0.086$ & $1.305 \pm 0.402$ & $0.207 \pm 0.058$ & $0.729 \pm 0.087$ \\
+Flipout & MOPED   & $0.599 \pm 0.033$ & $1.453 \pm 0.098$ & $0.275 \pm 0.017$ & $1.000 \pm 0.000$ \\
+BBB     & scratch & $0.697 \pm 0.025$ & $1.832 \pm 0.147$ & $0.273 \pm 0.015$ & $0.618 \pm 0.028$ \\
+BBB     & MOPED   & $0.684 \pm 0.081$ & $1.566 \pm 0.087$ & $0.278 \pm 0.018$ & $1.000 \pm 0.000$ \\
+\bottomrule
+\end{tabular}}
+\caption{\texttt{bayesian-torch} on Sinusoidal, 5 seeds — metrics (mean $\pm$ std).}
+\label{tab:bnn_sin_5seed_metrics}
+\end{table}
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llcc}
+\toprule
+Type & Init & Fit (s) & Inf (s) \\
+\midrule
+Flipout & scratch & $160.3 \pm 97.6$ & $2.52 \pm 2.00$ \\
+Flipout & MOPED   & $33.4 \pm 27.6$  & $1.99 \pm 2.02$ \\
+BBB     & scratch & $120.2 \pm 96.3$ & $1.67 \pm 1.54$ \\
+BBB     & MOPED   & $19.7 \pm 17.3$  & $1.62 \pm 1.37$ \\
+\bottomrule
+\end{tabular}}
+\caption{\texttt{bayesian-torch} on Sinusoidal, 5 seeds — timing (mean $\pm$ std).}
+\label{tab:bnn_sin_5seed_timing}
+\end{table}
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllccc}
+\toprule
+Hessian & Scope & Tuning & NLL & Cal MAE & Cov 95 \\
+\midrule
+Diag & all & marglik    & $0.323 \pm 0.011$ & $0.076 \pm 0.029$ & $0.983 \pm 0.008$ \\
+Diag & all & gridsearch & $0.312 \pm 0.026$ & $0.064 \pm 0.035$ & $0.982 \pm 0.014$ \\
+Kron & all & marglik    & $0.276 \pm 0.024$ & $0.032 \pm 0.014$ & $0.953 \pm 0.016$ \\
+Kron & all & gridsearch & $0.274 \pm 0.025$ & $0.028 \pm 0.012$ & $0.952 \pm 0.013$ \\
+Kron & all & adam loop  & $0.276 \pm 0.025$ & $0.032 \pm 0.014$ & $0.952 \pm 0.015$ \\
+Full & all & marglik    & $0.276 \pm 0.029$ & $0.033 \pm 0.016$ & $0.944 \pm 0.020$ \\
+Full & all & gridsearch & $0.276 \pm 0.031$ & $0.032 \pm 0.015$ & $0.943 \pm 0.020$ \\
+Kron & LL  & marglik    & $0.278 \pm 0.031$ & $0.032 \pm 0.017$ & $0.942 \pm 0.020$ \\
+Kron & LL  & gridsearch & $0.275 \pm 0.030$ & $0.032 \pm 0.015$ & $0.944 \pm 0.019$ \\
+Kron & LL  & adam loop  & $0.278 \pm 0.032$ & $0.033 \pm 0.018$ & $0.942 \pm 0.020$ \\
+Full & LL  & marglik    & $0.278 \pm 0.032$ & $0.033 \pm 0.018$ & $0.942 \pm 0.020$ \\
+Full & LL  & gridsearch & $0.276 \pm 0.032$ & $0.032 \pm 0.016$ & $0.942 \pm 0.020$ \\
+\bottomrule
+\end{tabular}}
+\caption{\texttt{laplace-torch} on Sinusoidal, 5 seeds — metrics (mean $\pm$ std). RMSE $= 0.317 \pm 0.009$ for all variants.}
+\label{tab:la_sin_5seed_metrics}
+\end{table}
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllccc}
+\toprule
+Hessian & Scope & Tuning & Fit (s) & Tune (s) & Inf (s) \\
+\midrule
+Diag & all & marglik    & $0.173 \pm 0.047$ & $0.058 \pm 0.016$  & $0.298 \pm 0.024$ \\
+Diag & all & gridsearch & $0.177 \pm 0.009$ & $10.883 \pm 1.365$ & $0.272 \pm 0.029$ \\
+Kron & all & marglik    & $0.508 \pm 0.065$ & $0.076 \pm 0.029$  & $0.428 \pm 0.021$ \\
+Kron & all & gridsearch & $0.508 \pm 0.059$ & $14.552 \pm 2.250$ & $0.401 \pm 0.047$ \\
+Kron & all & adam loop  & $0.470 \pm 0.090$ & $0.876 \pm 0.312$  & $0.398 \pm 0.091$ \\
+Full & all & marglik    & $5.399 \pm 2.410$ & $12.854 \pm 2.472$ & $0.274 \pm 0.036$ \\
+Full & all & gridsearch & $5.549 \pm 2.315$ & $19.442 \pm 2.685$ & $0.286 \pm 0.055$ \\
+Kron & LL  & marglik    & $0.232 \pm 0.039$ & $0.068 \pm 0.028$  & $0.095 \pm 0.020$ \\
+Kron & LL  & gridsearch & $0.229 \pm 0.051$ & $2.067 \pm 0.418$  & $0.107 \pm 0.025$ \\
+Kron & LL  & adam loop  & $0.216 \pm 0.052$ & $0.594 \pm 0.117$  & $0.101 \pm 0.011$ \\
+Full & LL  & marglik    & $0.126 \pm 0.046$ & $4.289 \pm 0.899$  & $0.097 \pm 0.015$ \\
+Full & LL  & gridsearch & $0.119 \pm 0.032$ & $9.098 \pm 1.899$  & $0.108 \pm 0.015$ \\
+\bottomrule
+\end{tabular}}
+\caption{\texttt{laplace-torch} on Sinusoidal, 5 seeds — timing (mean $\pm$ std).}
+\label{tab:la_sin_5seed_timing}
+\end{table}
 
 \section{Discussion}
 \label{sec:discussion}
