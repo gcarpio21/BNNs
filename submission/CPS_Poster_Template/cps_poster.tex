@@ -251,7 +251,7 @@ a0paper,
   \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
     \item Objective: approximate the posterior $p(\theta|D)$. Two approaches via \textbf{\texttt{bayesian-torch}} and \textbf{\texttt{laplace-torch}}.
     \item \textbf{Variational Inference}: casts inference as optimization; minimizes KL divergence between $q(\theta)$ and the true posterior.
-    \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
+    \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
       \item \textbf{Bayes by Backprop}: uses the reparameterization trick to allow gradients to flow through stochastic weights. Instead of sampling $w \sim \mathcal{N}(\mu, \sigma^2)$ directly, write
       \[w = \mu + \sigma \odot \varepsilon, \quad \varepsilon \sim \mathcal{N}(0, I)\]
       making the ELBO differentiable w.r.t.\ the variational parameters $\mu, \sigma$.
@@ -259,7 +259,7 @@ a0paper,
       $\hat{\mathbf{W}}_n = \mathbf{W}_{\mathrm{MAP}} + \mathbf{s}_n \odot \Delta\hat{\mathbf{W}} \odot \mathbf{r}_n^\top$
     \end{itemize}
     \item \textbf{Laplace Approximation}: fits a Gaussian to the posterior \emph{post-hoc} using the Maximum A Posteriori (MAP) estimate $\theta_{\mathrm{MAP}}$:
-    \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
+    \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
       \item \textbf{Hessian Computation}: at $\theta_{\mathrm{MAP}}$, compute $H = -\nabla^2 \log p(\theta|D)$, capturing local curvature of the loss landscape.
       \item \textbf{Gaussian Fitting}: approximate $q(\theta) = \mathcal{N}(\theta;\,\theta_{\mathrm{MAP}},\,H^{-1})$.
     \end{itemize}
@@ -270,7 +270,7 @@ a0paper,
 \headerbox{The libraries}{name=2ddiag, span=3, below=vmeas, above=foottext, column=0}{
   \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
     \item \textbf{\texttt{bayesian-torch}}: converts deterministic layers to Bayesian via \texttt{dnn\_to\_bnn}.
-    \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
+    \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
       \item \textbf{Method}: Flipout or Bayes by Backprop (BBB).
       \item \textbf{Init}: from scratch, or \textbf{MOPED} (Model Priors Extracted from a pretrained Deterministic DNN).
       \item \textbf{Loss}: ELBO or AvUC:
@@ -280,7 +280,7 @@ a0paper,
       \end{minipage}%
       \hfill
       \begin{minipage}[t]{0.48\linewidth}\centering
-        $\mathcal{L}_{AvUC} = \dfrac{n_{AU}}{n_{AU}+n_{AC}} + \dfrac{n_{IC}}{n_{IC}+n_{IU}}$
+        $\mathcal{L}_{AvUC} = \tfrac{n_{AU}}{n_{AU}+n_{AC}} + \tfrac{n_{IC}}{n_{IC}+n_{IU}}$
       \end{minipage}
       \end{center}
       \item \textbf{Usage}: \parbox[t]{\linewidth}{\ttfamily\small
@@ -293,10 +293,10 @@ a0paper,
       }
     \end{itemize}
     \item \textbf{\texttt{laplace-torch}}: post-hoc wrapper around any trained PyTorch model.
-    \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
-      \item \textbf{Scope}: last layer or all weights.
+    \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=12pt]
+      \item \textbf{Scope}: last layer, subset of weights, or all weights.
       \item \textbf{Hessian}: full, diagonal, or Kronecker-factored (\texttt{kron}).
-      \item \textbf{Prior tuning}: optimise prior precision via marginal likelihood.
+      \item \textbf{Prior tuning}: optimise prior precision via marginal likelihood or grid search.
       \item \textbf{Usage}: \parbox[t]{\linewidth}{\ttfamily\small
         la = Laplace(model, "regression",\\
         \quad subset\_of\_weights="last\_layer",\\
@@ -311,18 +311,78 @@ a0paper,
 %
 %
 \headerbox{Experiments}{name=resolution, span=3, row=0, column=3}{
+  Implemented as Jupyter notebooks. Three datasets:
   \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
-    \item Large right box above summary
-    \item \vspace{15cm}
+    \item \textbf{Classification: Two Moons}: 2D toy dataset.
+    \item \textbf{Regression: PovertyMap}: satellite imagery dataset for wealth index prediction.
+    \item \textbf{Regression: Sinusoidal function}: 1D toy dataset.
   \end{itemize}
+  \vspace{2pt}
+  \begin{center}
+  \begin{minipage}[t]{0.26\linewidth}\centering
+    \includegraphics[height=4cm,width=\linewidth,keepaspectratio]{figures/two_moons_dataset.png}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.26\linewidth}\centering
+    \includegraphics[height=4cm,width=\linewidth,keepaspectratio]{figures/povertymap_samples.png}\\[-2pt]
+    {\tiny PovertyMap}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.44\linewidth}\centering
+    \includegraphics[height=4cm,width=\linewidth,keepaspectratio]{figures/sinusoid_dataset.png}
+  \end{minipage}
+  \end{center}
+  \vspace{2pt}
+  \noindent\textbf{Two Moons results:}\\[1pt]
+  \noindent\begin{minipage}[t]{0.48\linewidth}\centering
+    \includegraphics[height=3.4cm,width=\linewidth,keepaspectratio]{figures/merged_tm_ece.png}\end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}\centering
+    \includegraphics[height=3.4cm,width=\linewidth,keepaspectratio]{figures/reliability_tm_all_variants.png}\end{minipage}
+  \vspace{2pt}
+  \noindent\textbf{PovertyMap results:}\\[1pt]
+  \noindent\begin{minipage}[t]{0.48\linewidth}\centering
+    \includegraphics[height=3.4cm,width=\linewidth,keepaspectratio]{figures/cmp_lbnn_pov_cal_mae.png}\end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}\centering
+    \includegraphics[height=3.4cm,width=\linewidth,keepaspectratio]{figures/reliability_povertymap.png}\end{minipage}
+  \vspace{2pt}
+  \noindent\textbf{Sinusoidal results:}\\[1pt]
+  \noindent\begin{minipage}[t]{0.48\linewidth}\centering
+    \includegraphics[height=3.4cm,width=\linewidth,keepaspectratio]{figures/merged_sin_cal_mae.png}\end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}\centering
+    \includegraphics[height=3.4cm,width=\linewidth,keepaspectratio]{figures/reliability_sin_all_variants.png}\end{minipage}
+  \vspace{4pt}
+  \noindent\textbf{Training \& Inference Time:}
+  \vspace{2pt}
+
+  \noindent\resizebox{\linewidth}{!}{%
+  \begin{tabular}{llrrr}
+    \toprule
+    \textbf{Dataset} & \textbf{Method} & \textbf{MAP/Fit (s)} & \textbf{LA Tune (s)} & \textbf{Inference (s)} \\
+    \midrule
+    \multirow{3}{*}{Two Moons}  & Flipout / scratch / ELBO  & $32.8 \pm 11.0$   & ---           & $0.047 \pm 0.001$ \\
+                                & Flipout / scratch / AvUC  & $754.5 \pm 224.3$ & ---           & $0.047 \pm 0.002$ \\
+                                & Laplace Kron / last       & $0.5 \pm 0.1$     & $2.8 \pm 0.7$ & $0.001 \pm 0.000$ \\
+    \midrule
+    \multirow{2}{*}{Sinusoidal} & Flipout / scratch / ELBO  & $160.3 \pm 97.6$  & ---           & $2.52 \pm 2.00$ \\
+                                & Laplace Kron / last       & $0.2 \pm 0.1$     & $2.1 \pm 0.4$ & $0.107 \pm 0.025$ \\
+    \bottomrule
+  \end{tabular}}
 }		
 %
 %
 \headerbox{Summary and Outlook}{name=summary, span=3, below=resolution, above=foottext, column=3}{
-  \begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
-    \item summary
-    \item outlook
-  \end{itemize}  
+  \textbf{Summary}
+  \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
+    \item Good calibration can be achieved.
+    \item VI needs more training time.
+    \item Laplace has good performance OOD.
+  \end{itemize}
+  \vspace{3pt}
+  \textbf{Outlook}
+  \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
+    \item Is ID vs.\ OOD performance usable as-is, or with minimal changes?
+    \item VI: explore MOPED $\delta$ tuning.
+    \item Laplace: Gaussian processes and low-rank Hessian structures unexplored.
+    \item Compare to other implementations, e.g. Markov Chain Monte Carlo (MCMC) methods.
+  \end{itemize}
 }
 %
 %
