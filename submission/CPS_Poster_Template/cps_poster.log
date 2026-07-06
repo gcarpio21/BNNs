@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  3 JUL 2026 01:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  6 JUL 2026 19:46
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -752,10 +752,7 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count369
 \l__pdf_internal_box=\box88
 )
-(./cps_poster.aux
-<Reading QR code for "https://www.ce.cit.tum.de/cps/home/" at level 3-M from au
-x file.>
-)
+(./cps_poster.aux)
 \openout1 = `cps_poster.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
@@ -772,7 +769,8 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
 LaTeX Font Info:    ... okay on input line 56.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
 LaTeX Font Info:    ... okay on input line 56.
- (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count370
 \scratchdimen=\dimen311
@@ -847,13 +845,6 @@ LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 19.70294pt on input line 153.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 8.54997pt on input line 153.
-
-
-
-<QR code requested for "https://www.ce.cit.tum.de/cps/home/" in version 0-M.>
-
-<Copying the QR code for "https://www.ce.cit.tum.de/cps/home/" in version 3-M a
-s previously calculated.>
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 11.39996pt on input line 153.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
@@ -881,65 +872,38 @@ Underfull \hbox (badness 10000) in paragraph at lines 153--153
  []
 
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 7.59998pt on input line 177.
-
-Underfull \hbox (badness 10000) in paragraph at lines 177--177
-
- []
-
-LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 4.74998pt on input line 177.
+(Font)              scaled to size 4.74998pt on input line 179.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <5> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 179.
+LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
+(Font)              scaled to size 4.74998pt on input line 179.
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 1
+79.
+(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
+File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
+)
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 13.67995pt on input line 177.
+(Font)              scaled to size 13.67995pt on input line 179.
 Missing character: There is no ; in font nullfont!
 LaTeX Font Info:    Trying to load font information for TS1+phv on input line 2
-47.
+54.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1phv.fd
 File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
 )
 LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
-(Font)              scaled to size 9.49997pt on input line 247.
+(Font)              scaled to size 9.49997pt on input line 254.
+
+Missing character: There is no ; in font nullfont!
+Missing character: There is no ; in font nullfont!
+Missing character: There is no ; in font nullfont!
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 8.54997pt on input line 247.
-
-Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
-LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 2
-67.
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
-File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 267.
-
-Underfull \hbox (badness 1442) in paragraph at lines 267--267
-[]\T1/phv/m/n/10 Objective: ap-prox-i-mate the pos-te-rior $\OML/cmm/m/it/10 p\
-OT1/cmr/m/n/10 (\OML/cmm/m/it/10 ^^R\OMS/cmsy/m/n/10 j\OML/cmm/m/it/10 D\OT1/cm
-r/m/n/10 )$\T1/phv/m/n/10 . Two ap-proaches via
- []
-
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 267.
-LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 9.49997pt on input line 267.
-Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
-
-Underfull \hbox (badness 7777) in paragraph at lines 310--310
-[]\T1/cmtt/m/n/10 bayesian-torch\T1/phv/m/n/10 : con-verts de-ter-min-is-tic la
-y-ers to Bayesian via
- []
-
-LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 6.64998pt on input line 310.
+(Font)              scaled to size 6.64998pt on input line 274.
 ! Undefined control sequence.
 <argument> ...\mathcal {L}_\text {ELBO} = \mathbb 
-                                                  {E}_{q}[\log p(D|\theta )]...
-l.310 }
+                                                  {E}_{q(\theta )}[\log p(D|...
+l.274 }
        
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -947,6 +911,15 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 274.
+LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
+(Font)              scaled to size 9.49997pt on input line 274.
+Missing character: There is no ; in font nullfont!
+Missing character: There is no ; in font nullfont!
+Missing character: There is no ; in font nullfont!
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 310.
 
 Overfull \hbox (34.10442pt too wide) in paragraph at lines 310--310
 []\T1/phv/b/n/10 Usage\T1/phv/m/n/10 : [] 
@@ -960,60 +933,62 @@ Overfull \hbox (34.10442pt too wide) in paragraph at lines 310--310
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
-<figures/two_moons_dataset.png, id=32, 502.9992pt x 400.3758pt>
+<figures/two_moons_dataset.png, id=32, 500.1084pt x 380.1402pt>
 File: figures/two_moons_dataset.png Graphic file (type png)
 <use figures/two_moons_dataset.png>
-Package pdftex.def Info: figures/two_moons_dataset.png  used on input line 368.
+Package pdftex.def Info: figures/two_moons_dataset.png  used on input line 371.
 
-(pdftex.def)             Requested size: 83.88927pt x 66.77393pt.
+(pdftex.def)             Requested size: 83.88791pt x 63.7645pt.
 <figures/povertymap_samples.png, id=33, 384.637pt x 405.9165pt>
 File: figures/povertymap_samples.png Graphic file (type png)
 <use figures/povertymap_samples.png>
-Package pdftex.def Info: figures/povertymap_samples.png  used on input line 368
+Package pdftex.def Info: figures/povertymap_samples.png  used on input line 371
 .
 (pdftex.def)             Requested size: 83.88675pt x 88.52768pt.
-<figures/sinusoid_dataset.png, id=34, 641.2758pt x 352.6776pt>
+<figures/sinusoid_dataset.png, id=34, 555.9972pt x 328.5876pt>
 File: figures/sinusoid_dataset.png Graphic file (type png)
 <use figures/sinusoid_dataset.png>
-Package pdftex.def Info: figures/sinusoid_dataset.png  used on input line 368.
-(pdftex.def)             Requested size: 141.97154pt x 78.07901pt.
+Package pdftex.def Info: figures/sinusoid_dataset.png  used on input line 371.
+(pdftex.def)             Requested size: 141.96829pt x 83.90154pt.
 <figures/merged_tm_ece.png, id=35, 387.046pt x 207.5755pt>
 File: figures/merged_tm_ece.png Graphic file (type png)
 <use figures/merged_tm_ece.png>
-Package pdftex.def Info: figures/merged_tm_ece.png  used on input line 368.
+Package pdftex.def Info: figures/merged_tm_ece.png  used on input line 371.
 (pdftex.def)             Requested size: 154.88062pt x 83.06357pt.
 <figures/reliability_tm_all_variants.png, id=36, 424.787pt x 317.185pt>
 File: figures/reliability_tm_all_variants.png Graphic file (type png)
 <use figures/reliability_tm_all_variants.png>
 Package pdftex.def Info: figures/reliability_tm_all_variants.png  used on input
- line 368.
+ line 371.
 (pdftex.def)             Requested size: 129.5566pt x 96.73885pt.
 <figures/cmp_lbnn_pov_cal_mae.png, id=37, 316.382pt x 206.7725pt>
 File: figures/cmp_lbnn_pov_cal_mae.png Graphic file (type png)
 <use figures/cmp_lbnn_pov_cal_mae.png>
 Package pdftex.def Info: figures/cmp_lbnn_pov_cal_mae.png  used on input line 3
-68.
+71.
 (pdftex.def)             Requested size: 148.0237pt x 96.74136pt.
 <figures/reliability_povertymap.png, id=38, 424.787pt x 317.185pt>
 File: figures/reliability_povertymap.png Graphic file (type png)
 <use figures/reliability_povertymap.png>
 Package pdftex.def Info: figures/reliability_povertymap.png  used on input line
- 368.
+ 371.
 (pdftex.def)             Requested size: 129.5566pt x 96.73885pt.
 <figures/merged_sin_cal_mae.png, id=39, 388.652pt x 207.5755pt>
 File: figures/merged_sin_cal_mae.png Graphic file (type png)
 <use figures/merged_sin_cal_mae.png>
-Package pdftex.def Info: figures/merged_sin_cal_mae.png  used on input line 368
+Package pdftex.def Info: figures/merged_sin_cal_mae.png  used on input line 371
 .
 (pdftex.def)             Requested size: 154.87686pt x 82.71832pt.
 <figures/reliability_sin_all_variants.png, id=40, 424.787pt x 317.185pt>
 File: figures/reliability_sin_all_variants.png Graphic file (type png)
 <use figures/reliability_sin_all_variants.png>
 Package pdftex.def Info: figures/reliability_sin_all_variants.png  used on inpu
-t line 368.
+t line 371.
 (pdftex.def)             Requested size: 129.5566pt x 96.73885pt.
+LaTeX Font Info:    Font shape `T1/phv/m/n' will be
+(Font)              scaled to size 8.54997pt on input line 371.
 
-Underfull \hbox (badness 10000) in paragraph at lines 368--368
+Underfull \hbox (badness 10000) in paragraph at lines 371--371
 
  []
 
@@ -1024,7 +999,7 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 
-Overfull \hbox (0.75005pt too wide) in paragraph at lines 153--389
+Overfull \hbox (0.75005pt too wide) in paragraph at lines 153--392
 [][] [] 
  []
 
@@ -1037,45 +1012,44 @@ s_dataset.png> <./figures/povertymap_samples.png> <./figures/sinusoid_dataset.p
 ng> <./figures/merged_tm_ece.png> <./figures/reliability_tm_all_variants.png> <
 ./figures/cmp_lbnn_pov_cal_mae.png> <./figures/reliability_povertymap.png> <./f
 igures/merged_sin_cal_mae.png> <./figures/reliability_sin_all_variants.png>]
-(./cps_poster.aux
-<Reading QR code for "https://www.ce.cit.tum.de/cps/home/" at level 3-M from au
-x file.>
-)
+(./cps_poster.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 23737 strings out of 474222
- 506777 string characters out of 5748732
- 2003975 words of memory out of 5000000
- 45631 multiletter control sequences out of 15000+600000
- 605077 words of font info for 98 fonts, out of 8000000 for 9000
+ 23750 strings out of 474222
+ 506797 string characters out of 5748732
+ 1976975 words of memory out of 5000000
+ 45633 multiletter control sequences out of 15000+600000
+ 609151 words of font info for 102 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 117i,14n,121p,991b,1463s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,21n,121p,429b,1472s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texm
-f/fonts/type1/public/cm-super/sfit0900.pfb></usr/share/texmf/fonts/type1/public
-/cm-super/sftt0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1000.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on cps_poster.pdf (1 page, 2954985 bytes).
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf/f
+onts/type1/public/cm-super/sfit0900.pfb></usr/share/texmf/fonts/type1/public/cm
+-super/sftt0800.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt0900.pfb>
+</usr/share/texmf/fonts/type1/public/cm-super/sftt1000.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
+rw/helvetic/uhvro8a.pfb>
+Output written on cps_poster.pdf (1 page, 3193411 bytes).
 PDF statistics:
- 160 PDF objects out of 1000 (max. 8388607)
- 78 compressed objects within 1 object stream
+ 170 PDF objects out of 1000 (max. 8388607)
+ 84 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  164 words of extra memory for PDF output out of 10000 (max. 10000000)
 
