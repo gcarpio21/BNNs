@@ -15,7 +15,6 @@ a0paper,
 \usepackage{tabto}
 \usepackage{booktabs}
 \usepackage{amsmath}
-\usepackage{amssymb}
 \usepackage{float}
 \usepackage{multirow}
 \usepackage{url}
@@ -384,7 +383,7 @@ a0paper,
   \begin{itemize}[noitemsep,topsep=2pt,parsep=0pt,partopsep=0pt, leftmargin=10pt]
     \item Explore OOD recognition performance.
     \item Experiment with MOPED $\delta$ tuning for VI.
-    \item Test Gaussian processes and low-rank Hessian structures available in \texttt{laplace-torch}.
+    \item Test Gaussian processes and low-rank Hessian structures availale in \texttt{laplace-torch}.
     \item Compare to other methods, e.g. Markov Chain Monte Carlo.
   \end{itemize}
 }
