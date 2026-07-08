@@ -25,6 +25,9 @@ def load_two_moons(
     device: torch.device | None = None,
 ) -> Dict[str, object]:
     """Generate a deterministic split and return arrays, datasets, and loaders."""
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     seed_everything(seed)
 
     X, y = make_moons(n_samples=n_samples, noise=noise, random_state=seed)
@@ -40,8 +43,8 @@ def load_two_moons(
 
     def to_dataset(X_part: np.ndarray, y_part: np.ndarray) -> TensorDataset:
         return TensorDataset(
-            torch.tensor(X_part, dtype=torch.float32),
-            torch.tensor(y_part, dtype=torch.long),
+            torch.tensor(X_part, dtype=torch.float32).to(device),
+            torch.tensor(y_part, dtype=torch.long).to(device),
         )
 
     train_ds = to_dataset(X_train, y_train)
@@ -60,9 +63,6 @@ def load_two_moons(
     )
     val_loader  = DataLoader(val_ds,  batch_size=batch_eval, shuffle=False)
     test_loader = DataLoader(test_ds, batch_size=batch_eval, shuffle=False)
-
-    if device is None:
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     return {
         "X": X, "y": y,
@@ -100,8 +100,8 @@ def load_splits(path: str, device: torch.device | None = None) -> Dict[str, obje
 
     def to_dataset(X_part, y_part):
         return TensorDataset(
-            torch.tensor(X_part, dtype=torch.float32),
-            torch.tensor(y_part, dtype=torch.long),
+            torch.tensor(X_part, dtype=torch.float32).to(device),
+            torch.tensor(y_part, dtype=torch.long).to(device),
         )
 
     X_train, X_val, X_test = arrs["X_train"], arrs["X_val"], arrs["X_test"]
@@ -147,8 +147,8 @@ def load_sinusoid(
 
     def make_split(X_np: np.ndarray) -> tuple:
         y_np = (np.sin(X_np) + np.random.randn(*X_np.shape) * sigma_noise).astype(np.float32)
-        X_t = torch.tensor(X_np, dtype=torch.float32)
-        y_t = torch.tensor(y_np, dtype=torch.float32)
+        X_t = torch.tensor(X_np, dtype=torch.float32).to(device)
+        y_t = torch.tensor(y_np, dtype=torch.float32).to(device)
         return X_t, y_t
 
     # Train

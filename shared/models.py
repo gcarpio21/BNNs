@@ -152,7 +152,12 @@ try:
 
     def _patched_ll_load(self, state_dict):
         sd = state_dict.copy() if isinstance(state_dict, dict) else state_dict
-        if isinstance(sd, dict) and 'data' in sd:
+        # Only drop the stored data batch if the last layer is already resolved
+        # (that's when re-running _find_last_layer raises "already known"). If it's
+        # still unresolved, load_state_dict needs this batch to detect it — that's
+        # the library's documented/tested mechanism (one-sample forward pass), not
+        # something to bypass.
+        if isinstance(sd, dict) and 'data' in sd and self.model.last_layer is not None:
             sd['data'] = None
         try:
             return _orig_ll_load(self, sd)
