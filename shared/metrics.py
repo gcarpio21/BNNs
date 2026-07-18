@@ -8,10 +8,14 @@ from scipy.stats import norm as _norm
 # Classification metrics (two_moons and any binary/multiclass task)
 # ---------------------------------------------------------------------------
 
+def entropy_per_example(probs: np.ndarray, eps: float = 1e-12) -> np.ndarray:
+    """Entropy along the last axis, no reduction (one value per row)."""
+    return -(probs * np.log(probs + eps)).sum(axis=-1)
+
+
 def predictive_entropy(probs: np.ndarray, eps: float = 1e-12) -> float:
     """Average predictive entropy for a (N, C) probs array."""
-    ent = -np.sum(probs * np.log(probs + eps), axis=1)
-    return float(ent.mean())
+    return float(entropy_per_example(probs, eps).mean())
 
 
 def brier_score(probs: np.ndarray, labels: np.ndarray) -> float:
@@ -93,45 +97,13 @@ def calibration_curve_data(
 def uncertainty_calibration_summary(
     probs: np.ndarray, labels: np.ndarray, n_bins: int = 15
 ) -> dict:
-    """Summarize calibration and expected-vs-actual uncertainty behaviour."""
-    curve       = calibration_curve_data(probs, labels, n_bins=n_bins)
+    """Calibration summary matching Laplace Redux's reported classification metrics
+    (ECE, Brier score, confidence; see Fig. 6/10 in Daxberger et al. 2021)."""
     confidences = probs.max(axis=1)
-    errors      = (probs.argmax(axis=1) != labels).astype(float)
-
-    expected_uncertainty = 1.0 - confidences
-    actual_uncertainty   = errors
-
-    if len(curve["count"]) > 0:
-        weights        = curve["count"] / curve["count"].sum()
-        uncertainty_gap = np.abs(curve["expected_uncertainty"] - curve["actual_error"])
-        uncertainty_gap_mae = float(np.average(uncertainty_gap, weights=weights))
-        uncertainty_gap_mse = float(np.average(uncertainty_gap ** 2, weights=weights))
-
-        if (len(curve["expected_uncertainty"]) > 1
-                and np.std(curve["expected_uncertainty"]) > 0
-                and np.std(curve["actual_error"]) > 0):
-            uncertainty_corr = float(
-                np.corrcoef(curve["expected_uncertainty"], curve["actual_error"])[0, 1]
-            )
-        else:
-            uncertainty_corr = float("nan")
-
-        max_gap = float(np.max(uncertainty_gap))
-    else:
-        uncertainty_gap_mae = uncertainty_gap_mse = uncertainty_corr = max_gap = float("nan")
-
     return {
-        "ECE":                               expected_calibration_error(probs, labels, n_bins=n_bins),
-        "Classwise_ECE":                     classwise_ece(probs, labels, n_bins=n_bins),
-        "Brier_Score":                       brier_score(probs, labels),
-        "Mean_Confidence":                   float(confidences.mean()),
-        "1 - Confidence":                    float(expected_uncertainty.mean()),
-        "Mean_Entropy":                      predictive_entropy(probs),
-        "ExpectedVsActual_Uncertainty_MAE":  uncertainty_gap_mae,
-        "ExpectedVsActual_Uncertainty_MSE":  uncertainty_gap_mse,
-        "ExpectedVsActual_Uncertainty_Corr": uncertainty_corr,
-        "Max_Binned_Uncertainty_Gap":        max_gap,
-        "Mean_Actual_Error":                 float(actual_uncertainty.mean()),
+        "ECE":              expected_calibration_error(probs, labels, n_bins=n_bins),
+        "Brier_Score":      brier_score(probs, labels),
+        "Mean_Confidence":  float(confidences.mean()),
     }
 
 
@@ -154,12 +126,12 @@ def standard_metrics(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) ->
 # ---------------------------------------------------------------------------
 
 def regression_metrics(y_true, mean, total_std, n_levels: int = 20) -> dict:
-    """Regression metrics following Kuleshov et al. (2018) and Daxberger et al. (2021).
+    """Regression metrics matching Laplace Redux's reported metrics: RMSE (their MSE,
+    rooted), NLL, and two-sided calibration MAE (see Fig. 6/10 in Daxberger et al. 2021).
 
     Calibration uses two-sided prediction intervals: for each confidence level c_j,
     the observed coverage is the fraction of test points where |z_i| <= Phi^{-1}((1+c_j)/2).
     The calibration error is the mean absolute gap between expected and observed coverage.
-    This matches the regression calibration error used in Laplace Redux (reference [71]).
     """
     y   = np.asarray(y_true,     dtype=float).ravel()
     mu  = np.asarray(mean,       dtype=float).ravel()
@@ -167,7 +139,6 @@ def regression_metrics(y_true, mean, total_std, n_levels: int = 20) -> dict:
     resid = y - mu
 
     rmse = float(np.sqrt(np.mean(resid ** 2)))
-    mae  = float(np.mean(np.abs(resid)))
     nll  = float(np.mean(0.5 * np.log(2.0 * np.pi * sd ** 2) + resid ** 2 / (2.0 * sd ** 2)))
 
     z_abs       = np.abs(resid / sd)
@@ -175,33 +146,17 @@ def regression_metrics(y_true, mean, total_std, n_levels: int = 20) -> dict:
     observed    = np.array([
         float(np.mean(z_abs <= _norm.ppf((1.0 + c) / 2.0))) for c in conf_levels
     ])
-    gap      = np.abs(observed - conf_levels)
-    cal_corr = float(np.corrcoef(conf_levels, observed)[0, 1]) if observed.std() > 0 else float("nan")
+    gap = np.abs(observed - conf_levels)
 
     return {
-        "RMSE":               rmse,
-        "MAE":                mae,
-        "NLL":                nll,
-        "Calibration_MAE":    float(gap.mean()),
-        "Calibration_MSE":    float((gap ** 2).mean()),
-        "Calibration_Corr":   cal_corr,
-        "Max_Calibration_Gap": float(gap.max()),
-        "Coverage_68":        float(np.mean(z_abs <= 1.0)),
-        "Coverage_95":        float(np.mean(z_abs <= 1.959963984540054)),
+        "RMSE":            rmse,
+        "NLL":             nll,
+        "Calibration_MAE": float(gap.mean()),
     }
 
 
-def regression_uncertainty_stats(epistemic_std, aleatoric_std) -> dict:
-    """Canonical uncertainty decomposition for regression notebooks.
-
-    Total predictive std = sqrt(epistemic^2 + aleatoric^2).
+def combine_predictive_std(epistemic_std, aleatoric_std):
+    """Total predictive std = sqrt(epistemic^2 + aleatoric^2). Works on numpy
+    arrays, python floats, or torch tensors, with no numpy coercion.
     """
-    epi = np.asarray(epistemic_std, dtype=float).ravel()
-    ale = np.asarray(aleatoric_std, dtype=float)
-    ale = np.full_like(epi, float(ale)) if ale.ndim == 0 else ale.ravel()
-    total = np.sqrt(epi ** 2 + ale ** 2)
-    return {
-        "Mean_Epistemic_Std": float(epi.mean()),
-        "Mean_Aleatoric_Std": float(ale.mean()),
-        "Mean_Total_Std":     float(total.mean()),
-    }
+    return (epistemic_std ** 2 + aleatoric_std ** 2) ** 0.5

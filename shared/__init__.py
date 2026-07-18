@@ -13,12 +13,16 @@ from .datasets import (
 from .models import (
     TinyMLP,
     train_map,
-    eval_probs,
-    predict_probs_from_model_or_fn,
-    safe_load_laplace_state,
+    get_sinusoid_mlp,
+    la_predict,
+    build_laplace_variant,
+    bt_mc_forward,
+    bt_predict,
+    optimize_noise_std_bt,
 )
 from .metrics import (
     predictive_entropy,
+    entropy_per_example,
     brier_score,
     expected_calibration_error,
     classwise_ece,
@@ -26,5 +30,9 @@ from .metrics import (
     uncertainty_calibration_summary,
     standard_metrics,
     regression_metrics,
-    regression_uncertainty_stats,
+    combine_predictive_std,
+)
+from .plotting import (
+    plot_boundary,
+    plot_reliability_diagrams,
 )

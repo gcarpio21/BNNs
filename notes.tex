@@ -1,0 +1,909 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.1cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black]{hyperref}
+
+\setlist{nosep,leftmargin=1.5em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\emergencystretch=2.5em
+\hyphenpenalty=40
+
+\definecolor{codebg}{RGB}{246,246,246}
+\definecolor{kw}{RGB}{0,80,160}
+\definecolor{cm}{RGB}{90,120,90}
+\lstset{
+  language=Python, basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{kw}, commentstyle=\color{cm}\itshape,
+  backgroundcolor=\color{codebg}, frame=single, framerule=0pt,
+  breaklines=true, columns=fullflexible, keepspaces=true,
+  aboveskip=4pt, belowskip=4pt, showstringspaces=false
+}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\KL}{\mathrm{KL}}
+\newcommand{\map}{\mathrm{MAP}}
+\newcommand{\takeaway}[1]{\textbf{One-line takeaway:} \emph{#1}}
+
+\title{\vspace{-1.2cm}Presentation Notes: BNN Uncertainty Notebooks\\
+\large Metrics (ECE, coverage, confidence, $z$-scores), theory, and the exact
+\code{laplace-torch} / \code{bayesian-torch} usage in this repo}
+\author{}
+\date{July 2026 --- verified against the code in \code{shared/metrics.py}, the six poster
+notebooks, the local \code{Laplace/} source, and the installed \code{bayesian\_torch} package}
+
+\begin{document}
+\maketitle
+\vspace{-1.4cm}
+
+\section*{How to use this document}
+\begin{itemize}
+\item Bullet points, grouped by topic, meant as preparation and backup material for presenting the
+  poster notebooks. Sections~\ref{sec:ece} and~\ref{sec:regcal} (ECE, coverage, confidence levels,
+  $z$-scores) and Sections~\ref{sec:lacode} and~\ref{sec:btcode} (library usage) are deliberately
+  the deepest --- they cover the questions most likely to be asked and hardest to improvise.
+\item Every formula and default value below was checked against the actual code, not quoted from
+  memory: metric definitions from \code{shared/metrics.py}, Laplace behaviour from the local
+  \code{Laplace/laplace/*.py} source, Bayesian-Torch behaviour from the installed package in the
+  \code{bnn} conda env, and per-notebook settings from the notebooks themselves.
+\item Code map: \code{shared/metrics.py} holds all metrics; \code{shared/models.py} holds
+  \code{TinyMLP} and \code{train\_map}; \code{shared/datasets.py} holds \code{load\_two\_moons}
+  and \code{load\_sinusoid}; the notebooks live under the \code{bayesian/}, \code{laplace/} and
+  \code{comparison/} subfolders of \code{notebooks/}.
+\end{itemize}
+
+\tableofcontents
+
+% ==================================================================================
+\section{The Bayesian picture in one page}\label{sec:bayes}
+\takeaway{Both libraries approximate the same intractable object --- the weight posterior
+$p(\theta\mid\mathcal{D})$ --- one by a Gaussian around a trained point (Laplace), one by a trained
+factorized Gaussian (variational inference).}
+
+\begin{itemize}
+\item \textbf{The three central quantities.} For weights $\theta$ and data
+  $\mathcal{D}=\{(x_i,y_i)\}_{i=1}^N$:
+  \[
+  \underbrace{p(\theta\mid\mathcal{D})}_{\text{posterior}}
+  \;=\;
+  \frac{\overbrace{p(\mathcal{D}\mid\theta)}^{\text{likelihood}}\;
+        \overbrace{p(\theta)}^{\text{prior}}}
+       {\underbrace{p(\mathcal{D})=\int p(\mathcal{D}\mid\theta)\,p(\theta)\,d\theta}_{\text{marginal likelihood / evidence}}}
+  \]
+\item \textbf{Why we want the posterior:} predictions become an average over all plausible
+  networks, not a single network:
+  \[
+  p(y^*\mid x^*,\mathcal{D}) \;=\; \int p(y^*\mid x^*,\theta)\; p(\theta\mid\mathcal{D})\, d\theta .
+  \]
+  Disagreement between plausible networks $=$ \emph{epistemic} uncertainty.
+\item \textbf{Why it is intractable:} the integral in $p(\mathcal{D})$ is over millions of
+  dimensions and the likelihood is a deep net --- no closed form, so we approximate
+  (Laplace approximation here, variational inference there).
+\item \textbf{Two kinds of uncertainty} (used everywhere in the notebooks):
+  \begin{itemize}
+  \item \emph{Aleatoric}: noise in the data itself ($\sigma_{\text{noise}}=0.3$ for the sinusoid by
+    construction; estimated from validation residuals for PovertyMap). Irreducible.
+  \item \emph{Epistemic}: uncertainty about $\theta$ because data is finite. Shrinks with more
+    data; should \emph{grow} away from the training distribution (this is what the OOD plots test).
+  \item Combination in all regression notebooks (\code{shared.regression\_uncertainty\_stats}):
+    $\sigma_{\text{total}}=\sqrt{\sigma_{\text{epi}}^2+\sigma_{\text{ale}}^2}$
+    (valid because the predictive is modelled as Gaussian: variances of independent components add).
+  \end{itemize}
+\item \textbf{MAP and weight decay.} The \emph{maximum a posteriori} point is
+  $\theta_\map=\arg\max_\theta\,[\log p(\mathcal{D}\mid\theta)+\log p(\theta)]$.
+  With a Gaussian prior $p(\theta)=\mathcal{N}(0,\delta^{-1}I)$,
+  $-\log p(\theta)=\tfrac{\delta}{2}\lVert\theta\rVert^2+\text{const}$ --- i.e.\ ordinary L2 weight
+  decay. That is why a normally trained network is called ``MAP'' throughout, and why prior
+  precision $\delta$ and weight decay $\lambda$ are interchangeable currencies.
+  \emph{Bookkeeping detail used in the notebooks:} optimizers apply weight decay to the
+  \emph{mean} batch loss, so the equivalent prior precision on the \emph{sum} log-likelihood scale
+  is $\delta=\lambda\cdot S$ where $S$ is whatever the loss normalizes by ($N$ or batch size) ---
+  this is exactly why the notebooks set \code{prior\_precision = WEIGHT\_DECAY * N} (PovertyMap) or
+  \code{* batch\_size} (Two Moons BNN).
+\item \textbf{MAP alone has no weight uncertainty} --- its predictive spread is whatever aleatoric
+  noise you bolt on. It is the baseline both methods must beat \emph{on uncertainty quality}, not
+  necessarily on RMSE/accuracy.
+\end{itemize}
+
+% ==================================================================================
+\section{Classification metrics; confidence and ECE in depth}\label{sec:ece}
+\takeaway{ECE answers one question: when the model says ``I am $80\%$ sure'', is it right $80\%$ of
+the time? It bins predictions by confidence and compares confidence to accuracy inside each bin.}
+
+All classification numbers come from \code{shared.metrics.standard\_metrics} (single definition
+shared by Laplace and Bayesian notebooks, so numbers cannot drift). Inputs: \code{probs}
+$\in\mathbb{R}^{N\times C}$ (the \emph{posterior-averaged} predictive probabilities) and integer
+labels.
+
+\subsection{Confidence, accuracy, and the basic scores}
+\begin{itemize}
+\item \textbf{Confidence of one prediction} $=$ the winning probability:
+  $\mathrm{conf}_i=\max_c p_i(c)$; the prediction is $\hat y_i=\arg\max_c p_i(c)$.
+  For $C=2$ classes, $\mathrm{conf}_i\in[0.5,1]$ by construction --- remember this when reading
+  reliability diagrams (the left half of the $x$-axis is empty \emph{necessarily}).
+\item \textbf{Accuracy} $=\frac1N\sum_i \mathbf{1}[\hat y_i=y_i]$.
+\item \textbf{NLL (negative log-likelihood / cross-entropy)}
+  $=-\frac1N\sum_i\log p_i(y_i)$ (code adds $10^{-12}$ inside the log for safety). Punishes
+  \emph{confidently wrong} predictions without bound; a strictly \emph{proper scoring rule}
+  (uniquely minimized by the true conditional distribution), so it measures accuracy and
+  calibration jointly.
+\item \textbf{Brier score} $=\frac{1}{NC}\sum_i\sum_c (p_i(c)-\mathbf{1}[y_i=c])^2$ --- mean squared
+  error against the one-hot label. Also proper; bounded; less dominated by extreme errors than NLL.
+  \emph{Note the normalization:} the code averages over classes too, so binary values are half of
+  the ``sum over classes'' convention seen in some papers.
+\item \textbf{Mean entropy} $=\frac1N\sum_i H(p_i)$ with $H(p)=-\sum_c p(c)\log p(c)$: how uncertain
+  the model \emph{claims} to be, independent of correctness.
+\end{itemize}
+
+\subsection{ECE --- exact definition as implemented}
+\begin{itemize}
+\item Partition $[0,1]$ into $B=15$ equal-width bins; point $i$ falls in bin $b$ if
+  $\mathrm{conf}_i\in(\text{low}_b,\text{high}_b]$ (half-open on the left; empty bins are skipped).
+\item Per bin: $\mathrm{acc}(b)=$ accuracy of the points in $b$; $\mathrm{conf}(b)=$ their mean
+  confidence.
+\item
+  \[
+  \mathrm{ECE}\;=\;\sum_{b=1}^{B}\frac{n_b}{N}\,\bigl|\mathrm{acc}(b)-\mathrm{conf}(b)\bigr|
+  \qquad(n_b=\text{points in bin }b).
+  \]
+  A weighted average of per-bin calibration gaps; $0=$ perfectly calibrated, and e.g.\
+  $\mathrm{ECE}=0.05$ reads as ``on average the stated confidence is off by 5 percentage points.''
+\item The exact loop from \code{shared/metrics.py} (\code{expected\_calibration\_error}):
+\begin{lstlisting}
+confidences = probs.max(axis=1); preds = probs.argmax(axis=1)
+bins = np.linspace(0.0, 1.0, n_bins + 1)          # n_bins = 15
+for i in range(n_bins):
+    low, high = bins[i], bins[i + 1]
+    mask = (confidences > low) & (confidences <= high)
+    if not np.any(mask): continue
+    acc_bin  = (preds[mask] == labels[mask]).mean()
+    conf_bin = confidences[mask].mean()
+    ece += (mask.sum() / N) * abs(conf_bin - acc_bin)
+\end{lstlisting}
+\item \textbf{Worked micro-example} ($N=2000$): bin $(0.80,0.867]$ holds $120$ points with mean
+  confidence $0.83$ but only $75\%$ of them are classified correctly. Contribution:
+  $\frac{120}{2000}\cdot|0.83-0.75|=0.06\cdot0.08=0.0048$. Sum such contributions over all
+  populated bins $\Rightarrow$ ECE.
+\item \textbf{Direction of miscalibration:} $\mathrm{conf}(b)>\mathrm{acc}(b)$ in the populated bins
+  $\Rightarrow$ \emph{overconfident} (the standard deep-net failure); the reverse $\Rightarrow$
+  underconfident. ECE itself takes absolute values, so read the direction off the reliability
+  diagram, not off the ECE number.
+\item \textbf{Classwise ECE} (also reported): one-vs-rest ECE per class, averaged. Guards against
+  the max-prob view hiding per-class miscalibration; for two moons ($C=2$) it is nearly redundant
+  with ECE but kept for consistency.
+\item \textbf{Reliability diagram (classification)} $=$ the picture behind ECE: $x=$ mean
+  confidence per bin, $y=$ accuracy per bin, diagonal $=$ perfect. In the 5-seed notebooks the
+  curve is the \emph{mean across seeds} with a $\pm1\sigma$ band (per-seed binning, then
+  \code{nanmean}/\code{nanstd} over seeds so bins empty in one seed don't poison the average).
+  Curve \emph{below} the diagonal $=$ overconfident.
+\end{itemize}
+
+\subsection{ECE pitfalls worth admitting before someone asks}
+\begin{itemize}
+\item \textbf{ECE is not a proper score.} A model that ignores the input and always predicts the
+  class prior with matching confidence gets ECE $\approx 0$ while being useless. Calibration
+  $\ne$ usefulness --- that is exactly why accuracy, NLL and Brier are reported alongside.
+\item \textbf{Binning is a modelling choice.} The value depends on $B$ (here fixed at 15,
+  the standard choice from Guo et al.\ 2017); too few bins hides miscalibration
+  (gaps of opposite sign cancel \emph{within} a bin), too many makes per-bin accuracy noisy.
+  All methods are compared under the \emph{same} binning, which is what makes the comparison fair.
+\item \textbf{Population concentration.} On an easy dataset most points land in the top bin, so ECE
+  is dominated by that single bin; the reliability diagram shows the situation more honestly than
+  the scalar.
+\item \textbf{What goes in matters:} the notebooks compute ECE on the \emph{MC-averaged} predictive
+  (mean of 50 softmax samples for BNNs; probit-approximated predictive for Laplace) --- i.e.\ the
+  calibration of the actual deployed predictive distribution, not of a single weight sample.
+\item \textbf{Uncertainty-gap variant.} \code{uncertainty\_calibration\_summary} additionally
+  reports the binned $|(1-\mathrm{conf})-(1-\mathrm{acc})|$ statistics
+  (\code{ExpectedVsActual\_Uncertainty\_MAE/MSE/Corr}) --- same information as ECE, phrased as
+  ``claimed uncertainty vs.\ observed error rate''.
+\end{itemize}
+
+\subsection{Epistemic uncertainty for classification (the OOD maps)}
+\begin{itemize}
+\item The OOD heat maps use the \emph{mutual information} (BALD) decomposition over $S$ posterior
+  samples $p_s(\cdot\mid x)$:
+  \[
+  \underbrace{H\!\Bigl(\tfrac1S\sum_s p_s\Bigr)}_{\text{total (predictive entropy)}}
+  \;-\;
+  \underbrace{\tfrac1S\sum_s H(p_s)}_{\text{expected aleatoric}}
+  \;=\;
+  \text{epistemic (MI)} .
+  \]
+  Intuition: total uncertainty is high on the class boundary \emph{and} OOD; the subtraction removes
+  the boundary part (where every sample individually is uncertain in the same way) and keeps the
+  \emph{disagreement between samples} --- the epistemic part.
+\item BNN samples $=$ stochastic forward passes; Laplace samples come from
+  \code{la.predictive\_samples} with \code{pred\_type="glm"} (draws from the Gaussian over logits,
+  pushed through softmax). 30--50 samples per grid point in the notebooks.
+\end{itemize}
+
+% ==================================================================================
+\section{Regression calibration in depth: $z$-scores, confidence levels, coverage}\label{sec:regcal}
+\takeaway{Standardize each residual by the predicted std ($z$-score). If the predictive
+distributions are honest, $z\sim\mathcal{N}(0,1)$, so the fraction inside any central interval is
+known in advance --- coverage compares that promise to reality, level by level.}
+
+All regression numbers come from \code{shared.metrics.regression\_metrics(y, mean, total\_std)},
+following Kuleshov et al.\ (2018) and Daxberger et al.\ (2021). The predictive for a test point is
+modelled as $\mathcal{N}(\mu_i,\sigma_i^2)$ with $\sigma_i=$ \emph{total} std
+($\sqrt{\text{epistemic}^2+\text{aleatoric}^2}$; see the per-notebook table for what enters it).
+
+\subsection{Point metrics and Gaussian NLL}
+\begin{itemize}
+\item \textbf{RMSE} $=\sqrt{\frac1N\sum_i(y_i-\mu_i)^2}$, \textbf{MAE} $=\frac1N\sum_i|y_i-\mu_i|$:
+  quality of the mean only, uncertainty ignored.
+\item \textbf{Gaussian NLL}:
+  \[
+  \mathrm{NLL}=\frac1N\sum_i\Bigl[\tfrac12\log(2\pi\sigma_i^2)+\frac{(y_i-\mu_i)^2}{2\sigma_i^2}\Bigr]
+  \;=\;\frac1N\sum_i\Bigl[\log\sigma_i+\tfrac12 z_i^2\Bigr]+\tfrac12\log 2\pi .
+  \]
+  The second form (in terms of the $z$-score, below) is the useful one to say out loud:
+  \emph{NLL $=$ sharpness penalty ($\log\sigma$) $+$ calibration penalty ($z^2/2$)}. Too-small
+  $\sigma$ explodes $z^2$; too-large $\sigma$ pays through $\log\sigma$. For fixed means it is
+  minimized when $\sigma_i^2$ equals the actual squared error --- honesty is optimal (proper
+  scoring rule).
+\item Negative NLL values are normal here: for a density, $-\log p$ can be negative when
+  $\sigma<1/\sqrt{2\pi}\approx0.40$ (e.g.\ the sinusoid's $\sigma\approx0.3$) --- do not read NLL
+  like a probability.
+\end{itemize}
+
+\subsection{The $z$-score --- the single object behind all the calibration metrics}
+\begin{itemize}
+\item Definition: $z_i=\dfrac{y_i-\mu_i}{\sigma_i}$ (code clips $\sigma_i\ge10^{-12}$ first).
+  It answers: \emph{by how many of its own predicted standard deviations did the model miss?}
+\item \textbf{Key fact:} if the predictive $\mathcal{N}(\mu_i,\sigma_i^2)$ is correct, then
+  $z_i\sim\mathcal{N}(0,1)$, for every $i$, regardless of the input. All calibration checks below
+  are tests of this single statement.
+\item Diagnostic reading: $|z|$ systematically small $\Rightarrow$ $\sigma$ too large
+  (underconfident); $|z|$ systematically large $\Rightarrow$ overconfident; asymmetric $z$
+  $\Rightarrow$ biased mean (this last one is invisible to the two-sided metrics --- see the
+  Kuleshov one-sided variant below).
+\end{itemize}
+
+\subsection{Confidence levels and the $(1+c)/2$ quantile --- why that formula}
+\begin{itemize}
+\item A \textbf{confidence level} $c\in(0,1)$ names the \emph{central} two-sided interval that
+  should contain the truth with probability $c$:
+  \[
+  \bigl[\mu_i - z^*(c)\,\sigma_i,\;\; \mu_i + z^*(c)\,\sigma_i\bigr],
+  \qquad z^*(c)=\Phi^{-1}\!\Bigl(\frac{1+c}{2}\Bigr),
+  \]
+  where $\Phi$ is the standard normal CDF (\code{scipy.stats.norm.ppf} in code).
+\item \textbf{Why $(1+c)/2$:} a central interval leaves probability $1-c$ outside, split equally,
+  $(1-c)/2$ per tail. The upper endpoint therefore sits at cumulative probability
+  $c+\frac{1-c}{2}=\frac{1+c}{2}$. Memorize with $c=0.95$: upper tail cut at $0.975$,
+  $z^*=\Phi^{-1}(0.975)=1.96$.
+\item Handy values to have ready:
+  \begin{center}\small
+  \begin{tabular}{lcccc}
+  \toprule
+  level $c$ & $0.50$ & $0.68$ & $0.90$ & $0.95$\\
+  $(1+c)/2$ & $0.750$ & $0.840$ & $0.950$ & $0.975$\\
+  $z^*(c)=\Phi^{-1}((1{+}c)/2)$ & $0.674$ & $0.994$ & $1.645$ & $1.960$\\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+\item Membership test: $y_i$ is inside the level-$c$ interval $\iff |z_i|\le z^*(c)$. This is the
+  one-liner that connects $z$-scores to coverage.
+\end{itemize}
+
+\subsection{Observed coverage, the calibration curve, and Cal MAE}
+\begin{itemize}
+\item \textbf{Observed coverage} at level $c$: the fraction of test points actually inside their
+  own level-$c$ interval,
+  \[
+  \widehat{\mathrm{cov}}(c)=\frac1N\sum_{i=1}^{N}\mathbf{1}\bigl[|z_i|\le z^*(c)\bigr].
+  \]
+  Perfect calibration $\iff \widehat{\mathrm{cov}}(c)=c$ for all $c$ (because
+  $P(|z|\le z^*(c))=c$ for a standard normal).
+\item The code evaluates a \textbf{grid of 20 levels} $c\in\{0.05,0.0974,\dots,0.95\}$
+  (\code{np.linspace(0.05, 0.95, 20)}) and reports:
+  \begin{itemize}
+  \item \code{Calibration\_MAE} $=\frac{1}{20}\sum_j|\widehat{\mathrm{cov}}(c_j)-c_j|$ --- the
+    number on the poster. Reads as ``average promised-vs-delivered coverage gap'' (e.g.\ 0.03 $=$
+    3 percentage points).
+  \item \code{Calibration\_MSE}, \code{Max\_Calibration\_Gap} (worst level), and
+    \code{Calibration\_Corr} (Pearson correlation of the curve with the levels --- shape sanity
+    check, near 1 for anything reasonable).
+  \end{itemize}
+\item The exact code (condensed from \code{regression\_metrics}):
+\begin{lstlisting}
+z_abs       = np.abs((y - mu) / sd)                # sd = total predictive std, clipped >= 1e-12
+conf_levels = np.linspace(0.05, 0.95, 20)
+observed    = np.array([np.mean(z_abs <= _norm.ppf((1.0 + c) / 2.0)) for c in conf_levels])
+Calibration_MAE = np.abs(observed - conf_levels).mean()
+Coverage_68 = np.mean(z_abs <= 1.0)                # nominal 0.6827  (the "1 sigma" rule)
+Coverage_95 = np.mean(z_abs <= 1.959963984540054)  # nominal 0.95    (z* for c = 0.95)
+\end{lstlisting}
+\item \textbf{\code{Coverage\_68} / \code{Coverage\_95} precisely:} two named points of the same
+  curve, defined by fixed $z$ thresholds. Careful detail: the 68 one uses $|z|\le1$ exactly, whose
+  nominal value is $\Phi(1)-\Phi(-1)=0.6827$ (not $0.68$; the level-$0.68$ threshold would be
+  $0.994$); the 95 one uses $z^*=1.95996\ldots$, nominal exactly $0.95$. Compare the reported
+  numbers against $0.6827$ and $0.95$.
+\item \textbf{Worked micro-example:} $c=0.90\Rightarrow z^*=1.645$. Out of $200$ test points,
+  $178$ have $|z_i|\le1.645$: $\widehat{\mathrm{cov}}(0.90)=0.89$, gap $0.01$ at this level. Do
+  this for all 20 levels and average $\Rightarrow$ Cal MAE.
+\item \textbf{Reliability diagram (regression)} $=$ the same curve drawn: $x=$ expected confidence
+  $c$, $y=\widehat{\mathrm{cov}}(c)$, diagonal $=$ perfect. 5-seed notebooks draw mean
+  $\pm1\sigma$ across seeds. \emph{Reading:} curve \textbf{below} the diagonal $\Rightarrow$
+  intervals capture fewer points than promised $\Rightarrow$ intervals too narrow $\Rightarrow$
+  \textbf{overconfident}; above the diagonal $\Rightarrow$ too wide $\Rightarrow$ underconfident.
+  Same reading direction as the classification diagram.
+\end{itemize}
+
+\subsection{The one-sided (Kuleshov Eq.~3) variant --- and why the numbers differ from Redux}
+\begin{itemize}
+\item The PovertyMap notebook also implements \code{compute\_kuleshov\_calibration}: for
+  $p\in\{0,\tfrac19,\dots,1\}$ ($M{=}10$), let $\hat p(p)=\frac1N\#\{i: F_i(y_i)\le p\}$ where
+  $F_i(y_i)=\Phi\bigl(\frac{y_i-\mu_i}{\sigma_i}\bigr)$ is the predictive CDF evaluated at the
+  truth; the score is $T\cdot\frac1M\sum_j(p_j-\hat p_j)^2$ ($T=N$, matching Laplace Redux's
+  \code{get\_calib\_regression} exactly).
+\item Statistical content: $F_i(y_i)$ should be $\mathrm{Uniform}(0,1)$ under perfect calibration
+  (the probability integral transform); this checks the whole CDF including \emph{sign} ---
+  it detects a biased mean that the two-sided $|z|$ version cannot see.
+\item \textbf{Not numerically comparable} to \code{Calibration\_MAE}: one-sided vs.\ two-sided,
+  squared vs.\ absolute gaps, and a factor of $T$. When comparing against numbers in the Laplace
+  Redux paper, use this metric; on the poster, Cal~MAE is used consistently across all three
+  datasets.
+\end{itemize}
+
+\subsection{Honest limitations to volunteer}
+\begin{itemize}
+\item \textbf{Average (marginal) calibration only.} Coverage aggregates over the whole test set.
+  A model with one \emph{constant} $\sigma$ (the MAP baseline!) is perfectly calibrated whenever
+  the residual distribution is homoscedastic Gaussian --- while being useless for flagging
+  \emph{which} inputs are risky. That is why calibration is reported \emph{together with}
+  sharpness (\code{Mean\_Total\_Std}, \code{Mean\_Epistemic\_Std}) and the ID/OOD epistemic ratio.
+\item \textbf{Calibration is not accuracy:} Cal MAE can be excellent while RMSE is poor, and NLL can
+  disagree with Cal MAE (NLL is dominated by the worst overconfident points; Cal MAE treats all
+  levels equally).
+\item Everything assumes a \emph{Gaussian} predictive shape; coverage of a heavy-tailed truth by a
+  Gaussian can be calibrated at 68/95 and still wrong in the extreme tails.
+\end{itemize}
+
+% ==================================================================================
+\section{The deterministic baseline (``MAP'') --- exact status per notebook}\label{sec:map}
+\takeaway{``MAP'' means three slightly different things in this repo --- know which one you are
+defending.}
+
+\begin{itemize}
+\item \textbf{Two Moons, Laplace notebooks} (\code{shared.train\_map}): Adam, \code{lr=1e-3},
+  \code{weight\_decay=1e-4}, 300 epochs, \emph{no} early stopping $\Rightarrow$ a genuine
+  (approximate) posterior mode: correct expansion point for the Laplace approximation.
+\item \textbf{Two Moons, Bayesian notebook}: same \code{train\_map} but \emph{with} early stopping
+  (patience 25 on validation loss); the result is only used as the MOPED warm start, where ``good
+  pretrained weights'' is all that is required.
+\item \textbf{Sinusoid (all three notebooks)}: plain Adam on MSE, \code{lr=1e-2}, 1000--2000
+  epochs, \textbf{no weight decay} $\Rightarrow$ strictly a \emph{maximum-likelihood} point, not
+  MAP (no prior term in the training loss). In practice a fine expansion point; the Gaussian prior
+  enters afterwards through the Laplace $\delta$ tuning.
+\item \textbf{PovertyMap}: Adam with \code{weight\_decay=1e-4} \emph{but} ReduceLROnPlateau $+$
+  early stopping (patience 20, $\le25$ epochs) $\Rightarrow$ the returned weights are \emph{not} a
+  loss minimum; ``MAP'' is a label of convenience. If challenged: call it the ``deterministic
+  baseline''; the early stopping is standard practice for this benchmark and the same weights are
+  what Laplace wraps, so the comparison is internally consistent.
+\item \textbf{MAP's uncertainty} (PovertyMap): a single constant
+  $\hat\sigma=\sqrt{\frac{1}{N_{\text{val}}}\sum(\hat y-y)^2}$ from ID-validation residuals (the
+  Gaussian MLE of the noise). Constant-$\sigma$ predictive $\Rightarrow$ can score a decent
+  Cal~MAE (see Section~\ref{sec:regcal} limitations) but has zero input-dependent uncertainty ---
+  the right framing for why the Bayesian methods matter even when MAP's calibration looks fine.
+\end{itemize}
+
+% ==================================================================================
+\section{Laplace approximation --- theory}\label{sec:latheory}
+\takeaway{Fit a Gaussian to the posterior at the MAP: mean $=$ the trained weights, covariance $=$
+inverse curvature of the loss. Post-hoc, cheap, and it hands you the marginal likelihood almost
+for free.}
+
+\begin{itemize}
+\item \textbf{Derivation in two lines.} Second-order Taylor expansion of the log-posterior at its
+  mode ($\nabla=0$ there):
+  $\log p(\theta\mid\mathcal{D}) \approx \log p(\theta_\map\mid\mathcal{D})
+  -\tfrac12(\theta-\theta_\map)^\top \Lambda (\theta-\theta_\map)$
+  with $\Lambda=-\nabla^2\log p(\theta\mid\mathcal{D})\big|_{\theta_\map}$. Exponentiating gives
+  \[
+  p(\theta\mid\mathcal{D})\;\approx\;\mathcal{N}\bigl(\theta_\map,\;\Sigma\bigr),\qquad
+  \Sigma=\Lambda^{-1}.
+  \]
+\item \textbf{Posterior precision as implemented} (regression, Gaussian prior
+  $\mathcal{N}(0,\delta^{-1}I)$):
+  $\;\Lambda = \frac{1}{\sigma_{\text{noise}}^2}H + \delta I$, where $H$ is the accumulated
+  curvature of the data term. (In the library: \code{posterior\_precision = H * H\_factor +
+  prior\_precision\_diag}, \code{H\_factor} $=1/\sigma^2$.) For classification $H$ is used as-is.
+\item \textbf{GGN instead of the true Hessian.} \code{laplace-torch} uses the generalized
+  Gauss--Newton matrix $H_{\text{GGN}}=\sum_i J_i^\top H_{\text{out},i} J_i$
+  ($J_i=$ Jacobian of the net output w.r.t.\ weights, $H_{\text{out}}$ $=$ output-space Hessian of
+  the loss). Always positive semi-definite (a real Hessian at a non-minimum need not be), and it is
+  \emph{exactly} the Hessian of the linearized network --- which is why the GLM predictive below is
+  the self-consistent choice.
+\item \textbf{Two structural knobs} (the variant grid in the notebooks):
+  \begin{itemize}
+  \item \code{subset\_of\_weights}: \code{"all"} (treat every weight as uncertain) vs.\
+    \code{"last\_layer"} (only the final linear layer; all earlier layers become a fixed feature
+    map $\phi(x)$). Last-layer LA $=$ exact Bayesian \emph{linear} regression on learned features
+    --- tiny covariance ($51\times51$ sinusoid, $130\times130$ two moons, $513\times513$
+    PovertyMap incl.\ bias) and, per Laplace Redux, most of the calibration benefit.
+  \item \code{hessian\_structure}: \code{"full"} (dense $P\times P$), \code{"kron"} (KFAC:
+    per-layer Kronecker factors $A\otimes B$ from input activations and output gradients ---
+    captures within-layer correlations at a fraction of the cost), \code{"diag"} (independent
+    weights; crudest).
+  \end{itemize}
+\item \textbf{Disambiguation to have ready:} the \emph{Laplace approximation} (this method:
+  Gaussian at the mode) is unrelated to the \emph{Laplace prior/distribution}
+  ($p(w)\propto e^{-\lambda|w|}$, a sparsity prior). Same name, different objects;
+  \code{laplace-torch} only exposes Gaussian priors via \code{prior\_precision}.
+\end{itemize}
+
+\subsection{The GLM (linearized) predictive}
+\begin{itemize}
+\item Sampling weights from $\mathcal{N}(\theta_\map,\Sigma)$ and running the full net (the
+  \code{"nn"} predictive) is \emph{inconsistent} with the GGN and empirically brittle. Instead
+  linearize the network around the mode:
+  \[
+  f(x;\theta)\;\approx\;f(x;\theta_\map)+J(x)\,(\theta-\theta_\map)
+  \;\Rightarrow\;
+  f(x)\;\sim\;\mathcal{N}\bigl(\underbrace{f(x;\theta_\map)}_{f_\mu},\;
+  \underbrace{J(x)\,\Sigma\,J(x)^\top}_{f_{\mathrm{var}}}\bigr).
+  \]
+  For last-layer LA the ``Jacobian'' is just the feature vector $\phi(x)$.
+\item \textbf{Regression:} closed form, no sampling. $y=f+\varepsilon$ adds the noise:
+  $p(y\mid x)=\mathcal{N}\bigl(f_\mu,\; f_{\mathrm{var}}+\sigma_{\text{noise}}^2\bigr)$ --- the
+  notebooks' \code{total\_std = sqrt(f\_var + sigma\_noise**2)}.
+  \emph{Immediate consequence worth quoting:} the GLM predictive \textbf{mean equals the MAP
+  forward pass exactly}, so LA's RMSE $\equiv$ MAP's RMSE by construction; LA can only change the
+  uncertainty. (This identity doubled as a bug detector in this repo --- see
+  Section~\ref{sec:lacode}.)
+\item \textbf{Classification:} the Gaussian lives over \emph{logits}; the class probability
+  $\mathbb{E}[\mathrm{softmax}(f)]$ has no closed form. The notebooks use the \textbf{probit
+  approximation} (\code{link\_approx="probit"}), verbatim from the library:
+\begin{lstlisting}
+kappa = 1 / torch.sqrt(1.0 + np.pi / 8 * f_var.diagonal(dim1=1, dim2=2))
+return torch.softmax(kappa * f_mu, dim=-1)
+\end{lstlisting}
+  Logits are \emph{shrunk} by $\kappa\in(0,1]$ wherever the logit variance is large
+  $\Rightarrow$ probabilities pulled toward uniform $\Rightarrow$ that is literally the mechanism
+  producing calibrated, less-confident predictions away from data. Deterministic and
+  sampling-free; \code{link\_approx="mc"} (average softmax over \code{n\_samples} logit draws) is
+  the sampling alternative that converges to the exact expectation.
+\end{itemize}
+
+\subsection{Marginal likelihood --- the part VI does not have}
+\begin{itemize}
+\item The same Gaussian gives a closed-form estimate of the evidence, implemented in
+  \code{log\_marginal\_likelihood} as, verbatim, \code{log\_likelihood - 0.5 * (log\_det\_ratio +
+  scatter)}:
+  \[
+  \log p(\mathcal{D}\mid\delta,\sigma)\;\approx\;
+  \underbrace{\log p(\mathcal{D}\mid\theta_\map)}_{\text{train fit}}
+  \;-\;\tfrac12\underbrace{\bigl[\log\det\Lambda-\log\det(\delta I)\bigr]}_{\text{Occam factor}}
+  \;-\;\tfrac12\underbrace{\theta_\map^\top(\delta I)\,\theta_\map}_{\text{scatter (L2 of the mode)}} .
+  \]
+\item \textbf{Occam's razor intuition:} a too-flexible setting (tiny $\delta$) fits well but
+  spreads posterior mass thinly (large $\Sigma$, big $\log\det$ penalty); a too-rigid one underfits
+  (bad first term). The maximum sits at a data-driven sweet spot --- \emph{computed from training
+  data only}, no validation set. It is differentiable in $(\delta,\sigma)$, so it can be optimized
+  by gradient ascent, and it scales to per-layer priors where grid search is combinatorially
+  impossible.
+\item This is \emph{empirical Bayes / type-II maximum likelihood}: the prior is chosen by
+  maximizing the evidence, not fixed a priori.
+\end{itemize}
+
+% ==================================================================================
+\section{\code{laplace-torch} in these notebooks --- code walkthrough and gotchas}\label{sec:lacode}
+\takeaway{Four calls: construct, \code{fit}, tune the prior, predict. Everything interesting hides
+in step 3's objective and in one \code{.eval()} trap in step 1.}
+
+\subsection{Canonical usage (as written in the notebooks)}
+\begin{lstlisting}
+# classification (two_moons_laplace_5seed):
+la = Laplace(model, "classification", subset_of_weights=..., hessian_structure=...)
+la.fit(train_loader)                                     # one pass: accumulates GGN H, stores mean
+la.optimize_prior_precision(method="gridsearch",         # or "marglik" (no val data needed)
+        pred_type="glm", link_approx="probit", val_loader=val_loader)
+probs = la(X_test, pred_type="glm", link_approx="probit")
+
+# regression (sinusoidal_laplace_5seed, comparison notebooks):
+la = Laplace(base, "regression", subset_of_weights=..., hessian_structure=...)
+la.fit(train_loader)
+la.sigma_noise = torch.tensor(map_resid_std)             # aleatoric std from MAP train residuals
+la.optimize_prior_precision(method="marglik")            # tunes prior precision only
+f_mu, f_var = la(X)                                      # closed form; epistemic std = sqrt(f_var)
+total_std = np.sqrt(f_var + float(la.sigma_noise)**2)
+\end{lstlisting}
+\begin{itemize}
+\item \code{fit()} does \emph{no} training --- one sweep over the training loader computing $H$
+  and recording the flattened last-layer/all weights as \code{mean}. Seconds, not epochs. It also
+  calls \code{self.model.eval()} internally (relevant below).
+\item Checkpointing: \code{la.state\_dict()} stores \code{\{mean, H, loss, prior\_precision,
+  sigma\_noise, n\_data, ...\}}; \code{load\_state\_dict} restores them so \code{fit()} is skipped
+  on reload.
+\end{itemize}
+
+\subsection{The three prior-tuning methods actually used}
+\begin{itemize}
+\item \textbf{\code{method="marglik"}} (library built-in): Adam on $\log\delta$, defaults
+  \code{n\_steps=100}, \code{lr=0.1}, init $\delta=1$, maximizing the closed-form marginal
+  likelihood of Section~\ref{sec:latheory}. Ignores any \code{val\_loader}. \emph{Does not touch}
+  \code{sigma\_noise} --- hence the notebooks set $\sigma$ from MAP residuals first.
+\item \textbf{\code{"adam\_loop"}} (hand-rolled in the notebooks; same objective, different
+  optimizer, and it \emph{jointly} tunes $\sigma$):
+\begin{lstlisting}
+log_prior = torch.ones(1, requires_grad=True); log_sigma = torch.ones(1, requires_grad=True)
+hyp_opt = torch.optim.Adam([log_prior, log_sigma], lr=1e-1)
+for _ in range(1000):
+    hyp_opt.zero_grad()
+    (-la.log_marginal_likelihood(log_prior.exp(), log_sigma.exp())).backward()
+    hyp_opt.step()
+\end{lstlisting}
+  Talking point: \code{"marglik"} and \code{"adam\_loop"} are the \emph{same} empirical-Bayes
+  objective; comparing them shows optimizer/step-count sensitivity, and only the loop treats
+  $\sigma$ as a second hyperparameter of the evidence.
+\item \textbf{\code{method="gridsearch"}} (validation-based, the ``classical'' alternative):
+  tries a log-spaced grid of 100 candidates $\delta\in[10^{-4},10^{4}]$ and picks the argmin of a
+  validation loss. \emph{Defaults matter:}
+  \begin{itemize}
+  \item classification $\to$ running \emph{NLL} of the predictive (probit here) --- sensitive to
+    $\delta$; fine.
+  \item regression $\to$ torchmetrics \emph{MeanSquaredError on the predictive mean}. But the GLM
+    mean is the MAP forward pass, \textbf{independent of $\delta$} $\Rightarrow$ the objective is
+    flat along the whole grid; the returned $\delta$ is decided by numerical noise and by
+    candidates discarded for failed Cholesky (non-PSD at tiny $\delta$ counts as $\infty$).
+    \emph{This is a genuine identified pitfall, already documented in the notebooks:} it explains
+    the absurd $\delta\approx1555$ selections on the sinusoid and the near-zero OOD epistemic
+    growth of the gridsearch variants (huge $\delta\Rightarrow$ tiny $\Sigma$). The PovertyMap
+    notebook therefore adds variants passing an explicit Gaussian-NLL loss
+    (\code{loss=make\_gaussian\_nll\_loss(la)}, signature \code{loss(means, variances, targets)}),
+    which \emph{does} see the variance and hence $\delta$.
+  \end{itemize}
+\item \textbf{$\sigma_{\text{noise}}$ handling per notebook} (it defaults to $1.0$ if never set!):
+  sinusoid marglik/gridsearch variants $\to$ MAP-residual std; sinusoid/PovertyMap adam-loop
+  $\to$ tuned via evidence; PovertyMap headline variant $\to$ separate grid
+  \code{np.logspace(-2, 1, 30)} minimizing validation NLL \emph{after} the $\delta$ gridsearch;
+  Redux-faithful PovertyMap variant $\to$ $\delta$ \emph{fixed} at $10.0$ (never optimized),
+  $\sigma$ by Adam on validation NLL --- matching the paper's actual config for this dataset.
+\end{itemize}
+
+\subsection{Gotchas you should know before someone else finds them}
+\begin{itemize}
+\item \textbf{\code{n\_samples} in \code{la(X, pred\_type="glm", n\_samples=2000)} does nothing for
+  regression.} Verified in the source: \code{n\_samples} is only consumed by
+  \code{link\_approx="mc"} (classification) or \code{pred\_type="nn"}. The regression GLM
+  predictive is exact given the approximation --- zero sampling. (The PovertyMap markdown's ``GLM
+  predictive with 2{,}000 samples'' is a leftover; the number is harmless but meaningless.)
+\item \textbf{The \code{.eval()} trap (real bug found and fixed in this repo).}
+  \code{LLLaplace.load\_state\_dict()} internally re-detects the last layer by running a real
+  forward pass on a stored data batch. \code{fit()} calls \code{model.eval()} first;
+  \code{load\_state\_dict()} does \emph{not}. A freshly constructed torch model is in
+  \code{train()} mode, so on a BatchNorm network (PovertyMap's ResNet-18 --- the only such model in
+  the repo) that forward pass silently updated \code{running\_mean}/\code{running\_var} on a
+  single batch, corrupting every reloaded Laplace. Fix: \code{model.eval()} before
+  \code{Laplace()} / \code{load\_state\_dict()} --- now applied at every call site.
+  \emph{Verification worth quoting:} after the fix, reloaded and fresh-fit predictions agree to
+  8 decimals, and Laplace's RMSE equals MAP's RMSE exactly in every fold --- the GLM-mean identity
+  of Section~\ref{sec:latheory} restored (pre-fix: $0.4435$ vs $0.4183$ ID average).
+\item \textbf{Cost profile} (why LA is the ``cheap'' method): fit $=$ one data pass; tuning $=$
+  closed-form evidence steps or a val sweep; prediction $=$ one forward pass $+$ feature/Jacobian
+  algebra --- milliseconds, vs.\ 50--100 stochastic forwards for the BNN. The poster's timing
+  table comes from this.
+\end{itemize}
+
+% ==================================================================================
+\section{Variational BNNs --- theory}\label{sec:vitheory}
+\takeaway{Pick a tractable family $q$ (independent Gaussians per weight), then \emph{train} its
+parameters so $q$ is close to the true posterior --- by maximizing the ELBO, a lower bound on the
+log evidence. The prior stays fixed; nothing estimates the marginal likelihood.}
+
+\begin{itemize}
+\item \textbf{Objective.} Minimizing $\KL\bigl(q_\phi(\theta)\,\|\,p(\theta\mid\mathcal{D})\bigr)$
+  is equivalent to maximizing the \emph{evidence lower bound}
+  \[
+  \mathrm{ELBO}(\phi)=\underbrace{\mathbb{E}_{q_\phi}\bigl[\log p(\mathcal{D}\mid\theta)\bigr]}_{\text{expected data fit}}
+  \;-\;\underbrace{\KL\bigl(q_\phi(\theta)\,\|\,p(\theta)\bigr)}_{\text{stay near the prior}},
+  \qquad
+  \log p(\mathcal{D})=\mathrm{ELBO}+\KL(q\,\|\,\text{posterior})\;\ge\;\mathrm{ELBO}.
+  \]
+  The gap is exactly the approximation error; since we never know it, VI here gives \emph{no
+  usable marginal-likelihood estimate} --- the sharpest theoretical contrast with Laplace.
+\item \textbf{Mean-field Gaussian family:} $q(\theta)=\prod_i\mathcal{N}(\mu_i,\sigma_i^2)$,
+  $\sigma_i=\mathrm{softplus}(\rho_i)=\log(1+e^{\rho_i})$ (positivity without constraints).
+  Trainable: $(\mu_i,\rho_i)$ --- twice the parameters of the deterministic net.
+  Init in the notebooks: $\mu\sim\mathcal{N}(0,0.1^2)$,
+  $\rho\sim\mathcal{N}(-3,0.1^2)\Rightarrow\sigma_0\approx0.0486$ (start nearly deterministic).
+  \emph{Mean-field means}: no correlations between weights --- a real modelling restriction
+  (Laplace \code{full}/\code{kron} do carry correlations).
+\item \textbf{KL in closed form} (both Gaussians), per weight:
+  \[
+  \KL\bigl(\mathcal{N}(\mu_q,\sigma_q^2)\,\|\,\mathcal{N}(\mu_p,\sigma_p^2)\bigr)
+  =\log\frac{\sigma_p}{\sigma_q}
+  +\frac{\sigma_q^2+(\mu_q-\mu_p)^2}{2\sigma_p^2}-\frac12 .
+  \]
+  The $-\log\sigma_q$ piece is the \emph{entropy} term: it is what resists posterior collapse to a
+  point ($\sigma_q\to0$) and hence what fights overconfidence.
+\item \textbf{Gradients through sampling --- the reparameterization trick} (``Bayes by
+  Backprop''; layer \code{type="Reparameterization"}, called BBB in the plots): write
+  $w=\mu+\sigma\odot\varepsilon$,
+  $\varepsilon\sim\mathcal{N}(0,I)$, so the expectation becomes differentiable in $(\mu,\rho)$.
+  One weight draw per forward pass, \emph{shared by the whole minibatch} $\Rightarrow$ per-example
+  gradients are correlated $\Rightarrow$ high gradient variance.
+\item \textbf{Flipout (the \code{"Flipout"} layers):} decorrelates examples without extra weight
+  draws. Sample one perturbation $\Delta W=\sigma\odot\varepsilon$ per batch, then flip its sign
+  per example with Rademacher vectors $s_{\text{in}},s_{\text{out}}\in\{\pm1\}$:
+  $\;\text{out}_n = x_n W_\mu^\top + \bigl[(x_n\odot s_{\text{in},n})\,\Delta W^\top\bigr]\odot
+  s_{\text{out},n}$. Pseudo-independent per-example noise $\Rightarrow$ gradient variance drops
+  roughly like $1/$batch, at $\approx2\times$ forward cost. (Verbatim mechanism from
+  \code{linear\_flipout.py}; this is the equation shown on the poster with
+  $\hat\varepsilon$.)
+\item \textbf{MOPED warm start} (\code{moped\_enable=True}): initialize
+  $\mu\leftarrow W_{\text{MAP}}$ and $\rho\leftarrow\log(e^{\delta|W_{\text{MAP}}|}-1)$ so that
+  $\sigma=\mathrm{softplus}(\rho)=\delta\,|W_{\text{MAP}}|$ exactly. \emph{Initialization only ---
+  the prior buffers are untouched.} Repo findings to have ready: $\delta=0.5$ came from the
+  library README, while the MOPED paper only validated $\delta\in\{0.05,0.1,0.2\}$ on
+  \emph{classification}; on the sinusoid, BBB/MOPED with $\delta=0.5$ collapses (posterior stds
+  start above the prior's, the KL term dominates, training stalls in a high-uncertainty minimum),
+  and $\delta=0.05$ fully recovers --- the comparison notebook contains the full $\delta$ sweep.
+\item \textbf{Prior is a fixed constant.} In \code{bayesian\_torch} the buffers
+  \code{prior\_weight\_mu} and \code{prior\_weight\_sigma} are \code{register\_buffer}s filled at
+  construction and never touched by the optimizer --- \emph{there is no empirical Bayes, no
+  evidence, no prior tuning anywhere in the library}. Whatever prior you configure is what you
+  keep.
+\end{itemize}
+
+% ==================================================================================
+\section{\code{bayesian-torch} in these notebooks --- code walkthrough}\label{sec:btcode}
+\takeaway{One call converts the net in place; you then write the ELBO yourself --- which is exactly
+where the per-notebook differences (KL scaling, prior width, $\tau$) live.}
+
+\subsection{Conversion and the training loss}
+\begin{lstlisting}
+dnn_to_bnn(net, {"prior_mu": 0.0, "prior_sigma": 1.0,        # prior N(0, prior_sigma^2) per weight
+                 "posterior_mu_init": 0.0, "posterior_rho_init": -3.0,
+                 "type": "Flipout",                           # or "Reparameterization" (BBB)
+                 "moped_enable": False, "moped_delta": 0.5})
+# training step -- the notebooks assemble the (negative) ELBO by hand:
+loss = criterion(net(xb), yb) + get_kl_loss(net) / num_samp      # sinusoid: KL / N
+loss = criterion(net(inputs), labels) + get_kl_loss(net) / batch_size   # two moons: KL / batch
+loss = mse + (TAU / num_data) * kl                               # povertymap: tau * KL / N, tau=0.1
+# prediction -- MC over stochastic forwards:
+preds = torch.stack([net(X) for _ in range(n_mc)])               # n_mc = 50 or 100
+mu, epistemic_std = preds.mean(0), preds.std(0)
+\end{lstlisting}
+\begin{itemize}
+\item \code{dnn\_to\_bnn} replaces every \code{nn.Linear}/\code{nn.Conv2d} \emph{in place} by its
+  Bayesian counterpart (matching \code{type}); it sets \code{dnn\_to\_bnn\_flag=True} so layer
+  forwards return only outputs, and \code{get\_kl\_loss(m)} collects
+  \code{layer.kl\_loss()} over all Bayesian layers.
+\item \textbf{Library quirk 1 --- the KL is a per-layer \emph{mean}:} \code{kl\_div} in
+  \code{base\_variational\_layer.py} ends with \code{return kl.mean()}; a layer's
+  \code{kl\_loss()} is mean-over-weights $+$ mean-over-biases, and \code{get\_kl\_loss} sums these
+  layer averages. So the ``KL'' in every training loop is \emph{not}
+  $\sum_{\text{all params}}\KL_i$ but a sum of per-layer averages --- magnitudes are much smaller
+  than the textbook KL, and big layers do not weigh more than small ones. Keep this in mind when
+  comparing $\tau$/scaling conventions with papers that use the full sum.
+\item \textbf{Library quirk 2 --- naming:} the layer constructor calls the prior width
+  \code{prior\_variance}, but the value is used as the \emph{standard deviation}
+  $\sigma_p$ in the KL. The notebooks' \code{prior\_sigma = (1/prior\_precision)**0.5} is therefore
+  correct.
+\item \textbf{Likelihood-scale caveat (regression):} the data term is raw \code{MSELoss}, i.e.\ a
+  Gaussian NLL with an \emph{implicit} $\sigma^2=0.5$ per point, not the true $\sigma=0.3$
+  (that would multiply the MSE by $1/(2\cdot0.09)\approx5.6$). Together with the KL quirks this
+  makes the objective an ELBO ``up to a temperature'' --- standard practice, but be ready to say
+  it out loud.
+\end{itemize}
+
+\subsection{The KL-scaling and prior ``zoo'' --- what each notebook actually does}
+\begin{center}\small
+\begin{tabular}{p{4.7cm}p{3.0cm}p{3.5cm}p{3.5cm}}
+\toprule
+Notebook & KL scaling & Prior & Comment\\
+\midrule
+\code{two\_moons\_bayesian\_5seed} & $\mathrm{KL}/\text{batch}$ (32) &
+$\delta=\lambda\cdot32=3.2\text{e-}3$,\; $\sigma_p\approx17.7$ &
+official \code{bayesian-torch} convention; prior matched to MAP's $\lambda{=}10^{-4}$\\
+\code{sinusoidal\_bayesian\_5seed},\newline \code{bnn\_comparison\_sinusoid\_5seed} &
+$\mathrm{KL}/N$ ($N{=}150$ / $600$) & $\sigma_p=1.0$ flat & implicit $\tau=1$; MAP has no weight
+decay, so nothing to match\\
+\code{bnn\_comparison\_povertymap} (headline) & $(\tau/N)\,\mathrm{KL}$, $\tau=0.1$ fixed &
+$\delta=\lambda N\approx1$,\; $\sigma_p\approx1$ & Redux-style; $\tau{=}0.1$ borrowed from Osawa
+et al.\ (VOGN), untuned here\\
+\code{bnn\_comparison\_povertymap} (ablations) & $\tau$ annealed $0.1{\to}1$; or
+$(\tau/\text{batch})\mathrm{KL}$ & same; or $\delta=\lambda\cdot256$, $\sigma_p=6.25$ & isolate the
+$\tau$-schedule and $N$-vs-batch axes\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item \textbf{Why scaling and prior must move together} (one-line algebra): with
+  $\delta=\lambda S$ and loss $=$ mean NLL $+\KL/S$, expanding the Gaussian KL shows the
+  $\mu$-penalty reduces to $\frac{\lambda}{2}(\sigma_q^2+\mu_q^2)$ --- $S$ cancels, recovering
+  plain weight decay on the posterior mean --- while the entropy term keeps an explicit $1/S$.
+  Using $\delta=\lambda$ \emph{without} the $\times S$ leaves regularization at
+  $\sim\lambda/S\approx0$: effectively priorless training. (Full derivation:
+  \code{notebooks/notes/bayesian\_torch\_diagnostic.md}.)
+\item \textbf{Provenance to quote precisely:} Laplace Redux's paper says ``prior precision
+  $5\times10^{-4}$, KL downscaling $0.1$'' for its MNIST/CIFAR VB baseline; its \emph{shipped
+  code} actually uses $\delta=\lambda N$ --- the paper prose dropped the $\times N$. The $0.1$
+  originates in Osawa et al.\ 2019 as the \emph{start} of a warm-up schedule for a different
+  algorithm (VOGN). And Redux never ran VB on PovertyMap at all --- the VB-on-PovertyMap results
+  here are new territory, hence the ablations.
+\end{itemize}
+
+\subsection{Training and prediction details}
+\begin{itemize}
+\item \textbf{Two Moons} (8 variants $=$ \{Flipout, BBB\}$\times$\{scratch, MOPED\}$\times$\{ELBO,
+  ELBO+AvUC\}): CE $+$ KL/batch; Adam \code{lr=5e-3}; 300 epochs scratch / 100 MOPED; early stop on
+  val NLL (patience 25, val NLL from 10 MC samples). AvUC variants add
+  \code{AUAvULoss} ($\beta{=}1$) on the 5-sample mean logits --- a differentiable
+  accuracy-vs-uncertainty calibration penalty (rewards ``accurate\&certain'' and
+  ``inaccurate\&uncertain''), integrated over uncertainty thresholds; it is the slow variant
+  (hundreds of seconds/seed).
+\item \textbf{Sinusoid}: MSE $+$ KL/$N$; Adam \code{lr=1e-3}; 1000 epochs scratch / 400 MOPED;
+  early stop on val MSE (patience 75, 20-sample MC mean).
+\item \textbf{PovertyMap}: MSE $+(\tau/N)$KL; Adam \code{lr=1e-3} $+$ ReduceLROnPlateau; grad-norm
+  clip 1.0; up to 1000 epochs, early stop patience 20; Flipout from scratch (no MOPED).
+\item \textbf{Prediction} $=$ Monte Carlo: $n_{\text{mc}}=50$ (two moons metrics, PovertyMap),
+  $100$ (sinusoid), fewer (20--30) for early-stopping checks and dense grids.
+  Classification: average the $50$ softmax vectors, then compute all metrics on that mean
+  predictive. Regression: $\mu=$ sample mean, $\sigma_{\text{epi}}=$ sample std.
+\item \textbf{Asymmetry to disclose:} on the sinusoid the BNN total std is
+  $\sqrt{\sigma_{\text{epi}}^2+0.3^2}$ (aleatoric added), but on PovertyMap
+  \code{predict\_bayesian\_torch} uses the \emph{MC std alone} as the total predictive std ---
+  no $\sigma_{\text{noise}}$ is added --- while Laplace and MAP do include a noise term there.
+  The BNN's stochastic forwards partly absorb the noise, but strictly its PovertyMap NLL/coverage
+  are computed under an epistemic-only $\sigma$. Know this before someone reads the code.
+\item \textbf{Stale markdown warning (PovertyMap):} the notebook's Section-6 markdown still says
+  ``prior precision $=10^{-4}$ $\Rightarrow$ $\sigma_p=100$''; the \emph{code} uses
+  $\delta=\lambda N\approx1$ ($\sigma_p\approx1$). Present the code's numbers.
+\end{itemize}
+
+% ==================================================================================
+\section{Laplace vs.\ VI --- the comparison story}\label{sec:compare}
+\takeaway{Post-hoc curvature vs.\ trained factorized posterior: LA is orders of magnitude cheaper
+and can tune its own prior via the evidence; VI re-trains everything with a fixed prior and pays
+$50$--$100\times$ at prediction time.}
+
+\begin{center}\small
+\begin{tabular}{p{3.0cm}p{5.6cm}p{5.6cm}}
+\toprule
+& \textbf{Laplace (\code{laplace-torch})} & \textbf{VI (\code{bayesian-torch})}\\
+\midrule
+Posterior approx. & $\mathcal{N}(\theta_\map,\Lambda^{-1})$, local at one mode; \code{full}/\code{kron}
+carry weight correlations & $\prod_i\mathcal{N}(\mu_i,\sigma_i^2)$, trained; mean-field $=$ no
+correlations\\
+Training & none (wraps a trained net); \code{fit} $=$ one data pass & full re-training of $2\times$
+parameters, 400--1000 epochs\\
+Prior & Gaussian, precision $\delta$ \textbf{tuned} (evidence or val) & Gaussian, \textbf{fixed
+buffers}, never updated\\
+Marginal likelihood & closed-form estimate, actively used & absent (ELBO is only a bound; never
+used for tuning here)\\
+Prediction & closed form (regression) / probit (classification) & 50--100 MC forwards\\
+Mean prediction & $\equiv$ MAP forward (GLM identity) & re-learned; can drift from MAP\\
+Failure modes seen & degenerate default gridsearch objective; \code{.eval()}/BatchNorm reload trap
+& KL-scaling/prior mismatch; MOPED $\delta$ too large; occasional training failure (PovertyMap
+fold D)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item \textbf{Results narrative} (single-seed table in \code{analysis\_notes.md}; 5-seed CSVs in
+  \code{results/metrics/}): on the sinusoid all methods reach similar ID RMSE
+  ($\approx0.30$); the differences are in uncertainty. LA/marglik shows the largest OOD epistemic
+  growth (epi ratio $\approx7$) yet still bad OOD NLL ($\approx10$); VI variants stay at ratio
+  $\approx1.2$--$1.4$ (confidently wrong outside $[0,8]$); LA/gridsearch collapses OOD epistemic
+  ($\approx1.2$) --- the degenerate-objective story of Section~\ref{sec:lacode}.
+  \emph{Honest summary sentence: no variant achieves both good ID calibration and genuinely useful
+  OOD growth --- a known limitation of fixed-prior, single-mode approximations on compact
+  networks.}
+\item On PovertyMap: LA matches MAP's RMSE exactly (by construction) and improves NLL/calibration
+  through its input-dependent variance; the VB baseline is new ground (Redux never ran VB there)
+  and one fold (D) is a clear training failure (ID NLL $\approx6.8$ vs $\approx2.9$ elsewhere) ---
+  it inflates the BT error bars and is reported, not hidden.
+\item \textbf{Aggregation:} all summary numbers are \emph{fold/seed averages} (mean $\pm$ std over
+  5 seeds or 5 WILDS folds A--E), never pooled predictions --- so the std bands are
+  seed/fold-to-seed variability, comparable across methods.
+\item Fair-comparison caveats to volunteer: LA benefits from prior tuning while VI's prior is
+  fixed (that \emph{is} part of the libraries' design difference being compared); VI's PovertyMap
+  hyperparameters ($\tau{=}0.1$) were borrowed, not tuned; both remain single-mode approximations
+  (no deep ensembles / MCMC in scope).
+\end{itemize}
+
+% ==================================================================================
+\section{Per-notebook configuration cheat sheet}\label{sec:cheat}
+\begin{itemize}
+\item \textbf{\code{two\_moons\_bayesian\_5seed}}: TinyMLP $2{\to}64{\to}64{\to}2$ (tanh);
+  \code{make\_moons} $n{=}10^4$, noise $0.3$, split 6000/2000/2000, batch 32; seeds
+  \{42,711,123,456,789\}; 8 BNN variants (see \ref{sec:btcode}); metrics
+  \code{standard\_metrics} on 50-sample mean predictive; MI maps on a $[-4.5,4.5]^2$ grid.
+\item \textbf{\code{two\_moons\_laplace\_5seed}}: same data/model; MAP via shared
+  \code{train\_map} (300 epochs, wd $10^{-4}$, no early stop); 10 LA variants $=$
+  \{diag,kron,full\}$\times$all $+$ \{kron,full\}$\times$last-layer, each with
+  marglik and gridsearch(probit-NLL); predictive \code{la(x, "glm", "probit")}; MI maps via
+  \code{predictive\_samples}, $n{=}50$.
+\item \textbf{\code{sinusoidal\_bayesian\_5seed}}: net $1{\to}50{\to}1$ (tanh);
+  $y=\sin x+\varepsilon$, $\sigma{=}0.3$; 150 train (uniform $[0,8]$), 50 val, 250 ID
+  (linspace), 250 OOD ($[-5,0]\cup[8,13]$); full-batch (150); 4 variants
+  \{Flipout,BBB\}$\times$\{scratch,MOPED $\delta{=}0.5$\}; 100 MC samples; total std adds
+  $0.3$; calibration curves over 20 levels.
+\item \textbf{\code{sinusoidal\_laplace\_5seed}}: same data/model/MAP (no weight decay!);
+  12 LA variants: diag/kron/full over all weights and full/kron over the last layer, each with
+  marglik and gridsearch, plus kron (all and last layer) with the adam loop; $\sigma$ from MAP
+  residuals except adam-loop (jointly tuned); predict \code{f\_mu, f\_var = la(X)}.
+\item \textbf{\code{bnn\_comparison\_sinusoid\_5seed}}: 600/200/200/200, batch 64, MAP 2000
+  epochs; LA: kron/last and kron/all, each with marglik, gridsearch and adam-loop, plus
+  full/all with gridsearch; BNNs as above $+$ MOPED
+  $\delta\in\{0.05,0.1,0.2\}$ sweep; ID and OOD tables incl.\ \code{Coverage\_95}, epistemic
+  ratio; combined reliability figure $=$ poster figure.
+\item \textbf{\code{bnn\_comparison\_povertymap}}: WILDS PovertyMap, 5 country folds A--E,
+  seed 42; ResNet-18 with \code{conv1} $3{\to}8$ channels and \code{fc} $=$
+  \code{Linear(512,1)} ($\approx11.2$M params); batch 256; targets $=$ asset wealth index;
+  ID vs OOD test $=$ same vs held-out countries. Methods: MAP (constant-$\sigma$ predictive),
+  Laplace full/last-layer ($\delta$ gridsearch $+$ $\sigma$ grid on val NLL; plus
+  Redux-faithful, NLL-gridsearch, fixed-$\sigma$ ablations), Bayesian-Torch Flipout/scratch
+  ($\tau{=}0.1$, $\delta{=}\lambda N$; plus $\tau$-annealed and batch-scaled ablations);
+  fold-averaged metrics; Kuleshov Eq.~3 cell for Redux comparability.
+\end{itemize}
+
+% ==================================================================================
+\section{Likely questions --- prepared answers}\label{sec:qa}
+\begin{itemize}
+\item \emph{``What exactly do you mean by confidence?''} Classification: the max class probability
+  of the posterior-averaged predictive. Regression: a nominal central-interval probability $c$;
+  ``confidence level 0.9'' $=$ the interval $\mu\pm1.645\,\sigma$.
+\item \emph{``Why 15 bins / 20 levels?''} Fixed conventions (Guo et al.\ 2017; Kuleshov-style
+  grids) applied identically to every method --- the comparisons, not the absolute scalars, are
+  the point.
+\item \emph{``Where does $(1+c)/2$ come from?''} Central interval: $1-c$ split into two tails of
+  $(1-c)/2$; the upper quantile is at $c+(1-c)/2=(1+c)/2$. For $c{=}0.95$: $\Phi^{-1}(0.975)=1.96$.
+\item \emph{``Your Coverage\_68 target is 0.68?''} Slightly no: the code tests $|z|\le1$, so the
+  nominal value is $\Phi(1)-\Phi(-1)=0.6827$. Coverage\_95 uses $z^*{=}1.95996$, nominal exactly
+  $0.95$.
+\item \emph{``Can a bad model have perfect ECE / Cal MAE?''} Yes --- calibration metrics are not
+  proper scores; an input-independent predictive with the right spread is calibrated and useless.
+  Hence accuracy/RMSE, NLL, Brier and sharpness are reported alongside.
+\item \emph{``Is your MAP a true MAP?''} Two moons Laplace: yes (weight decay, no early stopping).
+  Sinusoid: it is an MLE (no weight decay). PovertyMap: early-stopped, so strictly no ---
+  ``deterministic baseline'' is the honest name; the same weights are what LA wraps, so the
+  comparison stays internally consistent.
+\item \emph{``Why is Laplace's RMSE identical to MAP's?''} GLM predictive mean $=$ MAP forward
+  pass, by construction. LA only changes uncertainty. (Its violation was how the BatchNorm
+  \code{.eval()} bug was caught.)
+\item \emph{``What does \code{n\_samples=2000} do in your Laplace predictions?''} Nothing for
+  regression GLM --- the predictive is closed-form; the argument is only consumed by the MC link
+  in classification or the NN predictive. Verified in the source.
+\item \emph{``Why probit instead of sampling the link?''} Deterministic, one forward pass,
+  standard in Laplace Redux; MC link converges to the exact expectation but costs samples.
+  Mechanism: logits shrunk by $1/\sqrt{1+\pi f_{\mathrm{var}}/8}$ --- high logit variance
+  $\Rightarrow$ probabilities toward uniform.
+\item \emph{``How is the prior set in each library?''} Laplace: Gaussian with precision $\delta$
+  \emph{tuned} --- empirical Bayes via the evidence (\code{marglik}/adam-loop) or validation
+  search (\code{gridsearch}). Bayesian-Torch: fixed \code{register\_buffer}s
+  ($\mathcal{N}(0,\sigma_p^2)$), never optimized; per-notebook $\sigma_p$: $17.7$ (two moons,
+  derived from weight decay $\times$ batch), $1.0$ (sinusoid, flat), $\approx1$ (PovertyMap,
+  $\delta=\lambda N$).
+\item \emph{``Isn't tuning the LA prior unfair to VI?''} It is a designed difference between the
+  methods, not a bug in the comparison: evidence-based tuning is a core capability of the Laplace
+  framework and is impossible in stock \code{bayesian-torch}. The gridsearch variants use the same
+  validation data any hyperparameter search would.
+\item \emph{``Laplace prior or Laplace approximation?''} Different things sharing a name. Here:
+  approximation (Gaussian at the mode). The Laplace \emph{distribution}
+  $\propto e^{-\lambda|w|}$ is a sparsity prior we do not use.
+\item \emph{``Why fold/seed averaging instead of pooling?''} Folds/seeds are the replication
+  units; averaging their metrics gives an honest between-run variability estimate (the $\pm$
+  bands), and matches how WILDS reports PovertyMap.
+\item \emph{``Why does the OOD epistemic uncertainty barely grow for the BNNs?''} Fixed
+  $\mathcal{N}(0,1)$-ish prior $+$ compact tanh network: nothing in the ELBO pushes posterior
+  variance up where there is no data; the posterior stays close to its (small-$\sigma$)
+  initialization. LA/marglik grows more because the tuned prior inflates the covariance along
+  low-curvature directions --- and even that is not enough for reliable OOD NLL.
+\item \emph{``NLL went down but Cal MAE went up (or vice versa) --- contradiction?''} No: NLL is a
+  proper score dominated by the worst overconfident residuals; Cal MAE is an equally-weighted
+  average of coverage gaps. They rank models differently whenever miscalibration is concentrated
+  at a few levels or a few points.
+\end{itemize}
+
+\end{document}

@@ -389,6 +389,7 @@
 \Crefname{lemma}{Lemma}{Lemmas}
 
 \usepackage{booktabs} % professional tables
+\usepackage{multirow}
 
 
 % tikz
@@ -578,7 +579,8 @@ This integral is also intractable for modern NNs, which leads to the need of app
 There are multiple methods for approximating the posterior distribution, we will discuss two of them: Variational Inference (VI) and the Laplace Approximation (LA). These 
 are implemented by \texttt{bayesian-torch}~\citep{intel2021bayesiantorch} and \texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace}, respectively.
 
-\textbf{Variational Inference (VI)~\citep{murphy2023pml,goan2020bayesian}.} VI treats the approximation as an optimization problem. We make assumptions about the structure
+\subsection{Variational Inference (VI)~\citep{murphy2023pml,goan2020bayesian}}
+VI treats the approximation as an optimization problem. We make assumptions about the structure
 of the posterior distribution and then optimize the parameters $\bm\phi$ by using the the Kullback-Leibler (KL) divergence to calculate the disimilarity of the assumed
 posterior $q_{\bm\phi}(\btheta)$ and the true one $p(\btheta|\cD)$: 
 \begin{equation}
@@ -614,9 +616,8 @@ yields low-variance gradient estimates of~\eqref{eq:elbo} via backpropagation,
 making VI practical for deep networks. Notably, the parameters obtained by
 minimising~\eqref{eq:kl} differ in general from those found by the Laplace
 approximation~\citep{murphy2023pml}. 
-\subsubsection{Flipout}
 
-\citet{wen2018flipout} reduce this variance by applying independent sign flip
+\textbf{Flipout\citet{wen2018flipout}: } reduce this variance by applying independent sign flip
 matrices $\mathbf{r}_n,\mathbf{s}_n\in\{-1,+1\}^*$ to the shared
 perturbation $\Delta\hat{\mathbf{W}}$ for each example $n$:
 \begin{equation}
@@ -625,9 +626,7 @@ perturbation $\Delta\hat{\mathbf{W}}$ for each example $n$:
 	\odot \mathbf{r}_n^{\!\top}.
 \end{equation}
 
-\subsubsection{MOPED Initialisation}
-
-Training mean field BNNs from random initialisations is fragile.
+\textbf{MOPED Initialisation\citet{krishnan2020specifying}:} Training mean field BNNs from random initialisations is fragile.
 \texttt{bayesian-torch}~\citep{intel2021bayesiantorch} addresses this via
 MOPED: the posterior means are warm started from a
 pre trained MAP checkpoint and the prior scale is set proportionally:
@@ -636,17 +635,13 @@ pre trained MAP checkpoint and the prior scale is set proportionally:
 	\sigma_i^{\text{prior}} = \delta\,|\theta_{\MAP}^{(i)}|, \quad \delta=0.5.
 \end{equation}
 
-\subsubsection{AvUC Loss}
-\label{sec:theory:avuc}
-
-Standard ELBO training minimises NLL but does not explicitly calibrate the
+\textbf{Accuracy vs Uncertainty Calibration (AvUC)\citet{krishnan2020avuc} :} Standard ELBO training minimises NLL but does not explicitly calibrate the
 relationship between confidence and accuracy.
 The
 Accuracy vs Uncertainty Calibration loss, implemented in
 \texttt{bayesian-torch}~\citep{intel2021bayesiantorch}, adds a direct
 penalty for miscalibrated confidence.
 
-\paragraph{AvUC objective.}
 The AvUC loss aggregates the fractions of samples in the two
 bad quadrants~\citep{intel2021bayesiantorch}:
 \begin{equation}
@@ -657,19 +652,6 @@ bad quadrants~\citep{intel2021bayesiantorch}:
 \end{equation}
 where $n_X$ counts samples in quadrant $X$ within the current mini batch.
 Each term lies in $[0,1]$; both are zero when calibration is perfect.
-
-\subsection{Epistemic and Aleatoric Uncertainty Decomposition}
-\label{sec:theory:unc_decomp}
-
-For MC based BNNs, the total predictive uncertainty can be decomposed into
-two orthogonal components~\citep{goan2020bayesian}:
-\begin{align}
-	\text{Total}     & = H\!\left[\frac{1}{S}\sum_{s=1}^{S} p(y|f_{\btheta_s}(\bm{x}))\right], \\
-	\text{Aleatoric} & = \frac{1}{S}\sum_{s=1}^{S} H\!\left[p(y|f_{\btheta_s}(\bm{x}))\right], \\
-	\text{Epistemic} & = \text{Total} - \text{Aleatoric}
-	= I\!\left(y;\btheta\,|\,\bm{x},\cD\right),
-	\label{eq:mi}
-\end{align}
 
 \subsection{Laplace Approximation}
 \label{sec:theory:la}
@@ -697,7 +679,19 @@ data~\citep{daxberger2021laplace}. Grid search over
 a discrete set of values on validation NLL is simpler but requires a
 held out split.
 
-\section{Evaluation Metrics}
+\subsection{Uncertainty Quantification and Metrics}
+\label{sec:theory:unc_decomp}
+
+For MC based BNNs, the total predictive uncertainty can be decomposed into
+two orthogonal components~\citep{goan2020bayesian}:
+\begin{align}
+	\text{Total}     & = H\!\left[\frac{1}{S}\sum_{s=1}^{S} p(y|f_{\btheta_s}(\bm{x}))\right], \\
+	\text{Aleatoric} & = \frac{1}{S}\sum_{s=1}^{S} H\!\left[p(y|f_{\btheta_s}(\bm{x}))\right], \\
+	\text{Epistemic} & = \text{Total} - \text{Aleatoric}
+	= I\!\left(y;\btheta\,|\,\bm{x},\cD\right),
+	\label{eq:mi}
+\end{align}
+
 \label{sec:metrics}
 
 \paragraph{Brier Score.}
@@ -723,21 +717,29 @@ We consider one classification and two regression experiments. Different
 possible configurations of BNNs with two libraries, 
 \texttt{bayesian-torch}~\citep{intel2021bayesiantorch} and 
 \texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace}, are 
-implemented and compared for the classification and one of the regression 
+implemented and compared for the classification and regression 
 datasets.
 
 For classification, we use the Two Moons dataset, which consists of an arbitrary 
-2D distribution of two interleaved half crescents.For regression, a 1D sinusoidal 
+2D distribution of two interleaved half crescents. For regression, a 1D sinusoidal 
 dataset, which is taken from the regression example provided in the 
-\texttt{laplace-torch}~\citep{aleximmer2024laplace}repository. Finally, we replicate 
+\texttt{laplace-torch}~\citep{aleximmer2024laplace}repository. Finally, we replicate and expand on the
 the PovertyMap experiment done by Daxberger et al.~\citep{daxberger2021laplace}, 
-which consists of a regression task on satellite imagery.
+which consists of a regression task on satellite imagery. 
 
-We provide jupyter notebooks using just one seed for generating the Two Moons and Sinusoidal datasets, as well as versions with 5 different seeds for both. 
+We provide jupyter notebooks using five seeds for generating the Two Moons and Sinusoidal datasets. 
 For \texttt{laplace-torch}, we use the high level API, as well as a lower level one where we implement the training loop available in the examples provided in the repository.
 The different configurations of \texttt{bayesian-torch}, using both Flipout and BBB, with and without MOPED initialisation, and with ELBO and AvUC training, are implemented.
 The full configuration
-grids are shown in Tables~\ref{tab:la_variants} and~\ref{tab:bt_variants}.
+grids are shown in Tables~\ref{tab:la_variants} and~\ref{tab:bt_variants}. We want to explore how 
+the different configurations affect the performance of the BNNs, and how they compare to each other, while
+assessing how well calibrated they are, i.e., how accurately they reflect the true uncertainty.
+Because the approaches can be so varied, we also explore alternatives by choosing different parameters, e.g. 
+different deltas for MOPED, different (fixed/learned) priors, etc. These results can be seen in the nootebooks
+provided, but their actual results will be shown in the Appendix~\ref{sec:app}.
+
+In an effort to avoid duplicated code, multiple functions are implmented in the
+\texttt{shared} module, which is imported in the notebooks.
 
 \begin{table}[h]
 \centering
@@ -745,11 +747,11 @@ grids are shown in Tables~\ref{tab:la_variants} and~\ref{tab:bt_variants}.
 \hline
 \textbf{Weights} & \textbf{Hessian} & \textbf{Prior optimisation} \\
 \hline
-\multirow{All layers}  & Diagonal  & Marglik, Grid search \\
+\multirow{3}{*}{All layers}  & Diagonal  & Marglik, Grid search \\
                               & Kronecker & Marglik, Grid search, Adam loop \\
                               & Full      & Marglik, Grid search \\
 \hline
-\multirow{Last layer}  & Kronecker & Marglik, Grid search, Adam loop \\
+\multirow{2}{*}{Last layer}  & Kronecker & Marglik, Grid search, Adam loop \\
                               & Full      & Marglik, Grid search \\
 \hline
 \end{tabular}
@@ -763,16 +765,45 @@ grids are shown in Tables~\ref{tab:la_variants} and~\ref{tab:bt_variants}.
 \hline
 \textbf{Layer type} & \textbf{Init} & \textbf{Loss} \\
 \hline
-\multirow{Flipout} & Scratch & ELBO, ELBO + AvUC \\
+\multirow{2}{*}{Flipout} & Scratch & ELBO, ELBO + AvUC \\
                           & MOPED   & ELBO, ELBO + AvUC \\
 \hline
-\multirow{BBB}     & Scratch & ELBO, ELBO + AvUC \\
+\multirow{2}{*}{BBB}     & Scratch & ELBO, ELBO + AvUC \\
                           & MOPED   & ELBO, ELBO + AvUC \\
 \hline
 \end{tabular}
 \caption{\texttt{bayesian-torch} variants evaluated in this report.}
 \label{tab:bt_variants}
 \end{table}
+
+\textbf{The \texttt{laplace-torch} Interface. }
+\label{sec:imp:la_api}As introduced in Section~\ref{sec:theory:la}, the LA is applied across the Two Moons and Sinusoidal notebooks through the same high level \texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace} interface, built around a network already trained to a MAP solution $\btheta_{\MAP}$. Constructing the approximation is a single call,
+\begin{center}
+\texttt{Laplace(model, likelihood, subset\_of\_weights, hessian\_structure)},
+\end{center}
+where \texttt{likelihood} is set to \texttt{"classification"} or \texttt{"regression"} depending on the observation model. Calling \texttt{.fit(train\_loader)} accumulates the curvature estimate $\mathbf{H}$ from the training data. Predictions are then obtained by calling the fitted object directly, \texttt{la(X, pred\_type="glm", ...)}, which linearises the network around $\btheta_{\MAP}$ and returns a closed form Gaussian over the network output.
+
+\textbf{The \texttt{bayesian-torch} Interface. }
+\label{sec:imp:bt_api}
+The \texttt{bayesian-torch}~\citep{intel2021bayesiantorch} variants are built by converting an already instantiated network in place,
+\begin{center}
+\texttt{dnn\_to\_bnn(net, \{prior\_mu, prior\_sigma, posterior\_mu\_init, posterior\_rho\_init, type, moped\_enable, moped\_delta\})},
+\end{center}
+where \texttt{type} selects Flipout or Reparameterization (BBB) layers, and \texttt{moped\_enable} triggers the MOPED warm start once \texttt{net} already holds the MAP weights it initialises from. Unlike \texttt{laplace-torch}'s single \texttt{.fit()} call, training is a manual loop: every step adds \texttt{get\_kl\_loss(net)/batch\_size} to the task loss, and AvUC variants further add the calibration penalty of Equation~\eqref{eq:avuc}, computed on the mean of several MC logit samples rather than a single forward pass.
+
+\subsection{Two Moons}
+
+Two crescent moons are generated with the \texttt{sklearn.datasets.make\_moons} function, with 10000 samples
+split into 60 / 20 / 20 for training, validation and test sets, respectively. The dataset is generated with a
+noise of 0.3.
+
+\paragraph{GLM predictive and the probit link.} The GLM predictive yields a Gaussian distribution over the network's logits, which has no closed form once passed through a sigmoid to obtain class probabilities. \texttt{laplace-torch} approximates this integral with the probit link, \texttt{link\_approx="probit"}.
+
+\paragraph{MC softmax predictive.} \texttt{bayesian-torch} has no closed form linearisation to fall back on: each of the weight samples from \texttt{bt\_mc\_forward} is passed through a softmax, and the resulting probability vectors are averaged to obtain the class probabilities.
+
+\paragraph{Visualisations.} For each variant, a representative decision boundary is plotted from the last seed's fitted model. Epistemic uncertainty is visualised as the per pixel mutual information from Equation~\eqref{eq:mi}, mapped over a grid extending beyond the training data using $S=50$ predictive samples per point and averaged across seeds. Reliability diagrams (confidence vs.\ empirical accuracy) are likewise averaged across seeds.
+
+\subsection{Sinusoid}
 
 \section{Results}
 \label{sec:results}
@@ -794,7 +825,7 @@ BBB     & MOPED   & ELBO & $0.913 \pm 0.008$ & $0.210 \pm 0.016$ & $0.063 \pm 0.
 BBB     & MOPED   & AvUC & $0.915 \pm 0.008$ & $0.214 \pm 0.015$ & $0.063 \pm 0.005$ & $0.014 \pm 0.004$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{bayesian-torch} on Two Moons, 5 seeds — metrics (mean $\pm$ std).}
+\caption{\texttt{bayesian-torch} on Two Moons: 5-seed metrics (mean $\pm$ std).}
 \label{tab:bnn_tm_5seed_metrics}
 \end{table}
 
@@ -815,7 +846,7 @@ BBB     & MOPED   & ELBO & $29.4 \pm 6.5$   & $0.029 \pm 0.000$ \\
 BBB     & MOPED   & AvUC & $110.0 \pm 16.2$ & $0.029 \pm 0.000$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{bayesian-torch} on Two Moons, 5 seeds — timing (mean $\pm$ std).}
+\caption{\texttt{bayesian-torch} on Two Moons: 5-seed timing (mean $\pm$ std).}
 \label{tab:bnn_tm_5seed_timing}
 \end{table}
 
@@ -838,7 +869,7 @@ Full & LL  & marglik    & $0.238 \pm 0.015$ & $0.067 \pm 0.005$ & $0.060 \pm 0.0
 Full & LL  & gridsearch & $0.210 \pm 0.017$ & $0.063 \pm 0.006$ & $0.013 \pm 0.002$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{laplace-torch} on Two Moons, 5 seeds — metrics (mean $\pm$ std).}
+\caption{\texttt{laplace-torch} on Two Moons: 5-seed metrics (mean $\pm$ std).}
 \label{tab:la_tm_5seed_metrics}
 \end{table}
 
@@ -861,7 +892,7 @@ Full & LL  & marglik    & $10.971 \pm 1.407$   & $0.087 \pm 0.006$  & $0.001 \pm
 Full & LL  & gridsearch & $11.074 \pm 1.826$   & $1.936 \pm 0.342$  & $0.001 \pm 0.000$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{laplace-torch} on Two Moons, 5 seeds — timing (mean $\pm$ std).}
+\caption{\texttt{laplace-torch} on Two Moons: 5-seed timing (mean $\pm$ std).}
 \label{tab:la_tm_5seed_timing}
 \end{table}
 
@@ -878,7 +909,7 @@ BBB     & scratch & $0.697 \pm 0.025$ & $1.832 \pm 0.147$ & $0.273 \pm 0.015$ & 
 BBB     & MOPED   & $0.684 \pm 0.081$ & $1.566 \pm 0.087$ & $0.278 \pm 0.018$ & $1.000 \pm 0.000$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{bayesian-torch} on Sinusoidal, 5 seeds — metrics (mean $\pm$ std).}
+\caption{\texttt{bayesian-torch} on Sinusoidal: 5-seed metrics (mean $\pm$ std).}
 \label{tab:bnn_sin_5seed_metrics}
 \end{table}
 
@@ -895,7 +926,7 @@ BBB     & scratch & $120.2 \pm 96.3$ & $1.67 \pm 1.54$ \\
 BBB     & MOPED   & $19.7 \pm 17.3$  & $1.62 \pm 1.37$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{bayesian-torch} on Sinusoidal, 5 seeds — timing (mean $\pm$ std).}
+\caption{\texttt{bayesian-torch} on Sinusoidal: 5-seed timing (mean $\pm$ std).}
 \label{tab:bnn_sin_5seed_timing}
 \end{table}
 
@@ -920,7 +951,7 @@ Full & LL  & marglik    & $0.278 \pm 0.032$ & $0.033 \pm 0.018$ & $0.942 \pm 0.0
 Full & LL  & gridsearch & $0.276 \pm 0.032$ & $0.032 \pm 0.016$ & $0.942 \pm 0.020$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{laplace-torch} on Sinusoidal, 5 seeds — metrics (mean $\pm$ std). RMSE $= 0.317 \pm 0.009$ for all variants.}
+\caption{\texttt{laplace-torch} on Sinusoidal: 5-seed metrics (mean $\pm$ std). RMSE $= 0.317 \pm 0.009$ for all variants.}
 \label{tab:la_sin_5seed_metrics}
 \end{table}
 
@@ -945,7 +976,7 @@ Full & LL  & marglik    & $0.126 \pm 0.046$ & $4.289 \pm 0.899$  & $0.097 \pm 0.
 Full & LL  & gridsearch & $0.119 \pm 0.032$ & $9.098 \pm 1.899$  & $0.108 \pm 0.015$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{laplace-torch} on Sinusoidal, 5 seeds — timing (mean $\pm$ std).}
+\caption{\texttt{laplace-torch} on Sinusoidal: 5-seed timing (mean $\pm$ std).}
 \label{tab:la_sin_5seed_timing}
 \end{table}
 
