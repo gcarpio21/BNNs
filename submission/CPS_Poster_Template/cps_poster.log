@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  8 JUL 2026 21:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  24 JUL 2026 17:04
 entering extended mode
- \write18 enabled.
+ restricted \write18 enabled.
  %&-line parsing enabled.
-**cps_poster
+**cps_poster.tex
 (./cps_poster.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -911,34 +911,34 @@ LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 13.67995pt on input line 180.
 Missing character: There is no ; in font nullfont!
 LaTeX Font Info:    Trying to load font information for TS1+phv on input line 2
-55.
+51.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1phv.fd
 File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
 )
 LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
-(Font)              scaled to size 9.49997pt on input line 255.
+(Font)              scaled to size 9.49997pt on input line 251.
 
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 6.64998pt on input line 275.
+(Font)              scaled to size 6.64998pt on input line 271.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 275.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 271.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 9.49997pt on input line 275.
+(Font)              scaled to size 9.49997pt on input line 271.
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 311.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 307.
 
-Overfull \hbox (34.10442pt too wide) in paragraph at lines 311--311
+Overfull \hbox (34.10442pt too wide) in paragraph at lines 307--307
 []\T1/phv/b/n/10 Usage\T1/phv/m/n/10 : [] 
  []
 
 
-Overfull \hbox (34.10442pt too wide) in paragraph at lines 311--311
+Overfull \hbox (34.10442pt too wide) in paragraph at lines 307--307
 []\T1/phv/b/n/10 Usage\T1/phv/m/n/10 : [] 
  []
 
@@ -948,59 +948,59 @@ Missing character: There is no ; in font nullfont!
 <figures/two_moons_dataset.png, id=32, 500.1084pt x 380.1402pt>
 File: figures/two_moons_dataset.png Graphic file (type png)
 <use figures/two_moons_dataset.png>
-Package pdftex.def Info: figures/two_moons_dataset.png  used on input line 372.
+Package pdftex.def Info: figures/two_moons_dataset.png  used on input line 368.
 
 (pdftex.def)             Requested size: 83.88791pt x 63.7645pt.
 <figures/povertymap_samples.png, id=33, 384.637pt x 405.9165pt>
 File: figures/povertymap_samples.png Graphic file (type png)
 <use figures/povertymap_samples.png>
-Package pdftex.def Info: figures/povertymap_samples.png  used on input line 372
+Package pdftex.def Info: figures/povertymap_samples.png  used on input line 368
 .
 (pdftex.def)             Requested size: 83.88675pt x 88.52768pt.
 <figures/sinusoid_dataset.png, id=34, 555.9972pt x 328.5876pt>
 File: figures/sinusoid_dataset.png Graphic file (type png)
 <use figures/sinusoid_dataset.png>
-Package pdftex.def Info: figures/sinusoid_dataset.png  used on input line 372.
+Package pdftex.def Info: figures/sinusoid_dataset.png  used on input line 368.
 (pdftex.def)             Requested size: 141.96829pt x 83.90154pt.
 <figures/merged_tm_ece.png, id=35, 387.046pt x 207.5755pt>
 File: figures/merged_tm_ece.png Graphic file (type png)
 <use figures/merged_tm_ece.png>
-Package pdftex.def Info: figures/merged_tm_ece.png  used on input line 372.
+Package pdftex.def Info: figures/merged_tm_ece.png  used on input line 368.
 (pdftex.def)             Requested size: 154.88062pt x 83.06357pt.
 <figures/reliability_tm_all_variants.png, id=36, 424.787pt x 317.185pt>
 File: figures/reliability_tm_all_variants.png Graphic file (type png)
 <use figures/reliability_tm_all_variants.png>
 Package pdftex.def Info: figures/reliability_tm_all_variants.png  used on input
- line 372.
+ line 368.
 (pdftex.def)             Requested size: 129.5566pt x 96.73885pt.
 <figures/cmp_lbnn_pov_cal_mae.png, id=37, 316.382pt x 206.7725pt>
 File: figures/cmp_lbnn_pov_cal_mae.png Graphic file (type png)
 <use figures/cmp_lbnn_pov_cal_mae.png>
 Package pdftex.def Info: figures/cmp_lbnn_pov_cal_mae.png  used on input line 3
-72.
+68.
 (pdftex.def)             Requested size: 148.0237pt x 96.74136pt.
 <figures/reliability_povertymap.png, id=38, 431.211pt x 317.185pt>
 File: figures/reliability_povertymap.png Graphic file (type png)
 <use figures/reliability_povertymap.png>
 Package pdftex.def Info: figures/reliability_povertymap.png  used on input line
- 372.
+ 368.
 (pdftex.def)             Requested size: 131.51587pt x 96.73885pt.
 <figures/merged_sin_cal_mae.png, id=39, 381.8265pt x 207.5755pt>
 File: figures/merged_sin_cal_mae.png Graphic file (type png)
 <use figures/merged_sin_cal_mae.png>
-Package pdftex.def Info: figures/merged_sin_cal_mae.png  used on input line 372
+Package pdftex.def Info: figures/merged_sin_cal_mae.png  used on input line 368
 .
 (pdftex.def)             Requested size: 154.87775pt x 84.19748pt.
 <figures/reliability_sin_all_variants.png, id=40, 424.787pt x 317.185pt>
 File: figures/reliability_sin_all_variants.png Graphic file (type png)
 <use figures/reliability_sin_all_variants.png>
 Package pdftex.def Info: figures/reliability_sin_all_variants.png  used on inpu
-t line 372.
+t line 368.
 (pdftex.def)             Requested size: 129.5566pt x 96.73885pt.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 8.54997pt on input line 372.
+(Font)              scaled to size 8.54997pt on input line 368.
 
-Underfull \hbox (badness 10000) in paragraph at lines 372--372
+Underfull \hbox (badness 10000) in paragraph at lines 368--368
 
  []
 
@@ -1011,7 +1011,7 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 
-Overfull \hbox (0.75005pt too wide) in paragraph at lines 154--393
+Overfull \hbox (0.75005pt too wide) in paragraph at lines 154--389
 [][] [] 
  []
 
@@ -1037,7 +1037,7 @@ Here is how much of TeX's memory you used:
  46149 multiletter control sequences out of 15000+600000
  612447 words of font info for 118 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 117i,21n,121p,429b,1472s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,21n,121p,433b,1472s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texl

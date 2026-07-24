@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{11}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -39,11 +39,42 @@ Alexander Immer, Erik Daxberger, Agustinus Kristiadi, Runa Eschenhagen,
   layers and uncertainty estimation in deep learning.
 \newblock \url{https://github.com/IntelLabs/bayesian-torch}, 2021.
 
+\bibitem[Krishnan and Tickoo(2020)]{krishnan2020avuc}
+Ranganath Krishnan and Omesh Tickoo.
+\newblock Improving model calibration with accuracy versus uncertainty
+  optimization.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2020.
+
+\bibitem[Krishnan et~al.(2020)Krishnan, Subedar, and
+  Tickoo]{krishnan2020specifying}
+Ranganath Krishnan, Mahesh Subedar, and Omesh Tickoo.
+\newblock Specifying weight priors in bayesian deep neural networks with
+  empirical bayes.
+\newblock In \emph{Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~34, pages 4477--4484, 2020.
+\newblock URL \url{https://ojs.aaai.org/index.php/AAAI/article/view/5875}.
+
+\bibitem[Kuleshov et~al.(2018)Kuleshov, Fenner, and
+  Ermon]{kuleshov2018calibrated}
+Volodymyr Kuleshov, Nathan Fenner, and Stefano Ermon.
+\newblock Accurate uncertainties for deep learning using calibrated regression.
+\newblock In \emph{Proceedings of the 35th International Conference on Machine
+  Learning (ICML)}, pages 2796--2804, 2018.
+
 \bibitem[Murphy(2023)]{murphy2023pml}
 Kevin~P. Murphy.
 \newblock \emph{Probabilistic Machine Learning: Advanced Topics}.
 \newblock MIT Press, 2023.
 \newblock Chapter 17: Bayesian neural networks.
+
+\bibitem[Osawa et~al.(2019)Osawa, Swaroop, Khan, Jain, Eschenhagen, Turner, and
+  Yokota]{osawa2019practical}
+Kazuki Osawa, Siddharth Swaroop, Mohammad~Emtiyaz Khan, Anirudh Jain, Runa
+  Eschenhagen, Richard~E Turner, and Rio Yokota.
+\newblock Practical deep learning with {Bayesian} principles.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2019.
 
 \bibitem[Wen et~al.(2018)Wen, Vicol, Ba, Tran, and Grosse]{wen2018flipout}
 Yeming Wen, Paul Vicol, Jimmy Ba, Dustin Tran, and Roger Grosse.

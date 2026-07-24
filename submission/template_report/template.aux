@@ -2,6 +2,7 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{goan2020bayesian,murphy2023pml}
 \citation{intel2021bayesiantorch}
 \citation{wen2018flipout}
 \citation{blundell2015weight}
@@ -9,8 +10,6 @@
 \citation{daxberger2021laplace}
 \citation{goan2020bayesian}
 \citation{goan2020bayesian,murphy2023pml}
-\citation{intel2021bayesiantorch}
-\citation{daxberger2021laplace,aleximmer2024laplace}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{2}{section.1}\protected@file@percent }
 \newlabel{sec:intro}{{I}{2}{Introduction}{section.1}{}}
 \newlabel{sec:intro@cref}{{[section][1][]I}{[1][2][]2}}
@@ -19,142 +18,254 @@
 \newlabel{sec:theory@cref}{{[section][2][]II}{[1][2][]2}}
 \newlabel{eq:marginal_likelihood}{{3}{2}{Theoretical Background}{equation.2.3}{}}
 \newlabel{eq:marginal_likelihood@cref}{{[equation][3][]3}{[1][2][]2}}
+\citation{intel2021bayesiantorch}
+\citation{daxberger2021laplace,aleximmer2024laplace}
 \citation{murphy2023pml,goan2020bayesian}
 \citation{blundell2015weight,goan2020bayesian,murphy2023pml}
-\citation{murphy2023pml}
 \citation{blundell2015weight}
 \citation{murphy2023pml}
 \citation{wen2018flipout}
+\citation{krishnan2020specifying}
+\citation{intel2021bayesiantorch}
+\citation{krishnan2020avuc}
 \citation{intel2021bayesiantorch}
 \citation{intel2021bayesiantorch}
-\citation{intel2021bayesiantorch}
+\citation{daxberger2021laplace}
+\citation{daxberger2021laplace}
+\citation{daxberger2021laplace}
+\citation{daxberger2021laplace}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Variational Inference (VI)~\citep  {murphy2023pml,goan2020bayesian}}{3}{subsection.2.1}\protected@file@percent }
+\newlabel{sec:theory:vi}{{\mbox  {II-A}}{3}{Variational Inference (VI)~\citep {murphy2023pml,goan2020bayesian}}{subsection.2.1}{}}
+\newlabel{sec:theory:vi@cref}{{[subsection][1][2]\mbox  {II-A}}{[1][3][]3}}
+\newlabel{eq:kl}{{6}{3}{Variational Inference (VI)~\citep {murphy2023pml,goan2020bayesian}}{equation.2.6}{}}
+\newlabel{eq:kl@cref}{{[equation][6][]6}{[1][3][]3}}
+\newlabel{eq:kl_expanded}{{7}{3}{Variational Inference (VI)~\citep {murphy2023pml,goan2020bayesian}}{equation.2.7}{}}
+\newlabel{eq:kl_expanded@cref}{{[equation][7][]7}{[1][3][]3}}
+\newlabel{eq:elbo}{{8}{3}{Variational Inference (VI)~\citep {murphy2023pml,goan2020bayesian}}{equation.2.8}{}}
+\newlabel{eq:elbo@cref}{{[equation][8][]8}{[1][3][]3}}
+\newlabel{eq:avuc}{{12}{3}{Variational Inference (VI)~\citep {murphy2023pml,goan2020bayesian}}{equation.2.12}{}}
+\newlabel{eq:avuc@cref}{{[equation][12][]12}{[1][3][]3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Laplace Approximation}{3}{subsection.2.2}\protected@file@percent }
+\newlabel{sec:theory:la}{{\mbox  {II-B}}{3}{Laplace Approximation}{subsection.2.2}{}}
+\newlabel{sec:theory:la@cref}{{[subsection][2][2]\mbox  {II-B}}{[1][3][]3}}
+\newlabel{eq:marglik}{{14}{3}{Laplace Approximation}{equation.2.14}{}}
+\newlabel{eq:marglik@cref}{{[equation][14][]14}{[1][3][]3}}
 \citation{goan2020bayesian}
 \citation{daxberger2021laplace}
-\citation{daxberger2021laplace}
+\citation{kuleshov2018calibrated}
 \citation{intel2021bayesiantorch}
 \citation{daxberger2021laplace,aleximmer2024laplace}
 \citation{aleximmer2024laplace}
 \citation{daxberger2021laplace}
-\newlabel{eq:kl}{{6}{3}{Theoretical Background}{equation.2.6}{}}
-\newlabel{eq:kl@cref}{{[equation][6][]6}{[1][3][]3}}
-\newlabel{eq:kl_expanded}{{7}{3}{Theoretical Background}{equation.2.7}{}}
-\newlabel{eq:kl_expanded@cref}{{[equation][7][]7}{[1][3][]3}}
-\newlabel{eq:elbo}{{8}{3}{Theoretical Background}{equation.2.8}{}}
-\newlabel{eq:elbo@cref}{{[equation][8][]8}{[1][3][]3}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-}1}Flipout}{3}{subsubsection.2.0.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-}2}MOPED Initialisation}{3}{subsubsection.2.0.2}\protected@file@percent }
-\newlabel{sec:theory:avuc}{{\mbox  {II-}3}{3}{AvUC Loss}{subsubsection.2.0.3}{}}
-\newlabel{sec:theory:avuc@cref}{{[subsubsection][3][2,0]\mbox  {II-}3}{[1][3][]3}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {II-}3}AvUC Loss}{3}{subsubsection.2.0.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {II-}3a}AvUC objective.}{3}{paragraph.2.0.3.1}\protected@file@percent }
-\newlabel{eq:avuc}{{12}{3}{AvUC objective}{equation.2.12}{}}
-\newlabel{eq:avuc@cref}{{[equation][12][]12}{[1][3][]3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Epistemic and Aleatoric Uncertainty Decomposition}{3}{subsection.2.1}\protected@file@percent }
-\newlabel{sec:theory:unc_decomp}{{\mbox  {II-A}}{3}{Epistemic and Aleatoric Uncertainty Decomposition}{subsection.2.1}{}}
-\newlabel{sec:theory:unc_decomp@cref}{{[subsection][1][2]\mbox  {II-A}}{[1][3][]3}}
-\newlabel{eq:mi}{{15}{3}{Epistemic and Aleatoric Uncertainty Decomposition}{equation.2.15}{}}
-\newlabel{eq:mi@cref}{{[equation][15][]15}{[1][3][]3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Laplace Approximation}{3}{subsection.2.2}\protected@file@percent }
-\newlabel{sec:theory:la}{{\mbox  {II-B}}{3}{Laplace Approximation}{subsection.2.2}{}}
-\newlabel{sec:theory:la@cref}{{[subsection][2][2]\mbox  {II-B}}{[1][3][]3}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {II-B}0a}Marginal likelihood tuning.}{3}{paragraph.2.2.0.1}\protected@file@percent }
-\newlabel{eq:marglik}{{17}{3}{Marginal likelihood tuning}{equation.2.17}{}}
-\newlabel{eq:marglik@cref}{{[equation][17][]17}{[1][3][]3}}
-\@writefile{toc}{\contentsline {section}{\numberline {III}Evaluation Metrics}{3}{section.3}\protected@file@percent }
-\newlabel{sec:metrics}{{III}{3}{Evaluation Metrics}{section.3}{}}
-\newlabel{sec:metrics@cref}{{[section][3][]III}{[1][3][]3}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-}0a}Brier Score.}{3}{paragraph.3.0.0.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-}0b}Mean Confidence / Mean Entropy / $1 - \text  {Confidence}$.}{3}{paragraph.3.0.0.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-}0c}Uncertainty calibration U MAE, U MSE, U Corr, Max Gap.}{3}{paragraph.3.0.0.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-}0d}Epistemic uncertainty OOD maps.}{3}{paragraph.3.0.0.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {IV}The Implementations}{3}{section.4}\protected@file@percent }
-\newlabel{sec:imp}{{IV}{3}{The Implementations}{section.4}{}}
-\newlabel{sec:imp@cref}{{[section][4][]IV}{[1][3][]3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Uncertainty Quantification and Metrics}{4}{subsection.2.3}\protected@file@percent }
+\newlabel{sec:theory:unc_decomp}{{\mbox  {II-C}}{4}{Uncertainty Quantification and Metrics}{subsection.2.3}{}}
+\newlabel{sec:theory:unc_decomp@cref}{{[subsection][3][2]\mbox  {II-C}}{[1][3][]4}}
+\newlabel{eq:glm_predictive}{{15}{4}{Uncertainty Quantification and Metrics}{equation.2.15}{}}
+\newlabel{eq:glm_predictive@cref}{{[equation][15][]15}{[1][3][]4}}
+\newlabel{eq:mi}{{18}{4}{Uncertainty Quantification and Metrics}{equation.2.18}{}}
+\newlabel{eq:mi@cref}{{[equation][18][]18}{[1][4][]4}}
+\newlabel{eq:additive_variance}{{19}{4}{Uncertainty Quantification and Metrics}{equation.2.19}{}}
+\newlabel{eq:additive_variance@cref}{{[equation][19][]19}{[1][4][]4}}
+\newlabel{sec:metrics}{{\mbox  {II-C}}{4}{Uncertainty Quantification and Metrics}{equation.2.19}{}}
+\newlabel{sec:metrics@cref}{{[subsection][3][2]\mbox  {II-C}}{[1][4][]4}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}The Implementations}{4}{section.3}\protected@file@percent }
+\newlabel{sec:imp}{{III}{4}{The Implementations}{section.3}{}}
+\newlabel{sec:imp@cref}{{[section][3][]III}{[1][4][]4}}
+\citation{daxberger2021laplace}
 \citation{daxberger2021laplace,aleximmer2024laplace}
 \citation{intel2021bayesiantorch}
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces \texttt  {laplace-torch} variants evaluated in this report.}}{4}{table.caption.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces \texttt  {laplace-torch} variants evaluated in this report.}}{5}{table.caption.2}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{tab:la_variants}{{I}{4}{\texttt {laplace-torch} variants evaluated in this report}{table.caption.2}{}}
-\newlabel{tab:la_variants@cref}{{[table][1][]I}{[1][4][]4}}
-\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces \texttt  {bayesian-torch} variants evaluated in this report.}}{4}{table.caption.3}\protected@file@percent }
-\newlabel{tab:bt_variants}{{II}{4}{\texttt {bayesian-torch} variants evaluated in this report}{table.caption.3}{}}
-\newlabel{tab:bt_variants@cref}{{[table][2][]II}{[1][4][]4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}The \texttt  {laplace-torch} Interface}{4}{subsection.4.1}\protected@file@percent }
-\newlabel{sec:imp:la_api}{{\mbox  {IV-A}}{4}{The \texttt {laplace-torch} Interface}{subsection.4.1}{}}
-\newlabel{sec:imp:la_api@cref}{{[subsection][1][4]\mbox  {IV-A}}{[1][4][]4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}The \texttt  {bayesian-torch} Interface}{4}{subsection.4.2}\protected@file@percent }
-\newlabel{sec:imp:bt_api}{{\mbox  {IV-B}}{4}{The \texttt {bayesian-torch} Interface}{subsection.4.2}{}}
-\newlabel{sec:imp:bt_api@cref}{{[subsection][2][4]\mbox  {IV-B}}{[1][4][]4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Two Moons}{4}{subsection.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-C}0a}GLM predictive and the probit link.}{4}{paragraph.4.3.0.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-C}0b}MC softmax predictive.}{4}{paragraph.4.3.0.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-C}0c}Visualisations.}{4}{paragraph.4.3.0.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {V}Results}{4}{section.5}\protected@file@percent }
-\newlabel{sec:results}{{V}{4}{Results}{section.5}{}}
-\newlabel{sec:results@cref}{{[section][5][]V}{[1][4][]4}}
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces \texttt  {bayesian-torch} on Two Moons: 5-seed metrics (mean $\pm $ std).}}{4}{table.caption.4}\protected@file@percent }
-\newlabel{tab:bnn_tm_5seed_metrics}{{III}{4}{\texttt {bayesian-torch} on Two Moons: 5-seed metrics (mean $\pm $ std)}{table.caption.4}{}}
-\newlabel{tab:bnn_tm_5seed_metrics@cref}{{[table][3][]III}{[1][4][]4}}
-\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces \texttt  {bayesian-torch} on Two Moons: 5-seed timing (mean $\pm $ std).}}{5}{table.caption.5}\protected@file@percent }
-\newlabel{tab:bnn_tm_5seed_timing}{{IV}{5}{\texttt {bayesian-torch} on Two Moons: 5-seed timing (mean $\pm $ std)}{table.caption.5}{}}
-\newlabel{tab:bnn_tm_5seed_timing@cref}{{[table][4][]IV}{[1][4][]5}}
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces \texttt  {laplace-torch} on Two Moons: 5-seed metrics (mean $\pm $ std).}}{5}{table.caption.6}\protected@file@percent }
-\newlabel{tab:la_tm_5seed_metrics}{{V}{5}{\texttt {laplace-torch} on Two Moons: 5-seed metrics (mean $\pm $ std)}{table.caption.6}{}}
-\newlabel{tab:la_tm_5seed_metrics@cref}{{[table][5][]V}{[1][5][]5}}
-\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces \texttt  {laplace-torch} on Two Moons: 5-seed timing (mean $\pm $ std).}}{5}{table.caption.7}\protected@file@percent }
-\newlabel{tab:la_tm_5seed_timing}{{VI}{5}{\texttt {laplace-torch} on Two Moons: 5-seed timing (mean $\pm $ std)}{table.caption.7}{}}
-\newlabel{tab:la_tm_5seed_timing@cref}{{[table][6][]VI}{[1][5][]5}}
-\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces \texttt  {bayesian-torch} on Sinusoidal: 5-seed metrics (mean $\pm $ std).}}{5}{table.caption.8}\protected@file@percent }
-\newlabel{tab:bnn_sin_5seed_metrics}{{VII}{5}{\texttt {bayesian-torch} on Sinusoidal: 5-seed metrics (mean $\pm $ std)}{table.caption.8}{}}
-\newlabel{tab:bnn_sin_5seed_metrics@cref}{{[table][7][]VII}{[1][5][]5}}
-\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces \texttt  {bayesian-torch} on Sinusoidal: 5-seed timing (mean $\pm $ std).}}{5}{table.caption.9}\protected@file@percent }
-\newlabel{tab:bnn_sin_5seed_timing}{{VIII}{5}{\texttt {bayesian-torch} on Sinusoidal: 5-seed timing (mean $\pm $ std)}{table.caption.9}{}}
-\newlabel{tab:bnn_sin_5seed_timing@cref}{{[table][8][]VIII}{[1][5][]5}}
-\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces \texttt  {laplace-torch} on Sinusoidal: 5-seed metrics (mean $\pm $ std). RMSE $= 0.317 \pm 0.009$ for all variants.}}{5}{table.caption.10}\protected@file@percent }
-\newlabel{tab:la_sin_5seed_metrics}{{IX}{5}{\texttt {laplace-torch} on Sinusoidal: 5-seed metrics (mean $\pm $ std). RMSE $= 0.317 \pm 0.009$ for all variants}{table.caption.10}{}}
-\newlabel{tab:la_sin_5seed_metrics@cref}{{[table][9][]IX}{[1][5][]5}}
-\@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces \texttt  {laplace-torch} on Sinusoidal: 5-seed timing (mean $\pm $ std).}}{5}{table.caption.11}\protected@file@percent }
-\newlabel{tab:la_sin_5seed_timing}{{X}{5}{\texttt {laplace-torch} on Sinusoidal: 5-seed timing (mean $\pm $ std)}{table.caption.11}{}}
-\newlabel{tab:la_sin_5seed_timing@cref}{{[table][10][]X}{[1][5][]5}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{5}{section.6}\protected@file@percent }
-\newlabel{sec:discussion}{{VI}{5}{Discussion}{section.6}{}}
-\newlabel{sec:discussion@cref}{{[section][6][]VI}{[1][5][]5}}
-\@writefile{toc}{\contentsline {section}{Appendix}{5}{section*.12}\protected@file@percent }
-\newlabel{sec:app}{{A}{5}{\appendixname }{section*.12}{}}
-\newlabel{sec:app@cref}{{[appendix][1][2147483647]A}{[1][5][]5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Training data and OOD probe points.}}{5}{figure.caption.15}\protected@file@percent }
-\newlabel{fig:ood_points}{{1}{5}{Training data and OOD probe points}{figure.caption.15}{}}
-\newlabel{fig:ood_points@cref}{{[figure][1][2147483647]1}{[1][5][]5}}
-\newlabel{RF1}{6}
-\@writefile{lot}{\contentsline {table}{\numberline {XI}{\ignorespaces All calibration metrics for bayesian torch variants on Two Moons.}}{6}{table.caption.13}\protected@file@percent }
-\newlabel{tab:bnn_main_full}{{XI}{6}{All calibration metrics for bayesian torch variants on Two Moons}{table.caption.13}{}}
-\newlabel{tab:bnn_main_full@cref}{{[table][11][2147483647]XI}{[1][5][]6}}
-\newlabel{RF2}{6}
-\@writefile{lot}{\contentsline {table}{\numberline {XII}{\ignorespaces All calibration metrics for laplace torch variants on Two Moons.}}{6}{table.caption.14}\protected@file@percent }
-\newlabel{tab:la_main_full}{{XII}{6}{All calibration metrics for laplace torch variants on Two Moons}{table.caption.14}{}}
-\newlabel{tab:la_main_full@cref}{{[table][12][2147483647]XII}{[1][5][]6}}
+\newlabel{tab:la_variants}{{I}{5}{\texttt {laplace-torch} variants evaluated in this report}{table.caption.2}{}}
+\newlabel{tab:la_variants@cref}{{[table][1][]I}{[1][5][]5}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces \texttt  {bayesian-torch} variants evaluated in this report.}}{5}{table.caption.3}\protected@file@percent }
+\newlabel{tab:bt_variants}{{II}{5}{\texttt {bayesian-torch} variants evaluated in this report}{table.caption.3}{}}
+\newlabel{tab:bt_variants@cref}{{[table][2][]II}{[1][5][]5}}
+\newlabel{sec:imp:la_api}{{III}{5}{The Implementations}{table.caption.3}{}}
+\newlabel{sec:imp:la_api@cref}{{[section][3][]III}{[1][5][]5}}
+\newlabel{sec:imp:bt_api}{{III}{5}{The Implementations}{table.caption.3}{}}
+\newlabel{sec:imp:bt_api@cref}{{[section][3][]III}{[1][5][]5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Two Moons}{5}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Sinusoid}{5}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:imp:sinusoid}{{\mbox  {III-B}}{5}{Sinusoid}{subsection.3.2}{}}
+\newlabel{sec:imp:sinusoid@cref}{{[subsection][2][3]\mbox  {III-B}}{[1][5][]5}}
+\citation{krishnan2020specifying}
+\citation{daxberger2021laplace}
+\citation{daxberger2021laplace}
+\citation{daxberger2021laplace}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}PovertyMap}{6}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Results}{6}{section.4}\protected@file@percent }
+\newlabel{sec:results}{{IV}{6}{Results}{section.4}{}}
+\newlabel{sec:results@cref}{{[section][4][]IV}{[1][6][]6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Two Moons}{6}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Combined 5-seed reliability diagram for the four best-tuned Two Moons variants.}}{7}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:tm_reliability_combined}{{1}{7}{Combined 5-seed reliability diagram for the four best-tuned Two Moons variants}{figure.caption.4}{}}
+\newlabel{fig:tm_reliability_combined@cref}{{[figure][1][]1}{[1][6][]7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces 5-seed ECE by variant, both methods.}}{7}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:tm_ece_bars}{{2}{7}{5-seed ECE by variant, both methods}{figure.caption.5}{}}
+\newlabel{fig:tm_ece_bars@cref}{{[figure][2][]2}{[1][7][]7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces 5-seed mean epistemic uncertainty for the best-calibrated Two Moons variant, Full / all weights / gridsearch.}}{7}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:tm_best_calib_heatmap}{{3}{7}{5-seed mean epistemic uncertainty for the best-calibrated Two Moons variant, Full / all weights / gridsearch}{figure.caption.6}{}}
+\newlabel{fig:tm_best_calib_heatmap@cref}{{[figure][3][]3}{[1][7][]7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces 5-seed mean total time by variant, both methods.}}{7}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:tm_fit_time_bars}{{4}{7}{5-seed mean total time by variant, both methods}{figure.caption.7}{}}
+\newlabel{fig:tm_fit_time_bars@cref}{{[figure][4][]4}{[1][7][]7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces 5-seed mean inference time by variant, both methods.}}{8}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:tm_inf_time_bars}{{5}{8}{5-seed mean inference time by variant, both methods}{figure.caption.8}{}}
+\newlabel{fig:tm_inf_time_bars@cref}{{[figure][5][]5}{[1][8][]8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Sinusoid}{8}{subsection.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Combined 5-seed calibration diagram for the Sinusoid comparison dataset.}}{8}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:sin_big_cal_combined}{{6}{8}{Combined 5-seed calibration diagram for the Sinusoid comparison dataset}{figure.caption.9}{}}
+\newlabel{fig:sin_big_cal_combined@cref}{{[figure][6][]6}{[1][8][]8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces 5-seed calibration error by variant, both methods, Sinusoid comparison dataset.}}{8}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:sin_big_cal_bars}{{7}{8}{5-seed calibration error by variant, both methods, Sinusoid comparison dataset}{figure.caption.10}{}}
+\newlabel{fig:sin_big_cal_bars@cref}{{[figure][7][]7}{[1][8][]8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces 5-seed mean prediction for the best-calibrated Sinusoid comparison-dataset variant, Kron / all weights / adam loop.}}{9}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:sin_big_best_pred}{{8}{9}{5-seed mean prediction for the best-calibrated Sinusoid comparison-dataset variant, Kron / all weights / adam loop}{figure.caption.11}{}}
+\newlabel{fig:sin_big_best_pred@cref}{{[figure][8][]8}{[1][9][]9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces 5-seed epistemic uncertainty vs.\ $x$ for the best-calibrated Sinusoid comparison-dataset variant, Kron / all weights / adam loop.}}{9}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:sin_big_best_ood}{{9}{9}{5-seed epistemic uncertainty vs.\ $x$ for the best-calibrated Sinusoid comparison-dataset variant, Kron / all weights / adam loop}{figure.caption.12}{}}
+\newlabel{fig:sin_big_best_ood@cref}{{[figure][9][]9}{[1][9][]9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces 5-seed mean total time by variant, both methods, Sinusoid comparison dataset.}}{9}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:sin_big_fit_time_bars}{{10}{9}{5-seed mean total time by variant, both methods, Sinusoid comparison dataset}{figure.caption.13}{}}
+\newlabel{fig:sin_big_fit_time_bars@cref}{{[figure][10][]10}{[1][9][]9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces 5-seed mean inference time by variant, both methods, Sinusoid comparison dataset.}}{10}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:sin_big_inf_time_bars}{{11}{10}{5-seed mean inference time by variant, both methods, Sinusoid comparison dataset}{figure.caption.14}{}}
+\newlabel{fig:sin_big_inf_time_bars@cref}{{[figure][11][]11}{[1][9][]10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces 5-seed OOD/ID epistemic ratio by variant, both methods.}}{10}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:sin_epi_ratio_bars}{{12}{10}{5-seed OOD/ID epistemic ratio by variant, both methods}{figure.caption.15}{}}
+\newlabel{fig:sin_epi_ratio_bars@cref}{{[figure][12][]12}{[1][10][]10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}PovertyMap}{10}{subsection.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces PovertyMap calibration error, ID and OOD, both methods (5 folds).}}{10}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:pm_cal_error_bar}{{13}{10}{PovertyMap calibration error, ID and OOD, both methods (5 folds)}{figure.caption.16}{}}
+\newlabel{fig:pm_cal_error_bar@cref}{{[figure][13][]13}{[1][10][]10}}
+\citation{daxberger2021laplace}
+\citation{osawa2019practical}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces PovertyMap calibration reliability diagrams, ID and OOD, both methods (mean $\pm $ 1$\sigma $, 5 folds).}}{11}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:pm_calibration}{{14}{11}{PovertyMap calibration reliability diagrams, ID and OOD, both methods (mean $\pm $ 1$\sigma $, 5 folds)}{figure.caption.17}{}}
+\newlabel{fig:pm_calibration@cref}{{[figure][14][]14}{[1][10][]11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces PovertyMap total time, both methods (5 folds).}}{11}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:pm_total_time_bar}{{15}{11}{PovertyMap total time, both methods (5 folds)}{figure.caption.18}{}}
+\newlabel{fig:pm_total_time_bar@cref}{{[figure][15][]15}{[1][11][]11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces PovertyMap inference time, ID and OOD, both methods (5 folds).}}{11}{figure.caption.19}\protected@file@percent }
+\newlabel{fig:pm_inference_time_bar}{{16}{11}{PovertyMap inference time, ID and OOD, both methods (5 folds)}{figure.caption.19}{}}
+\newlabel{fig:pm_inference_time_bar@cref}{{[figure][16][]16}{[1][11][]11}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{11}{section.5}\protected@file@percent }
+\newlabel{sec:discussion}{{V}{11}{Discussion}{section.5}{}}
+\newlabel{sec:discussion@cref}{{[section][5][]V}{[1][11][]11}}
+\citation{daxberger2021laplace}
+\@writefile{toc}{\contentsline {section}{Appendix}{12}{section*.20}\protected@file@percent }
+\newlabel{sec:app}{{A}{12}{\appendixname }{section*.20}{}}
+\newlabel{sec:app@cref}{{[appendix][1][2147483647]A}{[1][12][]12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Sinusoid: Small Library-Provided Dataset (150 samples)}{12}{subsection.Appendix.A.1}\protected@file@percent }
+\newlabel{sec:app:sinusoid_small}{{A}{12}{Sinusoid: Small Library-Provided Dataset (150 samples)}{subsection.Appendix.A.1}{}}
+\newlabel{sec:app:sinusoid_small@cref}{{[subappendix][1][2147483647,1]A}{[1][12][]12}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces \texttt  {bayesian-torch} on Sinusoid (small dataset): 5-seed metrics (mean $\pm $ std).}}{12}{table.caption.21}\protected@file@percent }
+\newlabel{tab:app:sin_small_bt}{{III}{12}{\texttt {bayesian-torch} on Sinusoid (small dataset): 5-seed metrics (mean $\pm $ std)}{table.caption.21}{}}
+\newlabel{tab:app:sin_small_bt@cref}{{[table][3][2147483647]III}{[1][12][]12}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces \texttt  {bayesian-torch} on Sinusoid (small dataset): 5-seed timing (mean $\pm $ std). Total time is fit time plus the shared MAP step ($59.0\,\text  {s}$) for MOPED variants, fit time alone for scratch.}}{12}{table.caption.22}\protected@file@percent }
+\newlabel{tab:app:sin_small_bt_timing}{{IV}{12}{\texttt {bayesian-torch} on Sinusoid (small dataset): 5-seed timing (mean $\pm $ std). Total time is fit time plus the shared MAP step ($59.0\,\text {s}$) for MOPED variants, fit time alone for scratch}{table.caption.22}{}}
+\newlabel{tab:app:sin_small_bt_timing@cref}{{[table][4][2147483647]IV}{[1][12][]12}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces \texttt  {laplace-torch} on Sinusoid (small dataset): 5-seed metrics (mean $\pm $ std). RMSE is identical across all variants ($0.317 \pm 0.009$), since it depends only on the shared MAP mean.}}{12}{table.caption.23}\protected@file@percent }
+\newlabel{tab:app:sin_small_la}{{V}{12}{\texttt {laplace-torch} on Sinusoid (small dataset): 5-seed metrics (mean $\pm $ std). RMSE is identical across all variants ($0.317 \pm 0.009$), since it depends only on the shared MAP mean}{table.caption.23}{}}
+\newlabel{tab:app:sin_small_la@cref}{{[table][5][2147483647]V}{[1][12][]12}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces \texttt  {laplace-torch} on Sinusoid (small dataset): 5-seed timing (mean $\pm $ std). Total time is the shared MAP step ($59.0\,\text  {s}$) plus fit plus tune time, since every variant requires the MAP step.}}{12}{table.caption.24}\protected@file@percent }
+\newlabel{tab:app:sin_small_la_timing}{{VI}{12}{\texttt {laplace-torch} on Sinusoid (small dataset): 5-seed timing (mean $\pm $ std). Total time is the shared MAP step ($59.0\,\text {s}$) plus fit plus tune time, since every variant requires the MAP step}{table.caption.24}{}}
+\newlabel{tab:app:sin_small_la_timing@cref}{{[table][6][2147483647]VI}{[1][12][]12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces Combined 5-seed calibration diagram for the best-calibrated Sinusoid variants.}}{13}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:sin_cal_combined}{{17}{13}{Combined 5-seed calibration diagram for the best-calibrated Sinusoid variants}{figure.caption.25}{}}
+\newlabel{fig:sin_cal_combined@cref}{{[figure][17][2147483647]17}{[1][13][]13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {18}{\ignorespaces 5-seed calibration error by variant, both methods.}}{13}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:sin_cal_bars}{{18}{13}{5-seed calibration error by variant, both methods}{figure.caption.26}{}}
+\newlabel{fig:sin_cal_bars@cref}{{[figure][18][2147483647]18}{[1][13][]13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {19}{\ignorespaces 5-seed mean prediction for the best-calibrated Sinusoid variant, Kron / all weights / gridsearch.}}{13}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:sin_best_pred}{{19}{13}{5-seed mean prediction for the best-calibrated Sinusoid variant, Kron / all weights / gridsearch}{figure.caption.27}{}}
+\newlabel{fig:sin_best_pred@cref}{{[figure][19][2147483647]19}{[1][13][]13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {20}{\ignorespaces 5-seed epistemic uncertainty vs.\ $x$ for the best-calibrated Sinusoid variant, Kron / all weights / gridsearch.}}{14}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:sin_best_ood}{{20}{14}{5-seed epistemic uncertainty vs.\ $x$ for the best-calibrated Sinusoid variant, Kron / all weights / gridsearch}{figure.caption.28}{}}
+\newlabel{fig:sin_best_ood@cref}{{[figure][20][2147483647]20}{[1][13][]14}}
+\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces 5-seed mean total time by variant, both methods.}}{14}{figure.caption.29}\protected@file@percent }
+\newlabel{fig:sin_fit_time_bars}{{21}{14}{5-seed mean total time by variant, both methods}{figure.caption.29}{}}
+\newlabel{fig:sin_fit_time_bars@cref}{{[figure][21][2147483647]21}{[1][14][]14}}
+\@writefile{lof}{\contentsline {figure}{\numberline {22}{\ignorespaces 5-seed mean inference time by variant, both methods.}}{14}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:sin_inf_time_bars}{{22}{14}{5-seed mean inference time by variant, both methods}{figure.caption.30}{}}
+\newlabel{fig:sin_inf_time_bars@cref}{{[figure][22][2147483647]22}{[1][14][]14}}
+\@writefile{lof}{\contentsline {figure}{\numberline {23}{\ignorespaces 5-seed OOD/ID epistemic ratio by variant, both methods, small Sinusoid dataset.}}{15}{figure.caption.31}\protected@file@percent }
+\newlabel{fig:sin_small_epi_ratio_bars}{{23}{15}{5-seed OOD/ID epistemic ratio by variant, both methods, small Sinusoid dataset}{figure.caption.31}{}}
+\newlabel{fig:sin_small_epi_ratio_bars@cref}{{[figure][23][2147483647]23}{[1][14][]15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Two Moons: Full Results}{15}{subsection.Appendix.A.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces \texttt  {bayesian-torch} on Two Moons: 5-seed metrics (mean $\pm $ std).}}{15}{table.caption.33}\protected@file@percent }
+\newlabel{tab:app:tm_bt}{{VIII}{15}{\texttt {bayesian-torch} on Two Moons: 5-seed metrics (mean $\pm $ std)}{table.caption.33}{}}
+\newlabel{tab:app:tm_bt@cref}{{[table][8][2147483647]VIII}{[1][15][]15}}
+\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces \texttt  {bayesian-torch} on Two Moons: 5-seed timing (mean $\pm $ std). Total time is fit time plus the shared MAP step ($9.4\,\text  {s}$) for MOPED variants, fit time alone for scratch.}}{15}{table.caption.34}\protected@file@percent }
+\newlabel{tab:app:tm_bt_timing}{{IX}{15}{\texttt {bayesian-torch} on Two Moons: 5-seed timing (mean $\pm $ std). Total time is fit time plus the shared MAP step ($9.4\,\text {s}$) for MOPED variants, fit time alone for scratch}{table.caption.34}{}}
+\newlabel{tab:app:tm_bt_timing@cref}{{[table][9][2147483647]IX}{[1][15][]15}}
+\@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces \texttt  {laplace-torch} on Two Moons: 5-seed metrics (mean $\pm $ std). Accuracy is identical across all variants ($0.9154 \pm 0.0056$), since it depends only on the shared MAP mean.}}{15}{table.caption.35}\protected@file@percent }
+\newlabel{tab:app:tm_la}{{X}{15}{\texttt {laplace-torch} on Two Moons: 5-seed metrics (mean $\pm $ std). Accuracy is identical across all variants ($0.9154 \pm 0.0056$), since it depends only on the shared MAP mean}{table.caption.35}{}}
+\newlabel{tab:app:tm_la@cref}{{[table][10][2147483647]X}{[1][15][]15}}
+\@writefile{lot}{\contentsline {table}{\numberline {XI}{\ignorespaces \texttt  {laplace-torch} on Two Moons: 5-seed timing (mean $\pm $ std). Total time is the shared MAP step ($9.4\,\text  {s}$) plus fit plus tune time, since every variant requires the MAP step.}}{15}{table.caption.36}\protected@file@percent }
+\newlabel{tab:app:tm_la_timing}{{XI}{15}{\texttt {laplace-torch} on Two Moons: 5-seed timing (mean $\pm $ std). Total time is the shared MAP step ($9.4\,\text {s}$) plus fit plus tune time, since every variant requires the MAP step}{table.caption.36}{}}
+\newlabel{tab:app:tm_la_timing@cref}{{[table][11][2147483647]XI}{[1][15][]15}}
+\@writefile{lof}{\contentsline {figure}{\numberline {24}{\ignorespaces 5-seed accuracy by variant, both methods.}}{15}{figure.caption.37}\protected@file@percent }
+\newlabel{fig:app:tm_accuracy_bars}{{24}{15}{5-seed accuracy by variant, both methods}{figure.caption.37}{}}
+\newlabel{fig:app:tm_accuracy_bars@cref}{{[figure][24][2147483647]24}{[1][15][]15}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Both methods on Sinusoid (small dataset), ID vs OOD: 5-seed metrics (mean $\pm $ std).}}{16}{table.caption.32}\protected@file@percent }
+\newlabel{tab:app:sin_small_ood}{{VII}{16}{Both methods on Sinusoid (small dataset), ID vs OOD: 5-seed metrics (mean $\pm $ std)}{table.caption.32}{}}
+\newlabel{tab:app:sin_small_ood@cref}{{[table][7][2147483647]VII}{[1][15][]16}}
+\@writefile{lof}{\contentsline {figure}{\numberline {25}{\ignorespaces 5-seed NLL by variant, both methods.}}{16}{figure.caption.38}\protected@file@percent }
+\newlabel{fig:app:tm_nll_bars}{{25}{16}{5-seed NLL by variant, both methods}{figure.caption.38}{}}
+\newlabel{fig:app:tm_nll_bars@cref}{{[figure][25][2147483647]25}{[1][15][]16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Sinusoid: Comparison Dataset (600/200/200/200 split), ID vs OOD}{16}{subsection.Appendix.A.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {XII}{\ignorespaces \texttt  {bayesian-torch} on Sinusoid (comparison dataset), in-distribution: 5-seed metrics (mean $\pm $ std).}}{16}{table.caption.39}\protected@file@percent }
+\newlabel{tab:app:sin_big_bt}{{XII}{16}{\texttt {bayesian-torch} on Sinusoid (comparison dataset), in-distribution: 5-seed metrics (mean $\pm $ std)}{table.caption.39}{}}
+\newlabel{tab:app:sin_big_bt@cref}{{[table][12][2147483647]XII}{[1][16][]16}}
+\@writefile{lot}{\contentsline {table}{\numberline {XIII}{\ignorespaces \texttt  {bayesian-torch} on Sinusoid (comparison dataset): 5-seed timing (mean $\pm $ std). Total time is fit time plus the shared MAP step ($13.7\,\text  {s}$) for MOPED variants, fit time alone for scratch.}}{16}{table.caption.40}\protected@file@percent }
+\newlabel{tab:app:sin_big_bt_timing}{{XIII}{16}{\texttt {bayesian-torch} on Sinusoid (comparison dataset): 5-seed timing (mean $\pm $ std). Total time is fit time plus the shared MAP step ($13.7\,\text {s}$) for MOPED variants, fit time alone for scratch}{table.caption.40}{}}
+\newlabel{tab:app:sin_big_bt_timing@cref}{{[table][13][2147483647]XIII}{[1][16][]16}}
+\@writefile{lot}{\contentsline {table}{\numberline {XIV}{\ignorespaces \texttt  {laplace-torch} on Sinusoid (comparison dataset), in-distribution: 5-seed metrics (mean $\pm $ std). RMSE is identical across all variants ($0.309 \pm 0.009$), since it depends only on the shared MAP mean.}}{16}{table.caption.41}\protected@file@percent }
+\newlabel{tab:app:sin_big_la}{{XIV}{16}{\texttt {laplace-torch} on Sinusoid (comparison dataset), in-distribution: 5-seed metrics (mean $\pm $ std). RMSE is identical across all variants ($0.309 \pm 0.009$), since it depends only on the shared MAP mean}{table.caption.41}{}}
+\newlabel{tab:app:sin_big_la@cref}{{[table][14][2147483647]XIV}{[1][16][]16}}
+\citation{krishnan2020specifying}
+\citation{osawa2019practical}
+\@writefile{lot}{\contentsline {table}{\numberline {XV}{\ignorespaces \texttt  {laplace-torch} on Sinusoid (comparison dataset): 5-seed timing (mean $\pm $ std). Total time is the shared MAP step ($13.7\,\text  {s}$) plus fit plus tune time, since every variant requires the MAP step.}}{17}{table.caption.42}\protected@file@percent }
+\newlabel{tab:app:sin_big_la_timing}{{XV}{17}{\texttt {laplace-torch} on Sinusoid (comparison dataset): 5-seed timing (mean $\pm $ std). Total time is the shared MAP step ($13.7\,\text {s}$) plus fit plus tune time, since every variant requires the MAP step}{table.caption.42}{}}
+\newlabel{tab:app:sin_big_la_timing@cref}{{[table][15][2147483647]XV}{[1][16][]17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {26}{\ignorespaces Flipout MOPED $\delta $ sweep calibration diagram, scratch and $\delta \in \{0.05, 0.1, 0.2, 0.5\}$ (mean $\pm $ std, 5 seeds).}}{17}{figure.caption.45}\protected@file@percent }
+\newlabel{fig:sin_flipout_delta_cal}{{26}{17}{Flipout MOPED $\delta $ sweep calibration diagram, scratch and $\delta \in \{0.05, 0.1, 0.2, 0.5\}$ (mean $\pm $ std, 5 seeds)}{figure.caption.45}{}}
+\newlabel{fig:sin_flipout_delta_cal@cref}{{[figure][26][2147483647]26}{[1][17][]17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {27}{\ignorespaces BBB MOPED $\delta $ sweep calibration diagram, scratch and $\delta \in \{0.05, 0.1, 0.2, 0.5\}$ (mean $\pm $ std, 5 seeds).}}{17}{figure.caption.46}\protected@file@percent }
+\newlabel{fig:sin_bbb_delta_cal}{{27}{17}{BBB MOPED $\delta $ sweep calibration diagram, scratch and $\delta \in \{0.05, 0.1, 0.2, 0.5\}$ (mean $\pm $ std, 5 seeds)}{figure.caption.46}{}}
+\newlabel{fig:sin_bbb_delta_cal@cref}{{[figure][27][2147483647]27}{[1][17][]17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D}PovertyMap: Full Results}{17}{subsection.Appendix.A.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {28}{\ignorespaces PovertyMap RMSE and NLL, ID and OOD, both methods (5 folds).}}{17}{figure.caption.49}\protected@file@percent }
+\newlabel{fig:pm_rmse_nll_bar}{{28}{17}{PovertyMap RMSE and NLL, ID and OOD, both methods (5 folds)}{figure.caption.49}{}}
+\newlabel{fig:pm_rmse_nll_bar@cref}{{[figure][28][2147483647]28}{[1][17][]17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {29}{\ignorespaces PovertyMap per-fold RMSE, ID and OOD, both methods.}}{17}{figure.caption.50}\protected@file@percent }
+\newlabel{fig:pm_per_fold_rmse}{{29}{17}{PovertyMap per-fold RMSE, ID and OOD, both methods}{figure.caption.50}{}}
+\newlabel{fig:pm_per_fold_rmse@cref}{{[figure][29][2147483647]29}{[1][17][]17}}
+\@writefile{lot}{\contentsline {table}{\numberline {XVI}{\ignorespaces Both methods on Sinusoid (comparison dataset), ID vs OOD: 5-seed metrics (mean $\pm $ std).}}{18}{table.caption.43}\protected@file@percent }
+\newlabel{tab:app:sin_big_ood}{{XVI}{18}{Both methods on Sinusoid (comparison dataset), ID vs OOD: 5-seed metrics (mean $\pm $ std)}{table.caption.43}{}}
+\newlabel{tab:app:sin_big_ood@cref}{{[table][16][2147483647]XVI}{[1][17][]18}}
+\@writefile{lot}{\contentsline {table}{\numberline {XVII}{\ignorespaces \texttt  {bayesian-torch} MOPED $\delta $ sweep on Sinusoid (comparison dataset): 5-seed metrics (mean $\pm $ std). Scratch rows repeated for reference; the report's headline MOPED variants use $\delta =0.5$.}}{18}{table.caption.44}\protected@file@percent }
+\newlabel{tab:app:sin_delta_sweep}{{XVII}{18}{\texttt {bayesian-torch} MOPED $\delta $ sweep on Sinusoid (comparison dataset): 5-seed metrics (mean $\pm $ std). Scratch rows repeated for reference; the report's headline MOPED variants use $\delta =0.5$}{table.caption.44}{}}
+\newlabel{tab:app:sin_delta_sweep@cref}{{[table][17][2147483647]XVII}{[1][17][]18}}
+\@writefile{lot}{\contentsline {table}{\numberline {XVIII}{\ignorespaces Both methods on PovertyMap, ID vs OOD: 5-fold metrics.}}{18}{table.caption.47}\protected@file@percent }
+\newlabel{tab:app:povertymap}{{XVIII}{18}{Both methods on PovertyMap, ID vs OOD: 5-fold metrics}{table.caption.47}{}}
+\newlabel{tab:app:povertymap@cref}{{[table][18][2147483647]XVIII}{[1][17][]18}}
+\@writefile{lot}{\contentsline {table}{\numberline {XIX}{\ignorespaces PovertyMap variant ablations, ID vs OOD: 5-fold mean metrics. BT abbreviates \texttt  {bayesian-torch}. MAP is a point estimate, with no NLL/calibration error defined.}}{18}{table.caption.48}\protected@file@percent }
+\newlabel{tab:app:povertymap_variants}{{XIX}{18}{PovertyMap variant ablations, ID vs OOD: 5-fold mean metrics. BT abbreviates \texttt {bayesian-torch}. MAP is a point estimate, with no NLL/calibration error defined}{table.caption.48}{}}
+\newlabel{tab:app:povertymap_variants@cref}{{[table][19][2147483647]XIX}{[1][17][]18}}
 \bibstyle{plainnat}
 \bibdata{bib.bib}
 \bibcite{blundell2015weight}{{1}{2015}{{Blundell et~al.}}{{Blundell, Cornebise, Kavukcuoglu, and Wierstra}}}
 \bibcite{daxberger2021laplace}{{2}{2021}{{Daxberger et~al.}}{{Daxberger, Kristiadi, Immer, Eschenhagen, Bauer, and Hennig}}}
 \bibcite{goan2020bayesian}{{3}{2020}{{Goan and Fookes}}{{}}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces MOPED vs scratch initialisation with AvUC loss.}}{7}{figure.caption.16}\protected@file@percent }
-\newlabel{fig:bnn_boundaries}{{2}{7}{MOPED vs scratch initialisation with AvUC loss}{figure.caption.16}{}}
-\newlabel{fig:bnn_boundaries@cref}{{[figure][2][2147483647]2}{[1][5][]7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Probability histograms and reliability diagrams.}}{7}{figure.caption.17}\protected@file@percent }
-\newlabel{fig:bnn_histrel}{{3}{7}{Probability histograms and reliability diagrams}{figure.caption.17}{}}
-\newlabel{fig:bnn_histrel@cref}{{[figure][3][2147483647]3}{[1][7][]7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces OOD epistemic uncertainty.}}{7}{figure.caption.18}\protected@file@percent }
-\newlabel{fig:bnn_ood}{{4}{7}{OOD epistemic uncertainty}{figure.caption.18}{}}
-\newlabel{fig:bnn_ood@cref}{{[figure][4][2147483647]4}{[1][7][]7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Marginal likelihood failure for Full all LA.}}{7}{figure.caption.19}\protected@file@percent }
-\newlabel{fig:la_failure}{{5}{7}{Marginal likelihood failure for Full all LA}{figure.caption.19}{}}
-\newlabel{fig:la_failure@cref}{{[figure][5][2147483647]5}{[1][7][]7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Uncertainty patterns under marginal likelihood tuning.}}{7}{figure.caption.20}\protected@file@percent }
-\newlabel{fig:la_stripe}{{6}{7}{Uncertainty patterns under marginal likelihood tuning}{figure.caption.20}{}}
-\newlabel{fig:la_stripe@cref}{{[figure][6][2147483647]6}{[1][7][]7}}
 \bibcite{aleximmer2024laplace}{{4}{2024}{{Immer et~al.}}{{Immer, Daxberger, Kristiadi, Eschenhagen, Bauer, and Hennig}}}
 \bibcite{intel2021bayesiantorch}{{5}{2021}{{Intel Labs}}{{}}}
-\bibcite{murphy2023pml}{{6}{2023}{{Murphy}}{{}}}
-\bibcite{wen2018flipout}{{7}{2018}{{Wen et~al.}}{{Wen, Vicol, Ba, Tran, and Grosse}}}
-\gdef \@abspage@last{8}
+\bibcite{krishnan2020avuc}{{6}{2020}{{Krishnan and Tickoo}}{{}}}
+\bibcite{krishnan2020specifying}{{7}{2020}{{Krishnan et~al.}}{{Krishnan, Subedar, and Tickoo}}}
+\bibcite{kuleshov2018calibrated}{{8}{2018}{{Kuleshov et~al.}}{{Kuleshov, Fenner, and Ermon}}}
+\bibcite{murphy2023pml}{{9}{2023}{{Murphy}}{{}}}
+\bibcite{osawa2019practical}{{10}{2019}{{Osawa et~al.}}{{Osawa, Swaroop, Khan, Jain, Eschenhagen, Turner, and Yokota}}}
+\bibcite{wen2018flipout}{{11}{2018}{{Wen et~al.}}{{Wen, Vicol, Ba, Tran, and Grosse}}}
+\gdef \@abspage@last{19}

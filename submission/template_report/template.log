@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  19 JUL 2026 01:02
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  24 JUL 2026 16:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1106,12 +1106,12 @@ Package caption Info: rotating package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Couldn't patch \deferred@thm@head!
 (./coverpage.tex
-<./figures/IN.pdf, id=67, 29.8716pt x 32.82263pt>
+<./figures/IN.pdf, id=83, 29.8716pt x 32.82263pt>
 File: ./figures/IN.pdf Graphic file (type pdf)
 <use ./figures/IN.pdf>
 Package pdftex.def Info: ./figures/IN.pdf  used on input line 3.
 (pdftex.def)             Requested size: 29.8715pt x 32.82254pt.
-<./figures/tumlogo.pdf, id=68, 53.24893pt x 28.45631pt>
+<./figures/tumlogo.pdf, id=84, 53.24893pt x 28.45631pt>
 File: ./figures/tumlogo.pdf Graphic file (type pdf)
 <use ./figures/tumlogo.pdf>
 Package pdftex.def Info: ./figures/tumlogo.pdf  used on input line 3.
@@ -1153,412 +1153,611 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 31.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for TS1+phv on input line 3
-8.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1phv.fd
-File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
-)
-
-LaTeX Warning: Float too large for page by 37.04889pt on input line 55.
+LaTeX Warning: Float too large for page by 34.4591pt on input line 55.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 ) [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texm
 f-dist/fonts/enc/dvips/base/8r.enc} <./figures/IN.pdf> <./figures/tumlogo.pdf>]
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 5
-23.
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 4
+94.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)
-Underfull \hbox (badness 1394) in paragraph at lines 579--581
+) [2
+
+
+]
+Underfull \hbox (badness 1394) in paragraph at lines 598--602
 []\OT1/ptm/m/n/10 There are mul-ti-ple meth-ods for ap-prox-i-mat-ing the pos-
  []
 
 
-Underfull \hbox (badness 1577) in paragraph at lines 579--581
+Underfull \hbox (badness 1577) in paragraph at lines 598--602
 \OT1/ptm/m/n/10 These are im-ple-mented by \OT1/pcr/m/n/10 bayesian-torch \OT1/
 ptm/m/n/10 [[]] and
  []
 
-[2
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\begingroup' on input line 603.
 
 
-]
-Overfull \hbox (9.33235pt too wide) detected at line 596
-[][][][][]\OML/cmm/m/it/10 q[] \OMS/cmsy/m/n/10 k \OML/cmm/m/it/10 p\OT1/cmr/m/
-n/10 (\OML/cmm/b/it/10 ^^R\OMS/cmsy/m/n/10 jD\OT1/cmr/m/n/10 )[] = [][]\OML/cmm
-/m/it/10 q[] \OMS/cmsy/m/n/10 k \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OML/cmm/b/i
-t/10 ^^R\OT1/cmr/m/n/10 )[] \OMS/cmsy/m/n/10 ^^@ \U/msb/m/n/10 E[] [][] \OML/cm
-m/m/it/10 p\OT1/cmr/m/n/10 (\OMS/cmsy/m/n/10 Dj\OML/cmm/b/it/10 ^^R\OT1/cmr/m/n
-/10 )[] + [] \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OMS/cmsy/m/n/10 D\OT1/cmr/m/n/
-10 )\OML/cmm/m/it/10 :
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\let' on input line 603.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\<let>-command' on input line 603.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\NAT@ctype' on input line 603.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\z@' on input line 603.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\let' on input line 603.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\new@ifnextchar' on input line 603.
+
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 728--731
+[]\OT1/ptm/b/n/10 Epistemic-uncertainty map (Two Moons). \OT1/ptm/m/n/10 The
  []
 
 
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 620.
-
-
-Overfull \hbox (16.81161pt too wide) detected at line 684
-[][][]\OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OML/cmm/b/it/10 ^^R\OMS/cmsy/m/n/10 j
-D\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^Y N []\OML/cmm/b/it/10 ^^R\OT1/cmr/m/n/10
- ;  \OML/cmm/b/it/10 ^^R[]\OML/cmm/m/it/10 ;  \OT1/cmr/bx/n/10 H[][]\OML/cmm/m/
-it/10 ;  \OT1/cmr/bx/n/10 H \OT1/cmr/m/n/10 = \OMS/cmsy/m/n/10 ^^@r[] [] \OML/c
-mm/m/it/10 p\OT1/cmr/m/n/10 (\OML/cmm/b/it/10 ^^R[]\OMS/cmsy/m/n/10 jD\OT1/cmr/
-m/n/10 ) \OMS/cmsy/m/n/10 ^^_ \OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :
+Underfull \hbox (badness 10000) in paragraph at lines 728--731
+\OT1/ptm/m/n/10 entropy/mutual-information de-com-po-si-tion [[]] is used
  []
 
 
-Overfull \hbox (14.02475pt too wide) detected at line 695
-[][][][] \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OMS/cmsy/m/n/10 D\OT1/cmr/m/n/10 )
- \OMS/cmsy/m/n/10 ^^Y [] \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OMS/cmsy/m/n/10 Dj
-\OML/cmm/b/it/10 ^^R[]\OT1/cmr/m/n/10 ) + [] \OML/cmm/m/it/10 p\OT1/cmr/m/n/10 
-(\OML/cmm/b/it/10 ^^R[]\OT1/cmr/m/n/10 ) + [] [] 2\OML/cmm/m/it/10 ^^Y \OMS/cms
-y/m/n/10 ^^@ [] [] [] \OT1/cmr/bx/n/10 H\OML/cmm/m/it/10 ;
+Underfull \hbox (badness 3428) in paragraph at lines 741--746
+[]\OT1/ptm/b/n/10 Classification met-rics (Two Moons). \OT1/ptm/m/n/10 Ac-cu-ra
+cy, NLL,
  []
 
 
-Underfull \hbox (badness 1917) in paragraph at lines 730--736
+Underfull \hbox (badness 2744) in paragraph at lines 741--746
+\OT1/ptm/m/n/10 puts; \OT1/pcr/m/n/10 laplace-torch \OT1/ptm/m/n/10 passes the 
+closed-form pre-dic-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 778--781
+[]\OT1/ptm/b/n/10 Root Mean Squared Er-ror (RMSE). $[] \OT1/cmr/m/n/10 =
+ []
+
+
+Underfull \hbox (badness 2680) in paragraph at lines 778--781
+[]$\OT1/ptm/m/n/10 , the point-prediction er-ror used for
+ []
+
+
+Underfull \hbox (badness 1917) in paragraph at lines 806--812
 \OT1/ptm/m/n/10 half cres-cents. For re-gres-sion, a 1D si-nu-soidal dataset,
  []
 
-[3]
-Underfull \hbox (badness 4634) in paragraph at lines 737--747
+
+Underfull \hbox (badness 4634) in paragraph at lines 813--827
 \OT1/ptm/m/n/10 er-at-ing the Two Moons and Si-nu-soidal datasets. For
  []
 
-LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <10> not available
-(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 786.
+[4]
+Underfull \hbox (badness 2941) in paragraph at lines 873--879
+\OT1/ptm/m/n/10 tion [][][][][], the LA is ap-plied across the Two Moons
+ []
 
-Underfull \hbox (badness 3568) in paragraph at lines 793--794
-\OT1/pcr/m/n/10 "regression" \OT1/ptm/m/n/10 de-pend-ing on the ob-ser-va-tion 
-model.
+
+Underfull \hbox (badness 2103) in paragraph at lines 873--879
+\OT1/ptm/m/n/10 and Si-nu-soidal note-books through the same high level
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 892--896
+[]\OT1/ptm/b/n/10 The \OT1/pcr/b/n/10 bayesian-torch \OT1/ptm/b/n/10 In-ter-fac
+e. [][] \OT1/ptm/m/n/10 The
  []
 
 LaTeX Font Info:    Trying to load font information for OMS+pcr on input line 8
-00.
+97.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omspcr.fd
 File: omspcr.fd 
 )
 LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 800.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 897.
 
-Underfull \hbox (badness 10000) in paragraph at lines 802--803
-\OT1/ptm/m/n/10 lay-ers, and \OT1/pcr/m/n/10 moped_enable \OT1/ptm/m/n/10 trig-
-gers the MOPED
- []
-
-
-Underfull \hbox (badness 1742) in paragraph at lines 802--803
-\OT1/ptm/m/n/10 warm start once \OT1/pcr/m/n/10 net \OT1/ptm/m/n/10 al-ready ho
-lds the MAP weights
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 802--803
-\OT1/ptm/m/n/10 it ini-tialises from. Un-like \OT1/pcr/m/n/10 laplace-torch\OT1
-/ptm/m/n/10 's sin-gle
- []
-
-
-Underfull \hbox (badness 4805) in paragraph at lines 802--803
-\OT1/pcr/m/n/10 get_kl_loss(net)/batch_size \OT1/ptm/m/n/10 to the task loss,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 806--809
+Underfull \hbox (badness 10000) in paragraph at lines 919--922
 []\OT1/ptm/m/n/10 Two cres-cent moons are gen-er-ated with the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 806--809
+Underfull \hbox (badness 10000) in paragraph at lines 919--922
 \OT1/pcr/m/n/10 sklearn.datasets.make_moons \OT1/ptm/m/n/10 func-tion, with
  []
 
 
-Underfull \hbox (badness 2119) in paragraph at lines 812--813
- \OT1/ptm/m/it/10 b) MC soft-max pre-dic-tive.: [][] \OT1/pcr/m/n/10 bayesian-t
-orch \OT1/ptm/m/n/10 has no
- []
-
-[4]
-** WARNING: Ignoring useless \section in Appendix (line 999).
-
-Overfull \hbox (3.15326pt too wide) in paragraph at lines 1014--1014
- []|\OT1/ptm/m/n/7 MaxGap| 
+Underfull \hbox (badness 2401) in paragraph at lines 945--957
+\OT1/ptm/m/n/10 ants it is in-stead fixed to the MAP model's resid-ual
  []
 
 
-Overfull \hbox (3.93015pt too wide) in paragraph at lines 1014--1014
- []|\OT1/ptm/m/n/7 MActErr| 
+Underfull \hbox (badness 2452) in paragraph at lines 945--957
+\OT1/pcr/m/n/10 bayesian-torch \OT1/ptm/m/n/10 fits \OT1/pcr/m/n/10 sigma_noise
+ \OT1/ptm/m/n/10 sep-a-rately with
  []
 
 
-Overfull \hbox (3.15326pt too wide) in paragraph at lines 1040--1040
- []|\OT1/ptm/m/n/7 MaxGap| 
+Underfull \hbox (badness 1590) in paragraph at lines 945--957
+\OT1/pcr/m/n/10 optimize_noise_std_bt\OT1/ptm/m/n/10 , min-imis-ing Gaus-sian N
+LL
+ []
+
+[5]
+Underfull \hbox (badness 1502) in paragraph at lines 994--1011
+[]\OT1/ptm/b/n/10 Fixed con-fig-u-ra-tion. \OT1/ptm/m/n/10 Un-like Two Moons an
+d Si-nu-soid,
  []
 
 
-LaTeX Warning: File `ood_points.png' not found on input line 1058.
-
-
-! Package pdftex.def Error: File `ood_points.png' not found: using draft settin
-g.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1058 ...cs[width=0.60\linewidth]{ood_points.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `bbb_moped_avuc_boundary.png' not found on input line 1066.
-
-
-
-! Package pdftex.def Error: File `bbb_moped_avuc_boundary.png' not found: using
- draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1066 ...\linewidth]{bbb_moped_avuc_boundary.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `bbb_scratch_avuc_boundary.png' not found on input line 107
-0.
-
-
-! Package pdftex.def Error: File `bbb_scratch_avuc_boundary.png' not found: usi
-ng draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1070 ...inewidth]{bbb_scratch_avuc_boundary.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `bbb_moped_avuc_uncertainty.png' not found on input line 10
-75.
-
-
-! Package pdftex.def Error: File `bbb_moped_avuc_uncertainty.png' not found: us
-ing draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1075 ...newidth]{bbb_moped_avuc_uncertainty.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `bbb_scratch_avuc_uncertainty.png' not found on input line 
-1079.
-
-
-! Package pdftex.def Error: File `bbb_scratch_avuc_uncertainty.png' not found: 
-using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1079 ...width]{bbb_scratch_avuc_uncertainty.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[5] [6]
-
-LaTeX Warning: File `bbb_moped_avuc_histogram.png' not found on input line 1089
-.
-
-
-! Package pdftex.def Error: File `bbb_moped_avuc_histogram.png' not found: usin
-g draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1089 ...linewidth]{bbb_moped_avuc_histogram.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `bbb_moped_avuc_reliability.png' not found on input line 10
-93.
-
-
-! Package pdftex.def Error: File `bbb_moped_avuc_reliability.png' not found: us
-ing draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1093 ...newidth]{bbb_moped_avuc_reliability.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `bbb_scratch_avuc_histogram.png' not found on input line 10
-98.
-
-
-! Package pdftex.def Error: File `bbb_scratch_avuc_histogram.png' not found: us
-ing draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1098 ...newidth]{bbb_scratch_avuc_histogram.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `bbb_moped_elbo_reliability.png' not found on input line 11
-02.
-
-
-! Package pdftex.def Error: File `bbb_moped_elbo_reliability.png' not found: us
-ing draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1102 ...newidth]{bbb_moped_elbo_reliability.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `bbb_moped_avuc_ood_epistemic.png' not found on input line 
-1112.
-
-
-! Package pdftex.def Error: File `bbb_moped_avuc_ood_epistemic.png' not found: 
-using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1112 ...width]{bbb_moped_avuc_ood_epistemic.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `bbb_scratch_elbo_ood_epistemic.png' not found on input lin
-e 1116.
-
-
-! Package pdftex.def Error: File `bbb_scratch_elbo_ood_epistemic.png' not found
-: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1116 ...dth]{bbb_scratch_elbo_ood_epistemic.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `marglik_full_all_weights_boundary.png' not found on input 
-line 1126.
-
-
-! Package pdftex.def Error: File `marglik_full_all_weights_boundary.png' not fo
-und: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1126 ...]{marglik_full_all_weights_boundary.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `marglik_full_all_weights_reliability.png' not found on inp
-ut line 1130.
-
-
-! Package pdftex.def Error: File `marglik_full_all_weights_reliability.png' not
- found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1130 ...arglik_full_all_weights_reliability.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `marglik_kron_last_layer_uncertainty.png' not found on inpu
-t line 1140.
-
-
-! Package pdftex.def Error: File `marglik_kron_last_layer_uncertainty.png' not 
-found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1140 ...marglik_kron_last_layer_uncertainty.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `marglik_kron_all_weights_ood_epistemic.png' not found on i
-nput line 1144.
-
-
-! Package pdftex.def Error: File `marglik_kron_all_weights_ood_epistemic.png' n
-ot found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1144 ...glik_kron_all_weights_ood_epistemic.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-(./template.bbl [7]
-Underfull \hbox (badness 4927) in paragraph at lines 37--41
+Underfull \hbox (badness 5175) in paragraph at lines 994--1011
+\OT1/ptm/m/n/10 Pover-tyMap is not a vari-ant grid: \OT1/pcr/m/n/10 laplace-tor
+ch
+ []
+
+
+Underfull \hbox (badness 1400) in paragraph at lines 994--1011
+\OT1/ptm/m/n/10 uses a sin-gle con-fig-u-ra-tion match-ing the setup re-leased
+ []
+
+
+Underfull \hbox (badness 1365) in paragraph at lines 994--1011
+\OT1/ptm/m/n/10 by Daxberger et al. [][][][][][][][] ex-actly (last-layer sub-s
+et, full
+ []
+
+
+Underfull \hbox (badness 2726) in paragraph at lines 994--1011
+\OT1/ptm/m/n/10 Hes-sian, prior pre-ci-sion fixed at $\OT1/cmr/m/n/10 10\OML/cm
+m/m/it/10 :\OT1/cmr/m/n/10 0$ \OT1/ptm/m/n/10 per \OT1/pcr/m/n/10 configs/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 994--1011
+\OT1/pcr/m/n/10 wilds/poverty/wilds-poverty_laplace.yaml
+ []
+
+
+Underfull \hbox (badness 5036) in paragraph at lines 994--1011
+\OT1/ptm/m/n/10 de-scent on val-i-da-tion NLL, and \OT1/pcr/m/n/10 bayesian-tor
+ch\OT1/ptm/m/n/10 's
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 994--1011
+\OT1/ptm/m/n/10 with the same \OT1/pcr/m/n/10 optimize_noise_std_bt \OT1/ptm/m/
+n/10 rou-tine
+ []
+
+
+Underfull \hbox (badness 2103) in paragraph at lines 994--1011
+\OT1/ptm/m/n/10 used for Si-nu-soid. We ad-di-tion-ally test one al-ter-na-tive
+
+ []
+
+
+Underfull \hbox (badness 1990) in paragraph at lines 1028--1036
+\OT1/ptm/m/n/10 meth-ods; full ECE and Brier score val-ues are in Ta-
+ []
+
+<figures/5seed_two_moons_combined_reliability.png, id=251, 457.2282pt x 398.448
+6pt>
+File: figures/5seed_two_moons_combined_reliability.png Graphic file (type png)
+<use figures/5seed_two_moons_combined_reliability.png>
+Package pdftex.def Info: figures/5seed_two_moons_combined_reliability.png  used
+ on input line 1039.
+(pdftex.def)             Requested size: 189.0pt x 164.70253pt.
+[6]
+<figures/5seed_two_moons_bayesian_ece_bar.png, id=264, 623.4492pt x 338.7054pt>
+
+File: figures/5seed_two_moons_bayesian_ece_bar.png Graphic file (type png)
+<use figures/5seed_two_moons_bayesian_ece_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_bayesian_ece_bar.png  used on 
+input line 1047.
+(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
+<figures/5seed_two_moons_laplace_ece_bar.png, id=265, 623.4492pt x 338.7054pt>
+File: figures/5seed_two_moons_laplace_ece_bar.png Graphic file (type png)
+<use figures/5seed_two_moons_laplace_ece_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_laplace_ece_bar.png  used on i
+nput line 1052.
+(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
+<figures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png, id=267,
+ 552.1428pt x 453.3738pt>
+File: figures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png Gra
+phic file (type png)
+<use figures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png>
+Package pdftex.def Info: figures/5seed_two_moons_gridsearch_full_all_weights_ep
+istemic_map.png  used on input line 1066.
+(pdftex.def)             Requested size: 151.20154pt x 124.14896pt.
+<figures/5seed_two_moons_bayesian_total_time_bar.png, id=271, 626.8218pt x 338.
+7054pt>
+File: figures/5seed_two_moons_bayesian_total_time_bar.png Graphic file (type pn
+g)
+<use figures/5seed_two_moons_bayesian_total_time_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_bayesian_total_time_bar.png  u
+sed on input line 1085.
+(pdftex.def)             Requested size: 252.0pt x 136.16713pt.
+<figures/5seed_two_moons_laplace_total_time_bar.png, id=272, 626.8218pt x 338.7
+054pt>
+File: figures/5seed_two_moons_laplace_total_time_bar.png Graphic file (type png
+)
+<use figures/5seed_two_moons_laplace_total_time_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_laplace_total_time_bar.png  us
+ed on input line 1090.
+(pdftex.def)             Requested size: 252.0pt x 136.16713pt.
+ [7 <./figures/5seed_two_moons_combined_reliability.png> <./figures/5seed_two_m
+oons_bayesian_ece_bar.png> <./figures/5seed_two_moons_laplace_ece_bar.png> <./f
+igures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png> <./figure
+s/5seed_two_moons_bayesian_total_time_bar.png> <./figures/5seed_two_moons_lapla
+ce_total_time_bar.png>]
+<figures/5seed_two_moons_bayesian_inf_time_bar.png, id=291, 623.4492pt x 338.70
+54pt>
+File: figures/5seed_two_moons_bayesian_inf_time_bar.png Graphic file (type png)
+
+<use figures/5seed_two_moons_bayesian_inf_time_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_bayesian_inf_time_bar.png  use
+d on input line 1108.
+(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
+<figures/5seed_two_moons_laplace_inf_time_bar.png, id=292, 623.4492pt x 338.705
+4pt>
+File: figures/5seed_two_moons_laplace_inf_time_bar.png Graphic file (type png)
+<use figures/5seed_two_moons_laplace_inf_time_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_laplace_inf_time_bar.png  used
+ on input line 1113.
+(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
+<figures/5seed_sinusoid_comparison_combined_calibration.png, id=302, 493.845pt 
+x 398.4486pt>
+File: figures/5seed_sinusoid_comparison_combined_calibration.png Graphic file (
+type png)
+<use figures/5seed_sinusoid_comparison_combined_calibration.png>
+Package pdftex.def Info: figures/5seed_sinusoid_comparison_combined_calibration
+.png  used on input line 1147.
+(pdftex.def)             Requested size: 189.0pt x 152.48816pt.
+<figures/5seed_sinusoid_comparison_bayesian_calibration_error_bar.png, id=303, 
+604.1772pt x 330.9966pt>
+File: figures/5seed_sinusoid_comparison_bayesian_calibration_error_bar.png Grap
+hic file (type png)
+<use figures/5seed_sinusoid_comparison_bayesian_calibration_error_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_comparison_bayesian_calibration
+_error_bar.png  used on input line 1155.
+(pdftex.def)             Requested size: 252.0pt x 138.058pt.
+<figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.png, id=304, 6
+15.7404pt x 338.7054pt>
+File: figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.png Graph
+ic file (type png)
+<use figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_comparison_laplace_calibration_
+error_bar.png  used on input line 1160.
+(pdftex.def)             Requested size: 252.0pt x 138.61687pt.
+ [8 <./figures/5seed_two_moons_bayesian_inf_time_bar.png> <./figures/5seed_two_
+moons_laplace_inf_time_bar.png> <./figures/5seed_sinusoid_comparison_combined_c
+alibration.png> <./figures/5seed_sinusoid_comparison_bayesian_calibration_error
+_bar.png> <./figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.pn
+g>]
+<figures/sinusoid_comparison_kron_all_adam_loop_prediction.png, id=322, 587.314
+2pt x 342.5598pt>
+File: figures/sinusoid_comparison_kron_all_adam_loop_prediction.png Graphic fil
+e (type png)
+<use figures/sinusoid_comparison_kron_all_adam_loop_prediction.png>
+Package pdftex.def Info: figures/sinusoid_comparison_kron_all_adam_loop_predict
+ion.png  used on input line 1175.
+(pdftex.def)             Requested size: 189.0pt x 110.23293pt.
+<figures/sinusoid_comparison_kron_all_adam_loop_ood_epistemic.png, id=323, 618.
+6312pt x 287.1528pt>
+File: figures/sinusoid_comparison_kron_all_adam_loop_ood_epistemic.png Graphic 
+file (type png)
+<use figures/sinusoid_comparison_kron_all_adam_loop_ood_epistemic.png>
+Package pdftex.def Info: figures/sinusoid_comparison_kron_all_adam_loop_ood_epi
+stemic.png  used on input line 1182.
+(pdftex.def)             Requested size: 189.0pt x 87.72826pt.
+<figures/5seed_sinusoid_comparison_bayesian_total_time_bar.png, id=327, 611.886
+pt x 330.9966pt>
+File: figures/5seed_sinusoid_comparison_bayesian_total_time_bar.png Graphic fil
+e (type png)
+<use figures/5seed_sinusoid_comparison_bayesian_total_time_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_comparison_bayesian_total_time_
+bar.png  used on input line 1204.
+(pdftex.def)             Requested size: 252.0pt x 136.31554pt.
+<figures/5seed_sinusoid_comparison_laplace_total_time_bar.png, id=328, 611.886p
+t x 338.7054pt>
+File: figures/5seed_sinusoid_comparison_laplace_total_time_bar.png Graphic file
+ (type png)
+<use figures/5seed_sinusoid_comparison_laplace_total_time_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_comparison_laplace_total_time_b
+ar.png  used on input line 1209.
+(pdftex.def)             Requested size: 252.0pt x 139.4903pt.
+<figures/5seed_sinusoid_comparison_bayesian_inf_time_bar.png, id=332, 630.6762p
+t x 330.9966pt>
+File: figures/5seed_sinusoid_comparison_bayesian_inf_time_bar.png Graphic file 
+(type png)
+<use figures/5seed_sinusoid_comparison_bayesian_inf_time_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_comparison_bayesian_inf_time_ba
+r.png  used on input line 1227.
+(pdftex.def)             Requested size: 252.0pt x 132.25487pt.
+<figures/5seed_sinusoid_comparison_laplace_inf_time_bar.png, id=333, 630.6762pt
+ x 338.7054pt>
+File: figures/5seed_sinusoid_comparison_laplace_inf_time_bar.png Graphic file (
+type png)
+<use figures/5seed_sinusoid_comparison_laplace_inf_time_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_comparison_laplace_inf_time_bar
+.png  used on input line 1232.
+(pdftex.def)             Requested size: 252.0pt x 135.33504pt.
+ [9 <./figures/sinusoid_comparison_kron_all_adam_loop_prediction.png> <./figure
+s/sinusoid_comparison_kron_all_adam_loop_ood_epistemic.png> <./figures/5seed_si
+nusoid_comparison_bayesian_total_time_bar.png> <./figures/5seed_sinusoid_compar
+ison_laplace_total_time_bar.png>]
+Underfull \hbox (badness 2042) in paragraph at lines 1239--1252
+\OT1/ptm/m/n/10 ods: \OT1/pcr/m/n/10 bayesian-torch\OT1/ptm/m/n/10 's OOD/ID RM
+SE ra-tio ranges
+ []
+
+
+Underfull \hbox (badness 1466) in paragraph at lines 1239--1252
+\OT1/pcr/m/n/10 laplace-torch\OT1/ptm/m/n/10 's ra-tio is $\OT1/cmr/m/n/10 4\OM
+L/cmm/m/it/10 :\OT1/cmr/m/n/10 90$ \OT1/ptm/m/n/10 for ev-ery vari-ant (all
+ []
+
+<figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.png, id=351, 615.7404pt x 
+330.9966pt>
+File: figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.png Graphic file (typ
+e png)
+<use figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.pn
+g  used on input line 1256.
+(pdftex.def)             Requested size: 252.0pt x 135.46199pt.
+<figures/5seed_sinusoid_laplace_epistemic_ratio_bar.png, id=352, 619.5948pt x 3
+38.7054pt>
+File: figures/5seed_sinusoid_laplace_epistemic_ratio_bar.png Graphic file (type
+ png)
+<use figures/5seed_sinusoid_laplace_epistemic_ratio_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_laplace_epistemic_ratio_bar.png
+  used on input line 1261.
+(pdftex.def)             Requested size: 252.0pt x 137.75894pt.
+<figures/povertymap_cal_error_bar.png, id=356, 781.9614pt x 368.577pt>
+File: figures/povertymap_cal_error_bar.png Graphic file (type png)
+<use figures/povertymap_cal_error_bar.png>
+Package pdftex.def Info: figures/povertymap_cal_error_bar.png  used on input li
+ne 1278.
+(pdftex.def)             Requested size: 252.0pt x 118.77939pt.
+<figures/povertymap_calibration_curves.png, id=358, 854.2314pt x 353.1594pt>
+File: figures/povertymap_calibration_curves.png Graphic file (type png)
+<use figures/povertymap_calibration_curves.png>
+Package pdftex.def Info: figures/povertymap_calibration_curves.png  used on inp
+ut line 1288.
+(pdftex.def)             Requested size: 252.0pt x 104.1811pt.
+[10 <./figures/5seed_sinusoid_comparison_bayesian_inf_time_bar.png> <./figures/
+5seed_sinusoid_comparison_laplace_inf_time_bar.png> <./figures/5seed_sinusoid_b
+ayesian_epistemic_ratio_bar.png> <./figures/5seed_sinusoid_laplace_epistemic_ra
+tio_bar.png> <./figures/povertymap_cal_error_bar.png>]
+<figures/povertymap_total_time_bar.png, id=376, 402.7848pt x 327.624pt>
+File: figures/povertymap_total_time_bar.png Graphic file (type png)
+<use figures/povertymap_total_time_bar.png>
+Package pdftex.def Info: figures/povertymap_total_time_bar.png  used on input l
+ine 1300.
+(pdftex.def)             Requested size: 151.20154pt x 122.98366pt.
+<figures/povertymap_inference_time_bar.png, id=379, 781.9614pt x 368.577pt>
+File: figures/povertymap_inference_time_bar.png Graphic file (type png)
+<use figures/povertymap_inference_time_bar.png>
+Package pdftex.def Info: figures/povertymap_inference_time_bar.png  used on inp
+ut line 1313.
+(pdftex.def)             Requested size: 252.0pt x 118.77939pt.
+
+Underfull \hbox (badness 1721) in paragraph at lines 1318--1329
+[]\OT1/ptm/b/n/10 Variant ab-la-tions. \OT1/ptm/m/n/10 Ta-ble [][]XIX[][] com-p
+ares each method's
+ []
+
+[11 <./figures/povertymap_calibration_curves.png> <./figures/povertymap_total_t
+ime_bar.png> <./figures/povertymap_inference_time_bar.png>]
+** WARNING: Ignoring useless \section in Appendix (line 1406).
+
+Underfull \hbox (badness 10000) in paragraph at lines 1500--1507
+[]\OT1/ptm/b/n/10 Tuning. \OT1/ptm/m/n/10 For \OT1/pcr/m/n/10 bayesian-torch\OT
+1/ptm/m/n/10 , scratch ini-tial-i-sa-tion
+ []
+
+[12]
+Underfull \hbox (badness 1762) in paragraph at lines 1508--1517
+\OT1/ptm/m/n/10 vari-ant of both meth-ods; full val-ues are in Ta-bles [][]III[
+][]
+ []
+
+<figures/5seed_sinusoid_combined_calibration.png, id=416, 457.2282pt x 398.4486
+pt>
+File: figures/5seed_sinusoid_combined_calibration.png Graphic file (type png)
+<use figures/5seed_sinusoid_combined_calibration.png>
+Package pdftex.def Info: figures/5seed_sinusoid_combined_calibration.png  used 
+on input line 1520.
+(pdftex.def)             Requested size: 189.0pt x 164.70253pt.
+<figures/5seed_sinusoid_bayesian_calibration_error_bar.png, id=417, 548.7702pt 
+x 335.3328pt>
+File: figures/5seed_sinusoid_bayesian_calibration_error_bar.png Graphic file (t
+ype png)
+<use figures/5seed_sinusoid_bayesian_calibration_error_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_bayesian_calibration_error_bar.
+png  used on input line 1528.
+(pdftex.def)             Requested size: 252.0pt x 153.98376pt.
+<figures/5seed_sinusoid_laplace_calibration_error_bar.png, id=418, 616.2222pt x
+ 338.7054pt>
+File: figures/5seed_sinusoid_laplace_calibration_error_bar.png Graphic file (ty
+pe png)
+<use figures/5seed_sinusoid_laplace_calibration_error_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_laplace_calibration_error_bar.p
+ng  used on input line 1533.
+(pdftex.def)             Requested size: 252.0pt x 138.50833pt.
+<figures/5seed_sinusoid_kron_all_gridsearch_prediction.png, id=421, 558.4062pt 
+x 342.078pt>
+File: figures/5seed_sinusoid_kron_all_gridsearch_prediction.png Graphic file (t
+ype png)
+<use figures/5seed_sinusoid_kron_all_gridsearch_prediction.png>
+Package pdftex.def Info: figures/5seed_sinusoid_kron_all_gridsearch_prediction.
+png  used on input line 1549.
+(pdftex.def)             Requested size: 189.0pt x 115.783pt.
+<figures/5seed_sinusoid_kron_all_gridsearch_ood_epistemic.png, id=422, 555.5154
+pt x 286.671pt>
+File: figures/5seed_sinusoid_kron_all_gridsearch_ood_epistemic.png Graphic file
+ (type png)
+<use figures/5seed_sinusoid_kron_all_gridsearch_ood_epistemic.png>
+Package pdftex.def Info: figures/5seed_sinusoid_kron_all_gridsearch_ood_epistem
+ic.png  used on input line 1556.
+(pdftex.def)             Requested size: 189.0pt x 97.53246pt.
+[13 <./figures/5seed_sinusoid_combined_calibration.png> <./figures/5seed_sinuso
+id_bayesian_calibration_error_bar.png> <./figures/5seed_sinusoid_laplace_calibr
+ation_error_bar.png> <./figures/5seed_sinusoid_kron_all_gridsearch_prediction.p
+ng>]
+Underfull \hbox (badness 3690) in paragraph at lines 1561--1568
+\OT1/ptm/m/n/10 For \OT1/pcr/m/n/10 bayesian-torch\OT1/ptm/m/n/10 , MOPED rough
+ly halves to-tal
+ []
+
+<figures/5seed_sinusoid_bayesian_total_time_bar.png, id=439, 619.113pt x 330.99
+66pt>
+File: figures/5seed_sinusoid_bayesian_total_time_bar.png Graphic file (type png
+)
+<use figures/5seed_sinusoid_bayesian_total_time_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_bayesian_total_time_bar.png  us
+ed on input line 1572.
+(pdftex.def)             Requested size: 252.0pt x 134.72461pt.
+<figures/5seed_sinusoid_laplace_total_time_bar.png, id=440, 619.113pt x 338.705
+4pt>
+File: figures/5seed_sinusoid_laplace_total_time_bar.png Graphic file (type png)
+
+<use figures/5seed_sinusoid_laplace_total_time_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_laplace_total_time_bar.png  use
+d on input line 1577.
+(pdftex.def)             Requested size: 252.0pt x 137.8623pt.
+<figures/5seed_sinusoid_bayesian_inf_time_bar.png, id=444, 623.4492pt x 330.996
+6pt>
+File: figures/5seed_sinusoid_bayesian_inf_time_bar.png Graphic file (type png)
+<use figures/5seed_sinusoid_bayesian_inf_time_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_bayesian_inf_time_bar.png  used
+ on input line 1593.
+(pdftex.def)             Requested size: 252.0pt x 133.79025pt.
+<figures/5seed_sinusoid_laplace_inf_time_bar.png, id=445, 623.4492pt x 338.7054
+pt>
+File: figures/5seed_sinusoid_laplace_inf_time_bar.png Graphic file (type png)
+<use figures/5seed_sinusoid_laplace_inf_time_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_laplace_inf_time_bar.png  used 
+on input line 1598.
+(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
+<figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png, id=449, 615.740
+4pt x 330.9966pt>
+File: figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png Graphic fil
+e (type png)
+<use figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_small_bayesian_epistemic_ratio_
+bar.png  used on input line 1618.
+(pdftex.def)             Requested size: 252.0pt x 135.46199pt.
+<figures/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png, id=450, 619.5948
+pt x 338.7054pt>
+File: figures/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png Graphic file
+ (type png)
+<use figures/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png>
+Package pdftex.def Info: figures/5seed_sinusoid_small_laplace_epistemic_ratio_b
+ar.png  used on input line 1623.
+(pdftex.def)             Requested size: 252.0pt x 137.75894pt.
+[14 <./figures/5seed_sinusoid_kron_all_gridsearch_ood_epistemic.png> <./figures
+/5seed_sinusoid_bayesian_total_time_bar.png> <./figures/5seed_sinusoid_laplace_
+total_time_bar.png> <./figures/5seed_sinusoid_bayesian_inf_time_bar.png> <./fig
+ures/5seed_sinusoid_laplace_inf_time_bar.png>]
+<figures/5seed_two_moons_bayesian_accuracy_bar.png, id=465, 615.7404pt x 338.70
+54pt>
+File: figures/5seed_two_moons_bayesian_accuracy_bar.png Graphic file (type png)
+
+<use figures/5seed_two_moons_bayesian_accuracy_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_bayesian_accuracy_bar.png  use
+d on input line 1755.
+(pdftex.def)             Requested size: 252.0pt x 138.61687pt.
+<figures/5seed_two_moons_laplace_accuracy_bar.png, id=466, 615.7404pt x 338.705
+4pt>
+File: figures/5seed_two_moons_laplace_accuracy_bar.png Graphic file (type png)
+<use figures/5seed_two_moons_laplace_accuracy_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_laplace_accuracy_bar.png  used
+ on input line 1760.
+(pdftex.def)             Requested size: 252.0pt x 138.61687pt.
+<figures/5seed_two_moons_bayesian_nll_bar.png, id=467, 623.4492pt x 338.7054pt>
+
+File: figures/5seed_two_moons_bayesian_nll_bar.png Graphic file (type png)
+<use figures/5seed_two_moons_bayesian_nll_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_bayesian_nll_bar.png  used on 
+input line 1770.
+(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
+<figures/5seed_two_moons_laplace_nll_bar.png, id=468, 623.4492pt x 338.7054pt>
+File: figures/5seed_two_moons_laplace_nll_bar.png Graphic file (type png)
+<use figures/5seed_two_moons_laplace_nll_bar.png>
+Package pdftex.def Info: figures/5seed_two_moons_laplace_nll_bar.png  used on i
+nput line 1775.
+(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
+ [15 <./figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png> <./figur
+es/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png> <./figures/5seed_two_m
+oons_bayesian_accuracy_bar.png> <./figures/5seed_two_moons_laplace_accuracy_bar
+.png>] [16 <./figures/5seed_two_moons_bayesian_nll_bar.png> <./figures/5seed_tw
+o_moons_laplace_nll_bar.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1889--1898
+[]\OT1/ptm/b/n/10 MOPED delta sweep. \OT1/ptm/m/n/10 Ta-ble [][]XVII[][] com-pa
+res
+ []
+
+
+Underfull \hbox (badness 2653) in paragraph at lines 1889--1898
+\OT1/pcr/m/n/10 bayesian-torch\OT1/ptm/m/n/10 's report-default MOPED $\OML/cmm
+/m/it/10 ^^N \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 5$
+ []
+
+<figures/sinusoid_flipout_moped_delta_calibration.png, id=496, 565.1514pt x 419
+.166pt>
+File: figures/sinusoid_flipout_moped_delta_calibration.png Graphic file (type p
+ng)
+<use figures/sinusoid_flipout_moped_delta_calibration.png>
+Package pdftex.def Info: figures/sinusoid_flipout_moped_delta_calibration.png  
+used on input line 1924.
+(pdftex.def)             Requested size: 189.0pt x 140.18002pt.
+<figures/sinusoid_bbb_moped_delta_calibration.png, id=497, 565.1514pt x 419.166
+pt>
+File: figures/sinusoid_bbb_moped_delta_calibration.png Graphic file (type png)
+<use figures/sinusoid_bbb_moped_delta_calibration.png>
+Package pdftex.def Info: figures/sinusoid_bbb_moped_delta_calibration.png  used
+ on input line 1931.
+(pdftex.def)             Requested size: 189.0pt x 140.18002pt.
+<figures/povertymap_rmse_nll_bar.png, id=501, 854.2314pt x 737.154pt>
+File: figures/povertymap_rmse_nll_bar.png Graphic file (type png)
+<use figures/povertymap_rmse_nll_bar.png>
+Package pdftex.def Info: figures/povertymap_rmse_nll_bar.png  used on input lin
+e 1981.
+(pdftex.def)             Requested size: 252.0pt x 217.45854pt.
+<figures/povertymap_per_fold_rmse.png, id=502, 854.2314pt x 354.123pt>
+File: figures/povertymap_per_fold_rmse.png Graphic file (type png)
+<use figures/povertymap_per_fold_rmse.png>
+Package pdftex.def Info: figures/povertymap_per_fold_rmse.png  used on input li
+ne 1988.
+(pdftex.def)             Requested size: 252.0pt x 104.46536pt.
+[17 <./figures/sinusoid_flipout_moped_delta_calibration.png> <./figures/sinusoi
+d_bbb_moped_delta_calibration.png> <./figures/povertymap_rmse_nll_bar.png> <./f
+igures/povertymap_per_fold_rmse.png>] [18] (./template.bbl
+Underfull \hbox (badness 1803) in paragraph at lines 37--41
 \OT1/ptm/m/n/10 learn-ing.  [][]$https : / / github . com / IntelLabs / bayesia
 n-[]torch$[][],
+ []
+
+
+Underfull \hbox (badness 2401) in paragraph at lines 51--57
+[]\OT1/ptm/m/n/10 Ranganath Kr-ish-nan, Ma-hesh Sube-dar, and Omesh
  []
 
 )
@@ -1573,7 +1772,7 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[8
+[19
 
 ] (./template.aux)
  ***********
@@ -1581,43 +1780,48 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `template.out' has not changed.
-(rerunfilecheck)             Checksum: 5BFFA3F39B80AF3EB28901C2A9E1A36E;2175.
+(rerunfilecheck)             Checksum: 09A4675CEB3DF69521E9B11675B57129;3217.
  ) 
 Here is how much of TeX's memory you used:
- 40595 strings out of 474222
- 958801 string characters out of 5748732
- 2017975 words of memory out of 5000000
- 62112 multiletter control sequences out of 15000+600000
- 613939 words of font info for 142 fonts, out of 8000000 for 9000
+ 39788 strings out of 474222
+ 914513 string characters out of 5748732
+ 1974975 words of memory out of 5000000
+ 61261 multiletter control sequences out of 15000+600000
+ 616147 words of font info for 148 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
- 96i,14n,101p,726b,633s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1
-/public/amsfonts/cmextra/cmmib7.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/urw/courier/ucrro8a.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvet
-ic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/
-texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/urw/times/utmri8a.pfb>
-Output written on template.pdf (8 pages, 289327 bytes).
+ 96i,13n,101p,726b,635s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy7.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy8.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cmextra/cmmib7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cmextra/cmmib8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/urw/courier/ucrb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhv
+b8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
+rw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8
+a.pfb>
+Output written on template.pdf (19 pages, 3054855 bytes).
 PDF statistics:
- 363 PDF objects out of 1000 (max. 8388607)
- 298 compressed objects within 3 object streams
- 79 named destinations out of 1000 (max. 500000)
- 143 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 682 PDF objects out of 1000 (max. 8388607)
+ 509 compressed objects within 6 object streams
+ 123 named destinations out of 1000 (max. 500000)
+ 385 words of extra memory for PDF output out of 10000 (max. 10000000)
 

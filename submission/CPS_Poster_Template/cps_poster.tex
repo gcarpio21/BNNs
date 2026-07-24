@@ -206,7 +206,6 @@ a0paper,
     bweight/.style={rectangle, draw, minimum size=0.8cm, fill=TUMlightblue!40},
     op/.style={circle, draw, minimum size=1cm}
 ]
-% --- Deterministic network (left) ---
 \node[input] (X1) {$x_1$};
 \node[below=1.0cm of X1] (dots) {$\vdots$};
 \node[input, below=1.0cm of dots] (Xn) {$x_n$};
@@ -225,10 +224,8 @@ a0paper,
 \draw[->] (Plus) -- (Act);
 \draw[->] (Act) -- ++(0.8,0);
 
-% --- Arrow between networks ---
 \node[right=2.0cm of Act, font=\large] {$\Rightarrow$};
 
-% --- Bayesian network (right) ---
 \node[input, right=12cm of X1] (BX1) {$x_1$};
 \node[below=1.0cm of BX1] (Bdots) {$\vdots$};
 \node[input, below=1.0cm of Bdots] (BXn) {$x_n$};
@@ -246,7 +243,6 @@ a0paper,
 \draw[->] (BB) -- (BPlus);
 \draw[->] (BPlus) -- (BAct);
 \draw[->] (BAct) -- ++(1,0) node[right] {Out};
-% Captions
 \node[below=0.7cm of Xn,  xshift=3.5cm,  font=\large\bfseries] {Neural Network};
 \node[below=0.7cm of BXn, xshift=3.5cm, font=\large\bfseries] {Bayesian Neural Network};
 \end{tikzpicture}}
