@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  24 JUL 2026 16:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.11.11)  26 JUL 2026 23:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1106,12 +1106,12 @@ Package caption Info: rotating package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Couldn't patch \deferred@thm@head!
 (./coverpage.tex
-<./figures/IN.pdf, id=83, 29.8716pt x 32.82263pt>
+<./figures/IN.pdf, id=87, 29.8716pt x 32.82263pt>
 File: ./figures/IN.pdf Graphic file (type pdf)
 <use ./figures/IN.pdf>
 Package pdftex.def Info: ./figures/IN.pdf  used on input line 3.
 (pdftex.def)             Requested size: 29.8715pt x 32.82254pt.
-<./figures/tumlogo.pdf, id=84, 53.24893pt x 28.45631pt>
+<./figures/tumlogo.pdf, id=88, 53.24893pt x 28.45631pt>
 File: ./figures/tumlogo.pdf Graphic file (type pdf)
 <use ./figures/tumlogo.pdf>
 Package pdftex.def Info: ./figures/tumlogo.pdf  used on input line 3.
@@ -1169,594 +1169,473 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 
 
 ]
-Underfull \hbox (badness 1394) in paragraph at lines 598--602
-[]\OT1/ptm/m/n/10 There are mul-ti-ple meth-ods for ap-prox-i-mat-ing the pos-
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\begingroup' on input line 614.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\let' on input line 614.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\<let>-command' on input line 614.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\NAT@ctype' on input line 614.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\z@' on input line 614.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\let' on input line 614.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\new@ifnextchar' on input line 614.
+
+
+Underfull \hbox (badness 2005) in paragraph at lines 704--708
+\OT1/pcr/m/n/10 bayesian-torch\OT1/ptm/m/n/10 's \OT1/pcr/m/n/10 AUAvULoss\OT1/
+ptm/m/n/10 , used in this re-port,
  []
-
-
-Underfull \hbox (badness 1577) in paragraph at lines 598--602
-\OT1/ptm/m/n/10 These are im-ple-mented by \OT1/pcr/m/n/10 bayesian-torch \OT1/
-ptm/m/n/10 [[]] and
- []
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\begingroup' on input line 603.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\let' on input line 603.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 603.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\NAT@ctype' on input line 603.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\z@' on input line 603.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\let' on input line 603.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\new@ifnextchar' on input line 603.
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 728--731
-[]\OT1/ptm/b/n/10 Epistemic-uncertainty map (Two Moons). \OT1/ptm/m/n/10 The
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 728--731
-\OT1/ptm/m/n/10 entropy/mutual-information de-com-po-si-tion [[]] is used
- []
-
-
-Underfull \hbox (badness 3428) in paragraph at lines 741--746
-[]\OT1/ptm/b/n/10 Classification met-rics (Two Moons). \OT1/ptm/m/n/10 Ac-cu-ra
-cy, NLL,
- []
-
-
-Underfull \hbox (badness 2744) in paragraph at lines 741--746
-\OT1/ptm/m/n/10 puts; \OT1/pcr/m/n/10 laplace-torch \OT1/ptm/m/n/10 passes the 
-closed-form pre-dic-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 778--781
+Underfull \hbox (badness 10000) in paragraph at lines 836--839
 []\OT1/ptm/b/n/10 Root Mean Squared Er-ror (RMSE). $[] \OT1/cmr/m/n/10 =
  []
 
 
-Underfull \hbox (badness 2680) in paragraph at lines 778--781
+Underfull \hbox (badness 2680) in paragraph at lines 836--839
 []$\OT1/ptm/m/n/10 , the point-prediction er-ror used for
  []
 
-
-Underfull \hbox (badness 1917) in paragraph at lines 806--812
-\OT1/ptm/m/n/10 half cres-cents. For re-gres-sion, a 1D si-nu-soidal dataset,
+[4]
+Underfull \hbox (badness 1546) in paragraph at lines 872--878
+\OT1/ptm/m/n/10 half cres-cents. For re-gres-sion, we use a 1D si-nu-soidal
  []
 
 
-Underfull \hbox (badness 4634) in paragraph at lines 813--827
+Underfull \hbox (badness 4634) in paragraph at lines 879--893
 \OT1/ptm/m/n/10 er-at-ing the Two Moons and Si-nu-soidal datasets. For
  []
 
-[4]
-Underfull \hbox (badness 2941) in paragraph at lines 873--879
+
+Underfull \hbox (badness 2941) in paragraph at lines 946--952
 \OT1/ptm/m/n/10 tion [][][][][], the LA is ap-plied across the Two Moons
  []
 
 
-Underfull \hbox (badness 2103) in paragraph at lines 873--879
+Underfull \hbox (badness 2103) in paragraph at lines 946--952
 \OT1/ptm/m/n/10 and Si-nu-soidal note-books through the same high level
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 892--896
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 965--969
 []\OT1/ptm/b/n/10 The \OT1/pcr/b/n/10 bayesian-torch \OT1/ptm/b/n/10 In-ter-fac
 e. [][] \OT1/ptm/m/n/10 The
  []
 
-LaTeX Font Info:    Trying to load font information for OMS+pcr on input line 8
-97.
+
+Underfull \hbox (badness 1796) in paragraph at lines 965--969
+\OT1/pcr/m/n/10 bayesian-torch \OT1/ptm/m/n/10 vari-ants are built by con-vert-
+ing an
+ []
+
+LaTeX Font Info:    Trying to load font information for OMS+pcr on input line 9
+70.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omspcr.fd
 File: omspcr.fd 
 )
 LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 897.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 970.
 
-Underfull \hbox (badness 10000) in paragraph at lines 919--922
+Underfull \hbox (badness 10000) in paragraph at lines 984--987
 []\OT1/ptm/m/n/10 Two cres-cent moons are gen-er-ated with the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 919--922
+Underfull \hbox (badness 10000) in paragraph at lines 984--987
 \OT1/pcr/m/n/10 sklearn.datasets.make_moons \OT1/ptm/m/n/10 func-tion, with
  []
 
 
-Underfull \hbox (badness 2401) in paragraph at lines 945--957
+Underfull \hbox (badness 2401) in paragraph at lines 1008--1020
 \OT1/ptm/m/n/10 ants it is in-stead fixed to the MAP model's resid-ual
  []
 
 
-Underfull \hbox (badness 2452) in paragraph at lines 945--957
+Underfull \hbox (badness 2452) in paragraph at lines 1008--1020
 \OT1/pcr/m/n/10 bayesian-torch \OT1/ptm/m/n/10 fits \OT1/pcr/m/n/10 sigma_noise
  \OT1/ptm/m/n/10 sep-a-rately with
  []
 
 
-Underfull \hbox (badness 1590) in paragraph at lines 945--957
+Underfull \hbox (badness 1590) in paragraph at lines 1008--1020
 \OT1/pcr/m/n/10 optimize_noise_std_bt\OT1/ptm/m/n/10 , min-imis-ing Gaus-sian N
 LL
  []
 
-[5]
-Underfull \hbox (badness 1502) in paragraph at lines 994--1011
+
+Underfull \hbox (badness 1655) in paragraph at lines 1029--1042
+\OT1/ptm/m/n/10 dataset showed \OT1/pcr/m/n/10 bayesian-torch \OT1/ptm/m/n/10 c
+al-i-brat-ing and pre-
+ []
+
+
+Underfull \hbox (badness 1502) in paragraph at lines 1055--1075
 []\OT1/ptm/b/n/10 Fixed con-fig-u-ra-tion. \OT1/ptm/m/n/10 Un-like Two Moons an
 d Si-nu-soid,
  []
 
 
-Underfull \hbox (badness 5175) in paragraph at lines 994--1011
+Underfull \hbox (badness 5175) in paragraph at lines 1055--1075
 \OT1/ptm/m/n/10 Pover-tyMap is not a vari-ant grid: \OT1/pcr/m/n/10 laplace-tor
 ch
  []
 
 
-Underfull \hbox (badness 1400) in paragraph at lines 994--1011
+Underfull \hbox (badness 1400) in paragraph at lines 1055--1075
 \OT1/ptm/m/n/10 uses a sin-gle con-fig-u-ra-tion match-ing the setup re-leased
  []
 
 
-Underfull \hbox (badness 1365) in paragraph at lines 994--1011
-\OT1/ptm/m/n/10 by Daxberger et al. [][][][][][][][] ex-actly (last-layer sub-s
-et, full
+Underfull \hbox (badness 3724) in paragraph at lines 1055--1075
+\OT1/ptm/m/n/10 ex-actly (last-layer sub-set, full Hes-sian, prior pre-ci-sion
  []
 
 
-Underfull \hbox (badness 2726) in paragraph at lines 994--1011
-\OT1/ptm/m/n/10 Hes-sian, prior pre-ci-sion fixed at $\OT1/cmr/m/n/10 10\OML/cm
-m/m/it/10 :\OT1/cmr/m/n/10 0$ \OT1/ptm/m/n/10 per \OT1/pcr/m/n/10 configs/
+Underfull \hbox (badness 10000) in paragraph at lines 1055--1075
+\OT1/ptm/m/n/10 fixed at $\OT1/cmr/m/n/10 10\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 0
+$ \OT1/ptm/m/n/10 per \OT1/pcr/m/n/10 configs/wilds/poverty/
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 994--1011
-\OT1/pcr/m/n/10 wilds/poverty/wilds-poverty_laplace.yaml
+Underfull \hbox (badness 10000) in paragraph at lines 1055--1075
+\OT1/pcr/m/n/10 wilds-poverty_laplace.yaml \OT1/ptm/m/n/10 in that repos-i-tory
+,
  []
 
 
-Underfull \hbox (badness 5036) in paragraph at lines 994--1011
+Underfull \hbox (badness 3735) in paragraph at lines 1055--1075
+\OT1/ptm/m/n/10 from a ran-dom ini-tial-i-sa-tion, with no MOPED warm
+ []
+
+
+Underfull \hbox (badness 2903) in paragraph at lines 1055--1075
+\OT1/ptm/m/n/10 Min-i-miza-tion (ERM) check-point re-leased by Daxberger
+ []
+
+
+Underfull \hbox (badness 1442) in paragraph at lines 1055--1075
+\OT1/ptm/m/n/10 ei-ther method's re-ported to-tal time. The aleatoric noise
+ []
+
+
+Underfull \hbox (badness 1859) in paragraph at lines 1055--1075
+\OT1/ptm/m/n/10 term is tuned in-de-pen-dently of the prior pre-ci-sion for
+ []
+
+
+Underfull \hbox (badness 5036) in paragraph at lines 1055--1075
 \OT1/ptm/m/n/10 de-scent on val-i-da-tion NLL, and \OT1/pcr/m/n/10 bayesian-tor
 ch\OT1/ptm/m/n/10 's
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 994--1011
+Underfull \hbox (badness 10000) in paragraph at lines 1055--1075
 \OT1/ptm/m/n/10 with the same \OT1/pcr/m/n/10 optimize_noise_std_bt \OT1/ptm/m/
 n/10 rou-tine
  []
 
 
-Underfull \hbox (badness 2103) in paragraph at lines 994--1011
+Underfull \hbox (badness 2103) in paragraph at lines 1055--1075
 \OT1/ptm/m/n/10 used for Si-nu-soid. We ad-di-tion-ally test one al-ter-na-tive
 
  []
 
+[6]
+Underfull \hbox (badness 4084) in paragraph at lines 1081--1084
+[]\OT1/ptm/m/n/10 This dataset uses the clas-si-fi-ca-tion met-rics (Ac-cu-racy
+,
+ []
 
-Underfull \hbox (badness 1990) in paragraph at lines 1028--1036
+
+Underfull \hbox (badness 1990) in paragraph at lines 1096--1104
 \OT1/ptm/m/n/10 meth-ods; full ECE and Brier score val-ues are in Ta-
  []
 
-<figures/5seed_two_moons_combined_reliability.png, id=251, 457.2282pt x 398.448
+<figures/5seed_two_moons_combined_reliability.png, id=274, 457.2282pt x 398.448
 6pt>
 File: figures/5seed_two_moons_combined_reliability.png Graphic file (type png)
 <use figures/5seed_two_moons_combined_reliability.png>
 Package pdftex.def Info: figures/5seed_two_moons_combined_reliability.png  used
- on input line 1039.
+ on input line 1107.
 (pdftex.def)             Requested size: 189.0pt x 164.70253pt.
-[6]
-<figures/5seed_two_moons_bayesian_ece_bar.png, id=264, 623.4492pt x 338.7054pt>
-
+<figures/5seed_two_moons_bayesian_ece_bar.png, id=276, 693.792pt x 392.1852pt>
 File: figures/5seed_two_moons_bayesian_ece_bar.png Graphic file (type png)
 <use figures/5seed_two_moons_bayesian_ece_bar.png>
 Package pdftex.def Info: figures/5seed_two_moons_bayesian_ece_bar.png  used on 
-input line 1047.
-(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
-<figures/5seed_two_moons_laplace_ece_bar.png, id=265, 623.4492pt x 338.7054pt>
+input line 1115.
+(pdftex.def)             Requested size: 252.0pt x 142.44923pt.
+<figures/5seed_two_moons_laplace_ece_bar.png, id=277, 679.338pt x 361.35pt>
 File: figures/5seed_two_moons_laplace_ece_bar.png Graphic file (type png)
 <use figures/5seed_two_moons_laplace_ece_bar.png>
 Package pdftex.def Info: figures/5seed_two_moons_laplace_ece_bar.png  used on i
-nput line 1052.
-(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
-<figures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png, id=267,
+nput line 1120.
+(pdftex.def)             Requested size: 252.0pt x 134.03926pt.
+<figures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png, id=279,
  552.1428pt x 453.3738pt>
 File: figures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png Gra
 phic file (type png)
 <use figures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png>
 Package pdftex.def Info: figures/5seed_two_moons_gridsearch_full_all_weights_ep
-istemic_map.png  used on input line 1066.
+istemic_map.png  used on input line 1134.
 (pdftex.def)             Requested size: 151.20154pt x 124.14896pt.
-<figures/5seed_two_moons_bayesian_total_time_bar.png, id=271, 626.8218pt x 338.
-7054pt>
+[7 <./figures/5seed_two_moons_combined_reliability.png> <./figures/5seed_two_mo
+ons_bayesian_ece_bar.png> <./figures/5seed_two_moons_laplace_ece_bar.png>]
+<figures/5seed_two_moons_bayesian_total_time_bar.png, id=298, 643.203pt x 392.1
+852pt>
 File: figures/5seed_two_moons_bayesian_total_time_bar.png Graphic file (type pn
 g)
 <use figures/5seed_two_moons_bayesian_total_time_bar.png>
 Package pdftex.def Info: figures/5seed_two_moons_bayesian_total_time_bar.png  u
-sed on input line 1085.
-(pdftex.def)             Requested size: 252.0pt x 136.16713pt.
-<figures/5seed_two_moons_laplace_total_time_bar.png, id=272, 626.8218pt x 338.7
-054pt>
+sed on input line 1153.
+(pdftex.def)             Requested size: 252.0pt x 153.65176pt.
+<figures/5seed_two_moons_laplace_total_time_bar.png, id=299, 626.8218pt x 361.3
+5pt>
 File: figures/5seed_two_moons_laplace_total_time_bar.png Graphic file (type png
 )
 <use figures/5seed_two_moons_laplace_total_time_bar.png>
 Package pdftex.def Info: figures/5seed_two_moons_laplace_total_time_bar.png  us
-ed on input line 1090.
-(pdftex.def)             Requested size: 252.0pt x 136.16713pt.
- [7 <./figures/5seed_two_moons_combined_reliability.png> <./figures/5seed_two_m
-oons_bayesian_ece_bar.png> <./figures/5seed_two_moons_laplace_ece_bar.png> <./f
-igures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png> <./figure
-s/5seed_two_moons_bayesian_total_time_bar.png> <./figures/5seed_two_moons_lapla
-ce_total_time_bar.png>]
-<figures/5seed_two_moons_bayesian_inf_time_bar.png, id=291, 623.4492pt x 338.70
-54pt>
-File: figures/5seed_two_moons_bayesian_inf_time_bar.png Graphic file (type png)
-
-<use figures/5seed_two_moons_bayesian_inf_time_bar.png>
-Package pdftex.def Info: figures/5seed_two_moons_bayesian_inf_time_bar.png  use
-d on input line 1108.
-(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
-<figures/5seed_two_moons_laplace_inf_time_bar.png, id=292, 623.4492pt x 338.705
-4pt>
-File: figures/5seed_two_moons_laplace_inf_time_bar.png Graphic file (type png)
-<use figures/5seed_two_moons_laplace_inf_time_bar.png>
-Package pdftex.def Info: figures/5seed_two_moons_laplace_inf_time_bar.png  used
- on input line 1113.
-(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
-<figures/5seed_sinusoid_comparison_combined_calibration.png, id=302, 493.845pt 
+ed on input line 1158.
+(pdftex.def)             Requested size: 252.0pt x 145.27077pt.
+<figures/5seed_sinusoid_comparison_combined_calibration.png, id=312, 493.845pt 
 x 398.4486pt>
 File: figures/5seed_sinusoid_comparison_combined_calibration.png Graphic file (
 type png)
 <use figures/5seed_sinusoid_comparison_combined_calibration.png>
 Package pdftex.def Info: figures/5seed_sinusoid_comparison_combined_calibration
-.png  used on input line 1147.
+.png  used on input line 1200.
 (pdftex.def)             Requested size: 189.0pt x 152.48816pt.
-<figures/5seed_sinusoid_comparison_bayesian_calibration_error_bar.png, id=303, 
-604.1772pt x 330.9966pt>
+<figures/5seed_sinusoid_comparison_bayesian_calibration_error_bar.png, id=313, 
+604.1772pt x 372.4314pt>
 File: figures/5seed_sinusoid_comparison_bayesian_calibration_error_bar.png Grap
 hic file (type png)
 <use figures/5seed_sinusoid_comparison_bayesian_calibration_error_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_comparison_bayesian_calibration
-_error_bar.png  used on input line 1155.
-(pdftex.def)             Requested size: 252.0pt x 138.058pt.
-<figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.png, id=304, 6
-15.7404pt x 338.7054pt>
+_error_bar.png  used on input line 1208.
+(pdftex.def)             Requested size: 252.0pt x 155.34038pt.
+<figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.png, id=314, 6
+15.7404pt x 361.35pt>
 File: figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.png Graph
 ic file (type png)
 <use figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_comparison_laplace_calibration_
-error_bar.png  used on input line 1160.
-(pdftex.def)             Requested size: 252.0pt x 138.61687pt.
- [8 <./figures/5seed_two_moons_bayesian_inf_time_bar.png> <./figures/5seed_two_
-moons_laplace_inf_time_bar.png> <./figures/5seed_sinusoid_comparison_combined_c
-alibration.png> <./figures/5seed_sinusoid_comparison_bayesian_calibration_error
-_bar.png> <./figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.pn
-g>]
-<figures/sinusoid_comparison_kron_all_adam_loop_prediction.png, id=322, 587.314
+error_bar.png  used on input line 1213.
+(pdftex.def)             Requested size: 252.0pt x 147.88428pt.
+<figures/sinusoid_comparison_kron_all_adam_loop_prediction.png, id=316, 587.314
 2pt x 342.5598pt>
 File: figures/sinusoid_comparison_kron_all_adam_loop_prediction.png Graphic fil
 e (type png)
 <use figures/sinusoid_comparison_kron_all_adam_loop_prediction.png>
 Package pdftex.def Info: figures/sinusoid_comparison_kron_all_adam_loop_predict
-ion.png  used on input line 1175.
+ion.png  used on input line 1228.
 (pdftex.def)             Requested size: 189.0pt x 110.23293pt.
-<figures/sinusoid_comparison_kron_all_adam_loop_ood_epistemic.png, id=323, 618.
-6312pt x 287.1528pt>
-File: figures/sinusoid_comparison_kron_all_adam_loop_ood_epistemic.png Graphic 
-file (type png)
-<use figures/sinusoid_comparison_kron_all_adam_loop_ood_epistemic.png>
-Package pdftex.def Info: figures/sinusoid_comparison_kron_all_adam_loop_ood_epi
-stemic.png  used on input line 1182.
-(pdftex.def)             Requested size: 189.0pt x 87.72826pt.
-<figures/5seed_sinusoid_comparison_bayesian_total_time_bar.png, id=327, 611.886
-pt x 330.9966pt>
+
+[8 <./figures/5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png> <.
+/figures/5seed_two_moons_bayesian_total_time_bar.png> <./figures/5seed_two_moon
+s_laplace_total_time_bar.png> <./figures/5seed_sinusoid_comparison_combined_cal
+ibration.png>]
+<figures/5seed_sinusoid_comparison_bayesian_total_time_bar.png, id=333, 611.886
+pt x 372.4314pt>
 File: figures/5seed_sinusoid_comparison_bayesian_total_time_bar.png Graphic fil
 e (type png)
 <use figures/5seed_sinusoid_comparison_bayesian_total_time_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_comparison_bayesian_total_time_
-bar.png  used on input line 1204.
-(pdftex.def)             Requested size: 252.0pt x 136.31554pt.
-<figures/5seed_sinusoid_comparison_laplace_total_time_bar.png, id=328, 611.886p
-t x 338.7054pt>
+bar.png  used on input line 1250.
+(pdftex.def)             Requested size: 252.0pt x 153.37979pt.
+<figures/5seed_sinusoid_comparison_laplace_total_time_bar.png, id=334, 611.886p
+t x 361.35pt>
 File: figures/5seed_sinusoid_comparison_laplace_total_time_bar.png Graphic file
  (type png)
 <use figures/5seed_sinusoid_comparison_laplace_total_time_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_comparison_laplace_total_time_b
-ar.png  used on input line 1209.
-(pdftex.def)             Requested size: 252.0pt x 139.4903pt.
-<figures/5seed_sinusoid_comparison_bayesian_inf_time_bar.png, id=332, 630.6762p
-t x 330.9966pt>
-File: figures/5seed_sinusoid_comparison_bayesian_inf_time_bar.png Graphic file 
-(type png)
-<use figures/5seed_sinusoid_comparison_bayesian_inf_time_bar.png>
-Package pdftex.def Info: figures/5seed_sinusoid_comparison_bayesian_inf_time_ba
-r.png  used on input line 1227.
-(pdftex.def)             Requested size: 252.0pt x 132.25487pt.
-<figures/5seed_sinusoid_comparison_laplace_inf_time_bar.png, id=333, 630.6762pt
- x 338.7054pt>
-File: figures/5seed_sinusoid_comparison_laplace_inf_time_bar.png Graphic file (
-type png)
-<use figures/5seed_sinusoid_comparison_laplace_inf_time_bar.png>
-Package pdftex.def Info: figures/5seed_sinusoid_comparison_laplace_inf_time_bar
-.png  used on input line 1232.
-(pdftex.def)             Requested size: 252.0pt x 135.33504pt.
- [9 <./figures/sinusoid_comparison_kron_all_adam_loop_prediction.png> <./figure
-s/sinusoid_comparison_kron_all_adam_loop_ood_epistemic.png> <./figures/5seed_si
-nusoid_comparison_bayesian_total_time_bar.png> <./figures/5seed_sinusoid_compar
-ison_laplace_total_time_bar.png>]
-Underfull \hbox (badness 2042) in paragraph at lines 1239--1252
-\OT1/ptm/m/n/10 ods: \OT1/pcr/m/n/10 bayesian-torch\OT1/ptm/m/n/10 's OOD/ID RM
-SE ra-tio ranges
- []
-
-
-Underfull \hbox (badness 1466) in paragraph at lines 1239--1252
-\OT1/pcr/m/n/10 laplace-torch\OT1/ptm/m/n/10 's ra-tio is $\OT1/cmr/m/n/10 4\OM
-L/cmm/m/it/10 :\OT1/cmr/m/n/10 90$ \OT1/ptm/m/n/10 for ev-ery vari-ant (all
- []
-
-<figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.png, id=351, 615.7404pt x 
-330.9966pt>
+ar.png  used on input line 1255.
+(pdftex.def)             Requested size: 252.0pt x 148.8161pt.
+ [9 <./figures/5seed_sinusoid_comparison_bayesian_calibration_error_bar.png> <.
+/figures/5seed_sinusoid_comparison_laplace_calibration_error_bar.png> <./figure
+s/sinusoid_comparison_kron_all_adam_loop_prediction.png> <./figures/5seed_sinus
+oid_comparison_bayesian_total_time_bar.png> <./figures/5seed_sinusoid_compariso
+n_laplace_total_time_bar.png>]
+<figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.png, id=354, 615.7404pt x 
+372.4314pt>
 File: figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.png Graphic file (typ
 e png)
 <use figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.pn
-g  used on input line 1256.
-(pdftex.def)             Requested size: 252.0pt x 135.46199pt.
-<figures/5seed_sinusoid_laplace_epistemic_ratio_bar.png, id=352, 619.5948pt x 3
-38.7054pt>
+g  used on input line 1287.
+(pdftex.def)             Requested size: 252.0pt x 152.41939pt.
+<figures/5seed_sinusoid_laplace_epistemic_ratio_bar.png, id=355, 619.5948pt x 3
+61.35pt>
 File: figures/5seed_sinusoid_laplace_epistemic_ratio_bar.png Graphic file (type
  png)
 <use figures/5seed_sinusoid_laplace_epistemic_ratio_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_laplace_epistemic_ratio_bar.png
-  used on input line 1261.
-(pdftex.def)             Requested size: 252.0pt x 137.75894pt.
-<figures/povertymap_cal_error_bar.png, id=356, 781.9614pt x 368.577pt>
+  used on input line 1292.
+(pdftex.def)             Requested size: 252.0pt x 146.969pt.
+<figures/povertymap_cal_error_bar.png, id=361, 781.9614pt x 368.577pt>
 File: figures/povertymap_cal_error_bar.png Graphic file (type png)
 <use figures/povertymap_cal_error_bar.png>
 Package pdftex.def Info: figures/povertymap_cal_error_bar.png  used on input li
-ne 1278.
+ne 1313.
 (pdftex.def)             Requested size: 252.0pt x 118.77939pt.
-<figures/povertymap_calibration_curves.png, id=358, 854.2314pt x 353.1594pt>
+<figures/povertymap_calibration_curves.png, id=362, 854.2314pt x 353.1594pt>
 File: figures/povertymap_calibration_curves.png Graphic file (type png)
 <use figures/povertymap_calibration_curves.png>
 Package pdftex.def Info: figures/povertymap_calibration_curves.png  used on inp
-ut line 1288.
+ut line 1320.
 (pdftex.def)             Requested size: 252.0pt x 104.1811pt.
-[10 <./figures/5seed_sinusoid_comparison_bayesian_inf_time_bar.png> <./figures/
-5seed_sinusoid_comparison_laplace_inf_time_bar.png> <./figures/5seed_sinusoid_b
-ayesian_epistemic_ratio_bar.png> <./figures/5seed_sinusoid_laplace_epistemic_ra
-tio_bar.png> <./figures/povertymap_cal_error_bar.png>]
-<figures/povertymap_total_time_bar.png, id=376, 402.7848pt x 327.624pt>
+<figures/povertymap_total_time_bar.png, id=365, 402.7848pt x 327.624pt>
 File: figures/povertymap_total_time_bar.png Graphic file (type png)
 <use figures/povertymap_total_time_bar.png>
 Package pdftex.def Info: figures/povertymap_total_time_bar.png  used on input l
-ine 1300.
+ine 1332.
 (pdftex.def)             Requested size: 151.20154pt x 122.98366pt.
-<figures/povertymap_inference_time_bar.png, id=379, 781.9614pt x 368.577pt>
-File: figures/povertymap_inference_time_bar.png Graphic file (type png)
-<use figures/povertymap_inference_time_bar.png>
-Package pdftex.def Info: figures/povertymap_inference_time_bar.png  used on inp
-ut line 1313.
-(pdftex.def)             Requested size: 252.0pt x 118.77939pt.
 
-Underfull \hbox (badness 1721) in paragraph at lines 1318--1329
-[]\OT1/ptm/b/n/10 Variant ab-la-tions. \OT1/ptm/m/n/10 Ta-ble [][]XIX[][] com-p
-ares each method's
+Underfull \hbox (badness 7308) in paragraph at lines 1337--1342
+[]\OT1/ptm/b/n/10 Inference time. \OT1/pcr/m/n/10 laplace-torch \OT1/ptm/m/n/10
+ in-fers faster than
  []
 
-[11 <./figures/povertymap_calibration_curves.png> <./figures/povertymap_total_t
-ime_bar.png> <./figures/povertymap_inference_time_bar.png>]
-** WARNING: Ignoring useless \section in Appendix (line 1406).
+[10 <./figures/5seed_sinusoid_bayesian_epistemic_ratio_bar.png> <./figures/5see
+d_sinusoid_laplace_epistemic_ratio_bar.png> <./figures/povertymap_cal_error_bar
+.png> <./figures/povertymap_calibration_curves.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1433--1435
+[]\OT1/pcr/m/n/10 bayesian-torch\OT1/ptm/m/n/10 : [][]$https : / / github . com
+ / IntelLabs /
+ []
 
-Underfull \hbox (badness 10000) in paragraph at lines 1500--1507
+** WARNING: Ignoring useless \section in Appendix (line 1442).
+[11 <./figures/povertymap_total_time_bar.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1495--1502
 []\OT1/ptm/b/n/10 Tuning. \OT1/ptm/m/n/10 For \OT1/pcr/m/n/10 bayesian-torch\OT
 1/ptm/m/n/10 , scratch ini-tial-i-sa-tion
  []
 
-[12]
-Underfull \hbox (badness 1762) in paragraph at lines 1508--1517
+
+Underfull \hbox (badness 1762) in paragraph at lines 1503--1512
 \OT1/ptm/m/n/10 vari-ant of both meth-ods; full val-ues are in Ta-bles [][]III[
 ][]
  []
 
-<figures/5seed_sinusoid_combined_calibration.png, id=416, 457.2282pt x 398.4486
+<figures/5seed_sinusoid_combined_calibration.png, id=404, 457.2282pt x 398.4486
 pt>
 File: figures/5seed_sinusoid_combined_calibration.png Graphic file (type png)
 <use figures/5seed_sinusoid_combined_calibration.png>
 Package pdftex.def Info: figures/5seed_sinusoid_combined_calibration.png  used 
-on input line 1520.
+on input line 1515.
 (pdftex.def)             Requested size: 189.0pt x 164.70253pt.
-<figures/5seed_sinusoid_bayesian_calibration_error_bar.png, id=417, 548.7702pt 
-x 335.3328pt>
+<figures/5seed_sinusoid_bayesian_calibration_error_bar.png, id=405, 604.659pt x
+ 372.4314pt>
 File: figures/5seed_sinusoid_bayesian_calibration_error_bar.png Graphic file (t
 ype png)
 <use figures/5seed_sinusoid_bayesian_calibration_error_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_bayesian_calibration_error_bar.
-png  used on input line 1528.
-(pdftex.def)             Requested size: 252.0pt x 153.98376pt.
-<figures/5seed_sinusoid_laplace_calibration_error_bar.png, id=418, 616.2222pt x
- 338.7054pt>
+png  used on input line 1523.
+(pdftex.def)             Requested size: 252.0pt x 155.21535pt.
+<figures/5seed_sinusoid_laplace_calibration_error_bar.png, id=406, 672.111pt x 
+359.9046pt>
 File: figures/5seed_sinusoid_laplace_calibration_error_bar.png Graphic file (ty
 pe png)
 <use figures/5seed_sinusoid_laplace_calibration_error_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_laplace_calibration_error_bar.p
-ng  used on input line 1533.
-(pdftex.def)             Requested size: 252.0pt x 138.50833pt.
-<figures/5seed_sinusoid_kron_all_gridsearch_prediction.png, id=421, 558.4062pt 
+ng  used on input line 1528.
+(pdftex.def)             Requested size: 252.0pt x 134.94193pt.
+<figures/5seed_sinusoid_kron_all_gridsearch_prediction.png, id=408, 558.4062pt 
 x 342.078pt>
 File: figures/5seed_sinusoid_kron_all_gridsearch_prediction.png Graphic file (t
 ype png)
 <use figures/5seed_sinusoid_kron_all_gridsearch_prediction.png>
 Package pdftex.def Info: figures/5seed_sinusoid_kron_all_gridsearch_prediction.
-png  used on input line 1549.
+png  used on input line 1543.
 (pdftex.def)             Requested size: 189.0pt x 115.783pt.
-<figures/5seed_sinusoid_kron_all_gridsearch_ood_epistemic.png, id=422, 555.5154
-pt x 286.671pt>
-File: figures/5seed_sinusoid_kron_all_gridsearch_ood_epistemic.png Graphic file
- (type png)
-<use figures/5seed_sinusoid_kron_all_gridsearch_ood_epistemic.png>
-Package pdftex.def Info: figures/5seed_sinusoid_kron_all_gridsearch_ood_epistem
-ic.png  used on input line 1556.
-(pdftex.def)             Requested size: 189.0pt x 97.53246pt.
-[13 <./figures/5seed_sinusoid_combined_calibration.png> <./figures/5seed_sinuso
-id_bayesian_calibration_error_bar.png> <./figures/5seed_sinusoid_laplace_calibr
-ation_error_bar.png> <./figures/5seed_sinusoid_kron_all_gridsearch_prediction.p
-ng>]
-Underfull \hbox (badness 3690) in paragraph at lines 1561--1568
+
+Underfull \hbox (badness 3690) in paragraph at lines 1548--1555
 \OT1/ptm/m/n/10 For \OT1/pcr/m/n/10 bayesian-torch\OT1/ptm/m/n/10 , MOPED rough
 ly halves to-tal
  []
 
-<figures/5seed_sinusoid_bayesian_total_time_bar.png, id=439, 619.113pt x 330.99
-66pt>
+<figures/5seed_sinusoid_bayesian_total_time_bar.png, id=412, 619.113pt x 372.43
+14pt>
 File: figures/5seed_sinusoid_bayesian_total_time_bar.png Graphic file (type png
 )
 <use figures/5seed_sinusoid_bayesian_total_time_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_bayesian_total_time_bar.png  us
-ed on input line 1572.
-(pdftex.def)             Requested size: 252.0pt x 134.72461pt.
-<figures/5seed_sinusoid_laplace_total_time_bar.png, id=440, 619.113pt x 338.705
-4pt>
+ed on input line 1559.
+(pdftex.def)             Requested size: 252.0pt x 151.5897pt.
+<figures/5seed_sinusoid_laplace_total_time_bar.png, id=413, 619.113pt x 359.904
+6pt>
 File: figures/5seed_sinusoid_laplace_total_time_bar.png Graphic file (type png)
 
 <use figures/5seed_sinusoid_laplace_total_time_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_laplace_total_time_bar.png  use
-d on input line 1577.
-(pdftex.def)             Requested size: 252.0pt x 137.8623pt.
-<figures/5seed_sinusoid_bayesian_inf_time_bar.png, id=444, 623.4492pt x 330.996
-6pt>
-File: figures/5seed_sinusoid_bayesian_inf_time_bar.png Graphic file (type png)
-<use figures/5seed_sinusoid_bayesian_inf_time_bar.png>
-Package pdftex.def Info: figures/5seed_sinusoid_bayesian_inf_time_bar.png  used
- on input line 1593.
-(pdftex.def)             Requested size: 252.0pt x 133.79025pt.
-<figures/5seed_sinusoid_laplace_inf_time_bar.png, id=445, 623.4492pt x 338.7054
-pt>
-File: figures/5seed_sinusoid_laplace_inf_time_bar.png Graphic file (type png)
-<use figures/5seed_sinusoid_laplace_inf_time_bar.png>
-Package pdftex.def Info: figures/5seed_sinusoid_laplace_inf_time_bar.png  used 
-on input line 1598.
-(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
-<figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png, id=449, 615.740
-4pt x 330.9966pt>
+d on input line 1564.
+(pdftex.def)             Requested size: 252.0pt x 146.49095pt.
+
+Underfull \hbox (badness 7308) in paragraph at lines 1571--1574
+[]\OT1/ptm/b/n/10 Inference time. \OT1/pcr/m/n/10 laplace-torch \OT1/ptm/m/n/10
+ in-fers faster than
+ []
+
+[12 <./figures/5seed_sinusoid_combined_calibration.png> <./figures/5seed_sinuso
+id_bayesian_calibration_error_bar.png> <./figures/5seed_sinusoid_laplace_calibr
+ation_error_bar.png>]
+<figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png, id=440, 615.740
+4pt x 372.4314pt>
 File: figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png Graphic fil
 e (type png)
 <use figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_small_bayesian_epistemic_ratio_
-bar.png  used on input line 1618.
-(pdftex.def)             Requested size: 252.0pt x 135.46199pt.
-<figures/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png, id=450, 619.5948
-pt x 338.7054pt>
+bar.png  used on input line 1589.
+(pdftex.def)             Requested size: 252.0pt x 152.41939pt.
+<figures/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png, id=441, 619.5948
+pt x 359.9046pt>
 File: figures/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png Graphic file
  (type png)
 <use figures/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png>
 Package pdftex.def Info: figures/5seed_sinusoid_small_laplace_epistemic_ratio_b
-ar.png  used on input line 1623.
-(pdftex.def)             Requested size: 252.0pt x 137.75894pt.
-[14 <./figures/5seed_sinusoid_kron_all_gridsearch_ood_epistemic.png> <./figures
-/5seed_sinusoid_bayesian_total_time_bar.png> <./figures/5seed_sinusoid_laplace_
-total_time_bar.png> <./figures/5seed_sinusoid_bayesian_inf_time_bar.png> <./fig
-ures/5seed_sinusoid_laplace_inf_time_bar.png>]
-<figures/5seed_two_moons_bayesian_accuracy_bar.png, id=465, 615.7404pt x 338.70
-54pt>
-File: figures/5seed_two_moons_bayesian_accuracy_bar.png Graphic file (type png)
-
-<use figures/5seed_two_moons_bayesian_accuracy_bar.png>
-Package pdftex.def Info: figures/5seed_two_moons_bayesian_accuracy_bar.png  use
-d on input line 1755.
-(pdftex.def)             Requested size: 252.0pt x 138.61687pt.
-<figures/5seed_two_moons_laplace_accuracy_bar.png, id=466, 615.7404pt x 338.705
-4pt>
-File: figures/5seed_two_moons_laplace_accuracy_bar.png Graphic file (type png)
-<use figures/5seed_two_moons_laplace_accuracy_bar.png>
-Package pdftex.def Info: figures/5seed_two_moons_laplace_accuracy_bar.png  used
- on input line 1760.
-(pdftex.def)             Requested size: 252.0pt x 138.61687pt.
-<figures/5seed_two_moons_bayesian_nll_bar.png, id=467, 623.4492pt x 338.7054pt>
-
+ar.png  used on input line 1594.
+(pdftex.def)             Requested size: 252.0pt x 146.38112pt.
+<figures/5seed_two_moons_bayesian_nll_bar.png, id=447, 693.792pt x 392.1852pt>
 File: figures/5seed_two_moons_bayesian_nll_bar.png Graphic file (type png)
 <use figures/5seed_two_moons_bayesian_nll_bar.png>
 Package pdftex.def Info: figures/5seed_two_moons_bayesian_nll_bar.png  used on 
-input line 1770.
-(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
-<figures/5seed_two_moons_laplace_nll_bar.png, id=468, 623.4492pt x 338.7054pt>
+input line 1683.
+(pdftex.def)             Requested size: 252.0pt x 142.44923pt.
+<figures/5seed_two_moons_laplace_nll_bar.png, id=448, 679.338pt x 361.35pt>
 File: figures/5seed_two_moons_laplace_nll_bar.png Graphic file (type png)
 <use figures/5seed_two_moons_laplace_nll_bar.png>
 Package pdftex.def Info: figures/5seed_two_moons_laplace_nll_bar.png  used on i
-nput line 1775.
-(pdftex.def)             Requested size: 252.0pt x 136.90619pt.
- [15 <./figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png> <./figur
-es/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png> <./figures/5seed_two_m
-oons_bayesian_accuracy_bar.png> <./figures/5seed_two_moons_laplace_accuracy_bar
-.png>] [16 <./figures/5seed_two_moons_bayesian_nll_bar.png> <./figures/5seed_tw
-o_moons_laplace_nll_bar.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1889--1898
-[]\OT1/ptm/b/n/10 MOPED delta sweep. \OT1/ptm/m/n/10 Ta-ble [][]XVII[][] com-pa
-res
- []
-
-
-Underfull \hbox (badness 2653) in paragraph at lines 1889--1898
-\OT1/pcr/m/n/10 bayesian-torch\OT1/ptm/m/n/10 's report-default MOPED $\OML/cmm
-/m/it/10 ^^N \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 5$
- []
-
-<figures/sinusoid_flipout_moped_delta_calibration.png, id=496, 565.1514pt x 419
-.166pt>
-File: figures/sinusoid_flipout_moped_delta_calibration.png Graphic file (type p
-ng)
-<use figures/sinusoid_flipout_moped_delta_calibration.png>
-Package pdftex.def Info: figures/sinusoid_flipout_moped_delta_calibration.png  
-used on input line 1924.
-(pdftex.def)             Requested size: 189.0pt x 140.18002pt.
-<figures/sinusoid_bbb_moped_delta_calibration.png, id=497, 565.1514pt x 419.166
-pt>
-File: figures/sinusoid_bbb_moped_delta_calibration.png Graphic file (type png)
-<use figures/sinusoid_bbb_moped_delta_calibration.png>
-Package pdftex.def Info: figures/sinusoid_bbb_moped_delta_calibration.png  used
- on input line 1931.
-(pdftex.def)             Requested size: 189.0pt x 140.18002pt.
-<figures/povertymap_rmse_nll_bar.png, id=501, 854.2314pt x 737.154pt>
+nput line 1688.
+(pdftex.def)             Requested size: 252.0pt x 134.03926pt.
+ [13 <./figures/5seed_sinusoid_kron_all_gridsearch_prediction.png> <./figures/5
+seed_sinusoid_bayesian_total_time_bar.png> <./figures/5seed_sinusoid_laplace_to
+tal_time_bar.png> <./figures/5seed_sinusoid_small_bayesian_epistemic_ratio_bar.
+png> <./figures/5seed_sinusoid_small_laplace_epistemic_ratio_bar.png>] [14]
+<figures/povertymap_rmse_nll_bar.png, id=477, 854.2314pt x 737.154pt>
 File: figures/povertymap_rmse_nll_bar.png Graphic file (type png)
 <use figures/povertymap_rmse_nll_bar.png>
 Package pdftex.def Info: figures/povertymap_rmse_nll_bar.png  used on input lin
-e 1981.
+e 1802.
 (pdftex.def)             Requested size: 252.0pt x 217.45854pt.
-<figures/povertymap_per_fold_rmse.png, id=502, 854.2314pt x 354.123pt>
-File: figures/povertymap_per_fold_rmse.png Graphic file (type png)
-<use figures/povertymap_per_fold_rmse.png>
-Package pdftex.def Info: figures/povertymap_per_fold_rmse.png  used on input li
-ne 1988.
-(pdftex.def)             Requested size: 252.0pt x 104.46536pt.
-[17 <./figures/sinusoid_flipout_moped_delta_calibration.png> <./figures/sinusoi
-d_bbb_moped_delta_calibration.png> <./figures/povertymap_rmse_nll_bar.png> <./f
-igures/povertymap_per_fold_rmse.png>] [18] (./template.bbl
-Underfull \hbox (badness 1803) in paragraph at lines 37--41
-\OT1/ptm/m/n/10 learn-ing.  [][]$https : / / github . com / IntelLabs / bayesia
-n-[]torch$[][],
- []
-
-
-Underfull \hbox (badness 2401) in paragraph at lines 51--57
+ [15 <./figures/5seed_two_moons_bayesian_nll_bar.png> <./figures/5seed_two_moon
+s_laplace_nll_bar.png> <./figures/povertymap_rmse_nll_bar.png>] [16] (./templat
+e.bbl
+Underfull \hbox (badness 2401) in paragraph at lines 44--50
 []\OT1/ptm/m/n/10 Ranganath Kr-ish-nan, Ma-hesh Sube-dar, and Omesh
  []
 
@@ -1772,24 +1651,29 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[19
+[17
+
 
 ] (./template.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `template.out' has not changed.
-(rerunfilecheck)             Checksum: 09A4675CEB3DF69521E9B11675B57129;3217.
+(rerunfilecheck)             Checksum: 244732C8B31281DF3EE0CF21AE707E3C;3326.
  ) 
 Here is how much of TeX's memory you used:
- 39788 strings out of 474222
- 914513 string characters out of 5748732
- 1974975 words of memory out of 5000000
- 61261 multiletter control sequences out of 15000+600000
- 616147 words of font info for 148 fonts, out of 8000000 for 9000
+ 39639 strings out of 474222
+ 907653 string characters out of 5748732
+ 1988975 words of memory out of 5000000
+ 61133 multiletter control sequences out of 15000+600000
+ 615632 words of font info for 146 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
- 96i,13n,101p,726b,635s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 96i,11n,101p,726b,639s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy7.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy8.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/
@@ -1818,10 +1702,10 @@ live/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
 rw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8
 a.pfb>
-Output written on template.pdf (19 pages, 3054855 bytes).
+Output written on template.pdf (17 pages, 2592446 bytes).
 PDF statistics:
- 682 PDF objects out of 1000 (max. 8388607)
- 509 compressed objects within 6 object streams
- 123 named destinations out of 1000 (max. 500000)
- 385 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 645 PDF objects out of 1000 (max. 8388607)
+ 499 compressed objects within 5 object streams
+ 103 named destinations out of 1000 (max. 500000)
+ 323 words of extra memory for PDF output out of 10000 (max. 10000000)
 

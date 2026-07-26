@@ -126,12 +126,13 @@ def standard_metrics(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) ->
 # ---------------------------------------------------------------------------
 
 def regression_metrics(y_true, mean, total_std, n_levels: int = 20) -> dict:
-    """Regression metrics matching Laplace Redux's reported metrics: RMSE (their MSE,
-    rooted), NLL, and two-sided calibration MAE (see Fig. 6/10 in Daxberger et al. 2021).
+    """Regression metrics matching Laplace Redux's reported metrics (Daxberger et al.
+    2021, Fig. 6/10): RMSE (their MSE, rooted), NLL, and regression calibration error,
+    a rescaled variant of the calibration diagnostic of Kuleshov et al. 2018.
 
-    Calibration uses two-sided prediction intervals: for each confidence level c_j,
-    the observed coverage is the fraction of test points where |z_i| <= Phi^{-1}((1+c_j)/2).
-    The calibration error is the mean absolute gap between expected and observed coverage.
+    Calibration checks the predictive CDF at each true value against a grid of nominal
+    levels p in [0, 1]: for each p, the fraction of points with CDF(y_true) <= p is
+    compared to p. The calibration error is the sample size times the mean squared gap.
     """
     y   = np.asarray(y_true,     dtype=float).ravel()
     mu  = np.asarray(mean,       dtype=float).ravel()
@@ -141,17 +142,13 @@ def regression_metrics(y_true, mean, total_std, n_levels: int = 20) -> dict:
     rmse = float(np.sqrt(np.mean(resid ** 2)))
     nll  = float(np.mean(0.5 * np.log(2.0 * np.pi * sd ** 2) + resid ** 2 / (2.0 * sd ** 2)))
 
-    z_abs       = np.abs(resid / sd)
-    conf_levels = np.linspace(0.05, 0.95, n_levels)
-    observed    = np.array([
-        float(np.mean(z_abs <= _norm.ppf((1.0 + c) / 2.0))) for c in conf_levels
-    ])
-    gap = np.abs(observed - conf_levels)
+    levels, observed = regression_calibration_curve(y, mu, sd, n_levels)
+    calibration_error = float(len(y) * np.mean((levels - observed) ** 2))
 
     return {
-        "RMSE":            rmse,
-        "NLL":             nll,
-        "Calibration_MAE": float(gap.mean()),
+        "RMSE":               rmse,
+        "NLL":                nll,
+        "Calibration_Error":  calibration_error,
     }
 
 
@@ -160,3 +157,48 @@ def combine_predictive_std(epistemic_std, aleatoric_std):
     arrays, python floats, or torch tensors, with no numpy coercion.
     """
     return (epistemic_std ** 2 + aleatoric_std ** 2) ** 0.5
+
+
+def regression_calibration_curve(y_true, mean, total_std, n_levels: int = 20):
+    """One-sided regression calibration curve, as used by Laplace Redux (Daxberger
+    et al. 2021), adapted from the calibration diagnostic of Kuleshov et al. 2018.
+
+    For each nominal level p in [0, 1], checks the fraction of points whose
+    predictive CDF at the true value, Phi((y_true - mean) / total_std), is <= p.
+
+    Args:
+        y_true: True target values.
+        mean: Predicted mean.
+        total_std: Total predictive std (epistemic and aleatoric combined).
+        n_levels: Number of nominal levels to evaluate.
+
+    Returns:
+        (levels, observed): both np.ndarray of shape (n_levels,).
+    """
+    y  = np.asarray(y_true, dtype=float).ravel()
+    mu = np.asarray(mean, dtype=float).ravel()
+    sd = np.clip(np.asarray(total_std, dtype=float).ravel(), 1e-12, None)
+    cdf_vals = _norm.cdf(y, loc=mu, scale=sd)
+    levels = np.linspace(0.0, 1.0, n_levels)
+    observed = np.array([float(np.mean(cdf_vals <= p)) for p in levels])
+    return levels, observed
+
+
+def aggregate_seed_metrics(per_seed_list: list, metric_keys: list) -> dict:
+    """Mean and std of each metric across a list of per-seed metric dicts.
+
+    Args:
+        per_seed_list: List of per-seed metric dicts.
+        metric_keys: Keys to aggregate; missing or NaN values are skipped.
+
+    Returns:
+        Dict with "{key}_mean" and "{key}_std" for every key in metric_keys
+        (NaN mean, 0.0 std when no values are found for a key).
+    """
+    agg = {}
+    for k in metric_keys:
+        vals = [d.get(k) for d in per_seed_list if d.get(k) is not None]
+        vals = [v for v in vals if not (isinstance(v, float) and np.isnan(v))]
+        agg[f"{k}_mean"] = float(np.mean(vals)) if vals else float("nan")
+        agg[f"{k}_std"] = float(np.std(vals)) if len(vals) > 1 else 0.0
+    return agg

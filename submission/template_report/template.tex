@@ -527,13 +527,14 @@ over-confidence~\citep{goan2020bayesian,murphy2023pml}. Bayesian Deep Learning (
 addresses this by replacing a deterministic
 weight estimate with a posterior distribution $p(\btheta \mid \cD)$, propagating weight
 uncertainty into calibrated predictive distributions. This report compares two PyTorch
-libraries implementing complementary Bayesian Neural Networks (BNNs) paradigms:
+libraries implementing complementary Bayesian Neural Networks (BNNs) paradigms
+(repositories in Section~\ref{sec:software}):
 \begin{itemize}[leftmargin=*]
-	\item \texttt{bayesian-torch}~\citep{intel2021bayesiantorch}, a
+	\item \texttt{bayesian-torch}, a
 	      Bayesian by design library from Intel Labs implementing mean field
 	      Variational Inference via Flipout~\citep{wen2018flipout} and
 	      Bayes by Backprop~\citep{blundell2015weight}.
-	\item \texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace},
+	\item \texttt{laplace-torch}~\citep{daxberger2021laplace},
 	      a library that allows applying the Laplace Approximation to any
 	      pre-trained model without modifying its training loop.
 \end{itemize}
@@ -542,6 +543,11 @@ Experiments span three settings: two toy datasets, one a regression experiment a
 a classification one, as well as a replication of \citet{daxberger2021laplace}'s PovertyMap
 experiment. Full metric tables and figure galleries for completed experiments are in the
 Appendix~\ref{sec:app}.
+
+Section~\ref{sec:theory} covers the theoretical background behind Variational Inference and
+the Laplace Approximation; Section~\ref{sec:imp} details how each is implemented across the
+three experiments; Section~\ref{sec:results} presents the results, which
+Section~\ref{sec:discussion} then discusses.
 
 \section{Theoretical Background}
 \label{sec:theory}
@@ -566,46 +572,51 @@ updated iteratively during this process.
 The libraries discussed in this report support implementation in various architectures, like
 Convolutional Neural Networks (CNNs), Recurrent Neural Networks (RNNs) and Transformers.
 
-\textbf{Bayesian Neural Networks (BNNs)~\citep{goan2020bayesian,murphy2023pml}.} In Bayesian
-Deep Learning (BDL), weights and biases are handled as random variables, and the goal is to
+\textbf{Bayesian Neural Networks (BNNs)~\citep{goan2020bayesian,murphy2023pml}.} In BDL,
+weights and biases are handled as random variables, and the goal is to
 infer their distribution given the data we have seen. Given the training dataset $\cD =
 \{(\bm{x}_n, y_n)\} _{n=1}^{N}$ and network $f_{\btheta}$, the posterior distribution is
 \begin{equation}p(\btheta \mid \cD) = \frac{p(\cD|\btheta)\,p(\btheta)}{p(\cD)}.
 \end{equation} The evidence (or marginal likelihood), \begin{equation}p(\cD) = \int
 p(\cD|\btheta)\,p(\btheta)\,\mathrm{d}\btheta\label{eq:marginal_likelihood}\end{equation} is
-intractable for modern DNNs. The prior $p(\btheta)$ encodes the distribution of the
-parameters before seeing the data. Initialising it depends on the characteristics of the
-problem. Gaussian priors $p(\btheta)=\cN(\bm{0},\tau^{-1}\mathbf{I})$ are common, but
+intractable for modern Deep Neural Networks (DNNs). The prior $p(\btheta)$ encodes prior
+belief about $\btheta$, independent of $\cD$. Choosing it depends on the characteristics of
+the problem. Gaussian priors $p(\btheta)=\cN(\bm{0},\tau^{-1}\mathbf{I})$ are common, but
 sparsity-promoting priors can also be used. We will see that methods like grid search, as
 well as marginal likelihood \eqref{eq:marginal_likelihood} optimisation, can be used to
-learn the prior.
+learn the prior. Section~\ref{sec:theory:vi} and~\ref{sec:theory:la} avoid computing the
+evidence directly: Variational Inference (VI)'s objective (Equation~\eqref{eq:elbo}) drops
+it as a constant, and the Laplace Approximation (LA) only needs an approximation of it for
+hyperparameter tuning (Equation~\eqref{eq:marglik}).
 
-This approach to NNs allows us to perform predictions by calculating the expected value of a
-given function $f(\btheta)$ under the posterior distribution:
+Predictions require the expected value of a function $f(\btheta)$ under the posterior
+distribution:
 \begin{equation}
     \mathbb{E}_{p(\btheta|\cD)}[f(\btheta)]
     = \int f(\btheta)\,p(\btheta|\cD)\,\mathrm{d}\btheta.
 \end{equation}
-One can obtain the expected value of the output of the network for a given input $\bm{x}^*$
-by setting $f(\btheta) = p(y^*|\bm{x}^*, \btheta)$:
+Setting $f(\btheta) = p(y^*|\bm{x}^*, \btheta)$ gives the predictive distribution for a new
+input $\bm{x}^*$:
 \begin{equation}
     \mathbb{E}_{p(\btheta|\cD)}[p(y^*|\bm{x}^*, \btheta)]
     = \int p(y^*|\bm{x}^*, \btheta)\,p(\btheta|\cD)\,\mathrm{d}\btheta.
 \end{equation}
-This integral is also intractable for modern NNs, which leads to the need of approximating
-it.
+This integral has no closed form for a general, nonlinear $f_{\btheta}$, regardless of
+whether $p(\btheta|\cD)$ itself is known exactly~\citep{daxberger2021laplace}. VI and LA
+each approximate it independently of how they approximate the posterior: VI by Monte Carlo
+sampling (Section~\ref{sec:theory:vi}), LA by linearising $f_{\btheta}$
+(Section~\ref{sec:theory:la}).
 
 There are multiple methods for approximating the posterior distribution; we will discuss two
-of them: Variational Inference (VI) and the Laplace Approximation (LA). These are
-implemented by \texttt{bayesian-torch}~\citep{intel2021bayesiantorch} and
-\texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace}, respectively.
+of them: VI and LA. These are implemented by \texttt{bayesian-torch} and
+\texttt{laplace-torch}~\citep{daxberger2021laplace}, respectively.
 
 \subsection{Variational Inference (VI)~\citep{murphy2023pml,goan2020bayesian}}
 \label{sec:theory:vi}
 VI treats the approximation as an optimisation problem. We make assumptions about the
-structure of the posterior distribution and then optimise the parameters $\bm\phi$ by using
-the Kullback-Leibler (KL) divergence to calculate the dissimilarity of the assumed posterior
-$q_{\bm\phi}(\btheta)$ and the true one $p(\btheta|\cD)$:
+structure of the posterior distribution and then optimise the parameters $\bm\phi$ so that
+the assumed posterior $q_{\bm\phi}(\btheta)$ approaches the true, but itself intractable,
+posterior $p(\btheta|\cD)$, measured by the Kullback-Leibler (KL) divergence:
 \begin{equation}
     \KL\bigl(q_{\bm\phi}(\btheta)\,\|\,p(\btheta|\cD)\bigr)
     = \int q_{\bm\phi}(\btheta)\log\frac{q_{\bm\phi}(\btheta)}{p(\btheta|\cD)}\,\mathrm{d}\btheta.
@@ -627,10 +638,14 @@ maximising the Evidence Lower Bound
     - \KL\bigl(q_{\bm\phi}\,\|\,p(\btheta)\bigr).
     \label{eq:elbo}
 \end{equation}
+Neither $p(\btheta|\cD)$ nor $p(\cD)$ appears in the ELBO: optimising $\bm\phi$ by
+maximising~\eqref{eq:elbo} is equivalent to minimising~\eqref{eq:kl}, without ever
+evaluating it.
+
 A common choice for $q_{\bm\phi}$ is a fully factorised Gaussian, placing an independent
 univariate Gaussian over each weight~\footnote{For convenience, we use "weight" to also
 refer to biases from now on unless stated otherwise.}, where the mean captures the point
-estimate and the variance captures its uncertainty.
+estimate and the variance captures its uncertainty~\citep{murphy2023pml}.
 
 \textbf{Bayes by Backprop (BBB).} \citet{blundell2015weight} showed that the
 reparameterisation of each weight as
@@ -642,43 +657,68 @@ practical for deep networks. Notably, the parameters obtained by minimising~\eqr
 differ in general from those found by the Laplace approximation~\citep{murphy2023pml}.
 
 \textbf{Flipout.}~\citep{wen2018flipout} Flipout reduces this variance by applying
-independent sign flip matrices $\mathbf{r}_n,\mathbf{s}_n\in\{-1,+1\}^*$ to the shared
+independent sign flip matrices $\mathbf{r}_n,\mathbf{s}_n\in\{-1,+1\}^*$, with entries
+independently $+1$ or $-1$ with equal probability, to the shared
 perturbation
-$\Delta\hat{\mathbf{W}}$ for each example $n$:
+$\Delta\hat{\mathbf{W}}$ around the variational mean weight $\boldsymbol{\mu}_{\mathbf{W}}$,
+for each example $n$:
 \begin{equation}
 	\hat{\mathbf{W}}_n
-	= \mathbf{W}_{\MAP} + \mathbf{s}_n \odot \Delta\hat{\mathbf{W}}
+	= \boldsymbol{\mu}_{\mathbf{W}} + \mathbf{s}_n \odot \Delta\hat{\mathbf{W}}
 	\odot \mathbf{r}_n^{\!\top}.
 \end{equation}
+Sampling a fully independent weight perturbation per example would need one forward pass
+per example in the batch; sharing one perturbation across the whole batch keeps a single
+call but correlates the per-example gradients, inflating their variance. Multiplying by
+independent sign flips restores per-example pseudo-independence at the cost of two extra
+elementwise multiplications, without redrawing $\Delta\hat{\mathbf{W}}$.
 
-\textbf{MOPED Initialisation.}~\citep{krishnan2020specifying} Training mean field BNNs from
-random initialisations is fragile. \texttt{bayesian-torch}~\citep{intel2021bayesiantorch}
-addresses this via MOPED: the posterior means are warm started from a pre-trained MAP
-checkpoint and the prior scale is set proportionally:
+\textbf{MOdel Priors with Empirical Bayes using DNNs (MOPED)
+Initialisation.}~\citep{krishnan2020specifying} Training mean field BNNs from random
+initialisations is fragile. \texttt{bayesian-torch} addresses this via MOPED: the
+variational posterior is warm started from a pre-trained MAP checkpoint, with its mean
+set to the MAP weights and its standard deviation set proportionally to their magnitude,
+while the prior itself stays fixed, independent of $\delta$:
 \begin{equation}
 	\mu_i^{(0)} = \theta_{\MAP}^{(i)}, \qquad
-	\sigma_i^{\text{prior}} = \delta\,|\theta_{\MAP}^{(i)}|, \quad \delta=0.5.
+	\sigma_i^{(0)} = \delta\,|\theta_{\MAP}^{(i)}|, \quad \delta=0.5.
 \end{equation}
 
 \textbf{Accuracy vs Uncertainty Calibration (AvUC).}~\citep{krishnan2020avuc} Standard ELBO
-training minimises NLL but does not explicitly calibrate the relationship between confidence
-and accuracy. The Accuracy vs Uncertainty Calibration loss, implemented in
-\texttt{bayesian-torch}~\citep{intel2021bayesiantorch}, adds a direct penalty for
+training minimises the Negative Log-Likelihood (NLL, defined in
+Section~\ref{sec:theory:unc_decomp}) but does not explicitly calibrate the relationship
+between confidence and accuracy. The Accuracy vs Uncertainty Calibration loss, implemented
+in
+\texttt{bayesian-torch}, adds a direct penalty for
 miscalibrated confidence.
 
-Each prediction in a mini batch falls into one of four quadrants, split by whether it is
+Each prediction in a mini-batch falls into one of four quadrants, split by whether it is
 Accurate (A) or Inaccurate (I), and whether the model's predictive uncertainty is Certain
 (C, below a threshold) or Uncertain (U, above it): $n_{AC}$, $n_{AU}$, $n_{IC}$, $n_{IU}$
-count samples in each of the four. The AvUC loss aggregates the fractions of samples in the
-two bad quadrants~\citep{intel2021bayesiantorch}:
+count samples in each of the four. At a given threshold, the Accuracy vs Uncertainty (AvU)
+utility rewards the two
+good quadrants:
 \begin{equation}
-	\mathcal{L}_{\mathrm{AvUC}}
-	= \underbrace{\frac{n_{AU}}{n_{AU}+n_{AC}}}_{\text{over uncertain among correct}}
-	+ \underbrace{\frac{n_{IC}}{n_{IC}+n_{IU}}}_{\text{overconfident among wrong}},
+	\mathrm{AvU} = \frac{n_{AC}+n_{IU}}{n_{AC}+n_{AU}+n_{IC}+n_{IU}} \in [0,1].
+	\label{eq:avu}
+\end{equation}
+\texttt{bayesian-torch}'s \texttt{AUAvULoss}, used in this report, sweeps 21 thresholds
+between the mini-batch's minimum and maximum uncertainty, integrates $\mathrm{AvU}$ across
+them (trapezoidal rule) to obtain an Area Under the Curve (AUC), and minimises
+\begin{equation}
+	\mathcal{L}_{\mathrm{AvUC}} = -\beta \log(\mathrm{AUC}),
 	\label{eq:avuc}
 \end{equation}
-counted within the current mini batch. Each term lies in $[0,1]$; both are zero when
-calibration is perfect.
+avoiding the need to fix a single threshold.
+
+\textbf{Predictive Distribution.} This is the approximation of the predictive integral
+introduced in Section~\ref{sec:theory}: predictions average $S$ Monte Carlo forward passes
+of weights sampled from the fitted posterior $q_{\bm\phi}(\btheta)$. For Flipout, all $S$
+can be obtained from a single call by tiling the input, i.e.\ duplicating it into $S$
+identical copies stacked along the batch axis: since Flipout draws an independent sign-flip
+perturbation per row, each of the $S$ copies of an example receives a different effective
+weight sample in that one forward pass. Reparameterisation (BBB) draws one weight sample per
+call, shared by the whole batch, so it needs $S$ separate calls instead.
 
 \subsection{Laplace Approximation}
 \label{sec:theory:la}
@@ -692,10 +732,16 @@ second order Taylor expansion:
 $\mathbf{H}^{-1}$ is only a valid covariance if $\mathbf{H}$ is positive definite, which the
 exact Hessian is not guaranteed to be for a general NN~\citep{daxberger2021laplace}. In
 practice, the likelihood term of $\mathbf{H}$ is replaced by a provably positive
-semi-definite curvature approximation, the Fisher information matrix or the Generalised
-Gauss-Newton (GGN) matrix, further factorised as Full, Kronecker-factored, or Diagonal to
-stay tractable~\citep{daxberger2021laplace}; adding the prior's precision term, itself
-positive definite, then makes the full $\mathbf{H}$ invertible.
+semi-definite approximation to the Hessian, the Fisher information matrix or the
+Generalised Gauss-Newton (GGN) matrix, further factorised as Full, Kronecker-factored, or
+Diagonal to stay tractable~\citep{daxberger2021laplace}. As \citet{murphy2023pml} note,
+inverting the full $P\times P$ Hessian, where $P$ is the number of parameters in $\btheta$,
+costs $O(P^3)$ time, while a diagonal approximation costs only $O(P)$ but drops every
+off-diagonal term, ignoring all correlations between weights. Kronecker-factored sits
+between the two: each layer's Hessian block is approximated by two much smaller, per-side
+factors, invertible separately at a fraction of the full block's
+cost~\citep{daxberger2021laplace}. Adding the prior's precision term, itself positive
+definite, then makes the full $\mathbf{H}$ invertible.
 
 \textbf{Marginal likelihood tuning.} The prior precision $\tau$ is selected by maximising
 the log evidence:
@@ -707,26 +753,33 @@ the log evidence:
 	- \tfrac{1}{2}\log\det\mathbf{H},
 	\label{eq:marglik}
 \end{multline}
-where $P$ is the number of parameters in $\btheta$. This is differentiable with respect to
-$\tau$ and requires no validation data~\citep{daxberger2021laplace}. Grid search over a
-discrete set of values on validation NLL is simpler but requires a held out split.
+$\mathbf{H}$ grows with the prior precision $\tau$, so the $-\tfrac12\log\det\mathbf{H}$
+term shrinks as $\tau$ increases: it penalises choices of $\tau$ that only fit the data by
+forcing an unnecessarily sharp, over-confident posterior. \citet{daxberger2021laplace} name
+this maximisation procedure ``empirical Bayes'' or ``the evidence framework.'' This is
+differentiable with respect to $\tau$ and requires no validation
+data~\citep{daxberger2021laplace}. Grid search over a discrete set of values on validation
+NLL is simpler but requires a held out split.
 
-\subsection{Uncertainty Quantification and Metrics}
-\label{sec:theory:unc_decomp}
-
-The Laplace posterior of Section~\ref{sec:theory:la} induces a closed-form predictive over
-the function itself: linearising $f_{\btheta}(\bm{x})$ around $\btheta_{\MAP}$ gives
+\textbf{Predictive Distribution.} This is the approximation of the predictive integral
+introduced in Section~\ref{sec:theory}. The LA posterior induces a closed-form predictive
+over the function itself: linearising $f_{\btheta}(\bm{x})$ around $\btheta_{\MAP}$ gives
 \begin{equation}
 	f(\bm{x}) \sim \cN\!\left(f_{\btheta_{\MAP}}(\bm{x}),\ \mathbf{J}(\bm{x})\,\mathbf{H}^{-1}\,\mathbf{J}(\bm{x})^\top\right),
 	\label{eq:glm_predictive}
 \end{equation}
 where $\mathbf{J}(\bm{x})$ is the Jacobian of $f_{\btheta}(\bm{x})$ at $\btheta_{\MAP}$.
 
-Three separate, non-overlapping mechanisms quantify uncertainty across experiments, each
-tied to a specific task, metric, or figure.
+\subsection{Uncertainty Quantification and Metrics}
+\label{sec:theory:unc_decomp}
 
-\textbf{Epistemic-uncertainty map (Two Moons).} The entropy/mutual-information
-decomposition~\citep{goan2020bayesian} is used only for this figure. Given $S$ Monte Carlo
+Both methods convert their posterior over weights into a predictive distribution over
+function outputs, as defined at the end of Sections~\ref{sec:theory:vi}
+and~\ref{sec:theory:la}. Three separate, non-overlapping mechanisms then quantify
+uncertainty across experiments, each tied to a specific task, metric, or figure.
+
+\textbf{Epistemic-uncertainty map.} The entropy/mutual-information
+decomposition~\citep{depeweg2019modeling} is used only for this figure. Given $S$ Monte Carlo
 samples,
 \begin{align}
 	\text{Total}     & = H\!\left[\frac{1}{S}\sum_{s=1}^{S} p(y|f_{\btheta_s}(\bm{x}))\right], \\
@@ -735,16 +788,19 @@ samples,
 	= I\!\left(y;\btheta\,|\,\bm{x},\cD\right),
 	\label{eq:mi}
 \end{align}
-\texttt{bayesian-torch} computes this from MC forward passes; \texttt{laplace-torch} samples
+\texttt{bayesian-torch} computes this from Monte Carlo (MC) forward passes;
+\texttt{laplace-torch} samples
 the closed-form Gaussian~\eqref{eq:glm_predictive} to the same end.
 
-\textbf{Classification metrics (Two Moons).} Accuracy, NLL, Brier score, and ECE use neither
-decomposition above: \texttt{bayesian-torch} averages $S$ MC-sampled softmax outputs;
+\textbf{Classification metrics.} Accuracy, NLL, Brier score, and Expected Calibration Error
+(ECE) use neither decomposition above: \texttt{bayesian-torch} averages $S$ MC-sampled
+softmax outputs;
 \texttt{laplace-torch} passes the closed-form predictive~\eqref{eq:glm_predictive} through
-the probit approximation of Section~\ref{sec:imp:la_api}, since the Gaussian over logits has
+the probit approximation of Section~\ref{sec:imp:probit}, since the Gaussian over logits has
 no closed form once passed through softmax.
 
-\textbf{Regression metrics (Sinusoid, PovertyMap).} RMSE, NLL, and calibration error combine
+\textbf{Regression metrics.} Root Mean Squared Error (RMSE), NLL, and calibration error
+combine
 variance additively:
 \begin{equation}
 	\sigma_{\text{total}}^2 = \sigma_{\text{epistemic}}^2 + \sigma_{\text{aleatoric}}^2,
@@ -767,46 +823,56 @@ rather than point accuracy alone.
 
 \textbf{Brier Score (BS).}
 $\mathrm{BS}=\frac{1}{N}\sum_n\sum_c(\hat{p}_{nc}-\mathbf{1}[y_n=c])^2$; bounded and less
-sensitive to extreme probabilities than NLL.
+sensitive to extreme probabilities than NLL. As a proper scoring
+rule~\citep{murphy2023pml}, it is minimised only by predictions that are both calibrated
+and accurate.
 
 \textbf{Expected Calibration Error (ECE).} Confidences $\max_c\hat p_{nc}$ are partitioned
 into $B=15$ equal-width bins $S_1,\dots,S_B$;
 $\mathrm{ECE}=\sum_{b=1}^{B}\frac{|S_b|}{N}\left|\mathrm{acc}(S_b)-\mathrm{conf}(S_b)\right|$,
-the sample-weighted gap between empirical accuracy and mean confidence in each bin. Used for
-the classification (Two Moons) results.
+the sample-weighted gap between empirical accuracy and mean confidence in each bin, used for
+classification results.
 
 \textbf{Root Mean Squared Error (RMSE).}
 $\mathrm{RMSE}=\sqrt{\frac{1}{N}\sum_n(y_n-\mu_n)^2}$, the point-prediction error used for
-the regression (Sinusoid, PovertyMap) results.
+regression results.
 
 \textbf{Regression Calibration Error.} The regression analogue of ECE, reported by
 \citet{daxberger2021laplace} (Fig.\ 6/10) as a rescaled version of the calibration
 diagnostic of \citet{kuleshov2018calibrated}: for a grid of nominal levels $p\in[0,1]$, the
-predictive CDF $\Phi((y-\mu)/\sigma)$ is evaluated at each true value, and the fraction of
-points with $\mathrm{CDF}(y)\leq p$ is compared against $p$; the calibration error is the
+predictive Cumulative Distribution Function (CDF) $\Phi((y-\mu)/\sigma)$ is evaluated at
+each true value, and the fraction of points with $\mathrm{CDF}(y)\leq p$ is compared against
+$p$; the calibration error is the
 sample size times the mean squared gap between the two, a scaling not present in the
-original definition. Used for all regression (Sinusoid, PovertyMap) results.
+original definition, used for regression results.
 
-\textbf{Epistemic Uncertainty OOD Maps.} On Two Moons, mutual information
-$I(y;\btheta|\bm{x},\cD)$, estimated via equation~\eqref{eq:mi} with $S=50$ MC samples, is
-mapped over a grid of inputs extending beyond the training data to visualise where each
-method's epistemic uncertainty grows (Section~\ref{sec:results}). On Sinusoid, epistemic
-uncertainty is instead the additive-variance term $\sigma_{\text{epistemic}}$ of
-equation~\eqref{eq:additive_variance}, plotted against $x$ outside the training range.
+\textbf{Reliability Diagrams.} Both ECE and the regression calibration error above are
+visualised the same way: nominal values (confidence bins for ECE, the CDF grid $p$ for the
+regression calibration error) plotted against their observed counterparts (empirical
+accuracy, or the observed fraction with $\mathrm{CDF}(y)\leq p$), with the diagonal marking
+perfect calibration.
 
-\section{The Implementations}
+\textbf{Epistemic Uncertainty Out-of-Distribution (OOD).} For classification, mutual
+information $I(y;\btheta|\bm{x},\cD)$, estimated via equation~\eqref{eq:mi} with $S=50$ MC
+samples, is mapped over a grid of inputs extending beyond the training data to visualise
+where each method's epistemic uncertainty grows. For regression, epistemic uncertainty is
+instead the additive-variance term $\sigma_{\text{epistemic}}$ of
+equation~\eqref{eq:additive_variance}, summarised per variant as the ratio of its OOD value
+to its In-Distribution (ID) value (Section~\ref{sec:results}).
+
+\section{Implementations}
 \label{sec:imp}
 
 We consider one classification and two regression experiments. Different possible
 configurations of BNNs with two libraries,
-\texttt{bayesian-torch}~\citep{intel2021bayesiantorch} and
-\texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace}, are implemented
+\texttt{bayesian-torch} and
+\texttt{laplace-torch}~\citep{daxberger2021laplace}, are implemented
 and compared for the classification and regression datasets.
 
 For classification, we use the Two Moons dataset, which consists of a synthetic 2D
-distribution of two interleaved half crescents. For regression, a 1D sinusoidal dataset,
-which is taken from the regression example provided in the
-\texttt{laplace-torch}~\citep{aleximmer2024laplace} repository. Finally, we replicate and
+distribution of two interleaved half crescents. For regression, we use a 1D sinusoidal
+dataset, taken from the regression example provided in the
+\texttt{laplace-torch} repository. Finally, we replicate and
 expand on \citet{daxberger2021laplace}'s PovertyMap experiment, a regression task on
 satellite imagery.
 
@@ -820,7 +886,7 @@ and~\ref{tab:bt_variants}. We examine how the different configurations affect th
 performance of the BNNs, and how they compare to each other, while assessing how well
 calibrated they are, i.e., how accurately they reflect the true uncertainty. Because the
 approaches can be so varied, we also explore alternatives by choosing different parameters,
-e.g. different deltas for MOPED (Table~\ref{tab:app:sin_delta_sweep}), different
+e.g. different deltas for MOPED (Appendix~\ref{sec:app:sinusoid_big}), different
 (fixed/learned) priors, etc. Additional variant results not covered in the main text are
 shown in the Appendix~\ref{sec:app}; the notebooks provided contain the full code and
 outputs for every variant.
@@ -828,7 +894,7 @@ outputs for every variant.
 Not all possible variants are considered for every experiment; the experiments were not
 designed in parallel, so earlier findings informed the setup of later ones. For example, we
 see poor uncertainty-quantification performance for Diagonal approximations in LA, so we
-don't consider them for some experiments; in particular we focus on Kron, as it is
+do not consider them for some experiments; in particular we focus on Kron, as it is
 recommended per the findings in \citet{daxberger2021laplace}, which should perform
 comparably to Full LA, but with a lower computational cost.
 
@@ -870,10 +936,17 @@ In an effort to avoid duplicated code, multiple functions are implemented in the
 \label{tab:bt_variants}
 \end{table}
 
+On Two Moons and Sinusoid, figure x-axis labels abbreviate \texttt{laplace-torch} variant
+names to fit: gridsearch is \texttt{gs}, all weights is \texttt{aw}, last layer is
+\texttt{ll}, marglik is \texttt{ml}, and, for Sinusoid's additional tuning method
+(Table~\ref{tab:la_variants}), adam loop is \texttt{al} (e.g.\ ``Kron/aw/gs'' for
+Kronecker-factored, all weights, gridsearch-tuned). Prose and tables elsewhere use the full
+names.
+
 \textbf{The \texttt{laplace-torch} Interface.} \label{sec:imp:la_api}As introduced in
 Section~\ref{sec:theory:la}, the LA is applied across the Two Moons and Sinusoidal notebooks
 through the same high level
-\texttt{laplace-torch}~\citep{daxberger2021laplace,aleximmer2024laplace} interface, built
+\texttt{laplace-torch}~\citep{daxberger2021laplace} interface, built
 around a network already trained to a MAP solution $\btheta_{\MAP}$. Constructing the
 approximation is a single call,
 \begin{center}
@@ -887,11 +960,11 @@ evaluate but ignores curvature information from every earlier layer. Calling
 \texttt{.fit(train\_loader)} accumulates the curvature estimate $\mathbf{H}$ from the
 training data. Predictions are then obtained by calling the fitted object directly,
 \texttt{la(X, pred\_type="glm", ...)}, which linearises the network around $\btheta_{\MAP}$
-and returns a closed form Gaussian over the network output.
+and returns a closed-form Gaussian over the network output.
 
 \textbf{The \texttt{bayesian-torch} Interface.}
 \label{sec:imp:bt_api}
-The \texttt{bayesian-torch}~\citep{intel2021bayesiantorch} variants are built by converting
+The \texttt{bayesian-torch} variants are built by converting
 an already instantiated network in place,
 \begin{center}
 \texttt{dnn\_to\_bnn(net, \{prior\_mu, prior\_sigma, posterior\_mu\_init, posterior\_rho\_init, type, moped\_enable, moped\_delta\})},
@@ -900,19 +973,11 @@ where \texttt{type} selects Flipout or Reparameterization (BBB) layers, and
 \texttt{moped\_enable} triggers the MOPED warm start once \texttt{net} already holds the MAP
 weights it initialises from. Unlike \texttt{laplace-torch}'s single \texttt{.fit()} call,
 training is a manual loop: every step adds \texttt{get\_kl\_loss(net)} divided by a
-per-example count to the task loss, the DataLoader's mini-batch size on Two Moons, the full
-training-set size on both Sinusoid datasets, and AvUC variants further add the calibration
+per-example count (the DataLoader's mini-batch size on Two Moons, the full training-set size
+on both Sinusoid datasets and on PovertyMap's headline configuration) to the task loss.
+AvUC variants further add the calibration
 penalty of Equation~\eqref{eq:avuc}, computed on the mean of several MC logit samples rather
 than a single forward pass.
-
-\textbf{\texttt{bayesian-torch} MC Prediction.} Predictions average $S$ MC forward passes.
-For Flipout, all $S$ can be obtained from a single call by tiling the input $S$ times along
-the batch axis: since Flipout draws an independent sign-flip perturbation per row
-(Section~\ref{sec:theory:vi}), the $S$ identical copies of each example receive $S$
-different effective weight samples in that one forward pass. Reparameterization (BBB) draws
-one weight sample per call, shared by the whole batch, so it needs $S$ separate calls
-instead. PovertyMap uses the looped form despite being Flipout: tiling $S=20$ samples
-through a ResNet-18 at batch size 256 does not fit in GPU memory.
 
 \subsection{Two Moons}
 
@@ -920,29 +985,27 @@ Two crescent moons are generated with the \texttt{sklearn.datasets.make\_moons} 
 with 10000 samples split into 60 / 20 / 20 for training, validation and test sets,
 respectively. The dataset is generated with a noise of 0.3.
 
-\textbf{Probit link.} \texttt{laplace-torch} approximates the classification predictive
+\textbf{Probit link.}
+\label{sec:imp:probit}
+\texttt{laplace-torch} approximates the classification predictive
 of Section~\ref{sec:theory:unc_decomp} with the probit link, \texttt{link\_approx="probit"}.
 
 \textbf{MC softmax predictive.} \texttt{bayesian-torch} has no closed-form fallback: class
 probabilities come from averaging the per-sample softmax outputs of
 \texttt{bt\_mc\_forward}, as in Section~\ref{sec:theory:unc_decomp}.
 
-\textbf{Visualisations.} For each variant, a representative decision boundary is plotted
-from the last seed's fitted model. Epistemic uncertainty is visualised as the per pixel
-mutual information from Equation~\eqref{eq:mi}, mapped over a grid extending beyond the
-training data using $S=50$ predictive samples per point and averaged across seeds.
-Reliability diagrams (confidence vs.\ empirical accuracy) are likewise averaged across
-seeds.
+\textbf{Visualisations.} Reliability diagrams (confidence vs.\ empirical accuracy,
+Section~\ref{sec:metrics}) are plotted per variant, averaged across seeds.
 
 \subsection{Sinusoid}
 \label{sec:imp:sinusoid}
 
-\textbf{Closed form regression predictive.} Unlike classification, the closed form
-Gaussian from Section~\ref{sec:imp:la_api} is used directly here, with no probit-style
+\textbf{Closed-form regression predictive.} Unlike classification, the closed-form
+Gaussian from Section~\ref{sec:imp:la_api} (Equation~\eqref{eq:glm_predictive}) is used directly here, with no probit-style
 approximation needed: \texttt{la\_predict} returns the mean and epistemic standard deviation
 at each point straight from the linearisation.
 
-\textbf{Aleatoric noise.} Neither the closed form Gaussian nor the
+\textbf{Aleatoric noise.} Neither the closed-form Gaussian nor the
 \texttt{bayesian-torch} MC average captures observation noise on its own.
 \texttt{adam\_loop} is a manual gradient-descent loop over the prior precision, using the
 Adam optimiser, taken from the regression example in the \texttt{laplace-torch} repository;
@@ -955,29 +1018,27 @@ prior precision is tuned. \texttt{bayesian-torch} fits \texttt{sigma\_noise} sep
 are combined per Equation~\eqref{eq:additive_variance} for every reported metric and
 figure.
 
-\textbf{Visualisations.} For each variant, the mean prediction is plotted with total,
-epistemic, and cross-seed variability bands, averaged over the five seeds, alongside the
-true $\sin(x)$ curve. Epistemic uncertainty is also plotted against $x$ on its own, showing
-how it grows once $x$ leaves the training range $[0,8]$. Calibration is assessed with the
-regression calibration error defined in Section~\ref{sec:metrics}.
-
-
-\textbf{\texttt{laplace-torch} Regression Example.} We base the first approach on the
-dataset provided in the library. The dataset is split into 150 samples for training, 50 for
-validation, and 250 for ID testing, while also providing the same amount for OOD testing.
+\textbf{Library-Provided Dataset.} We base the first approach on the dataset provided in
+\texttt{laplace-torch}'s regression example. The dataset is split into 150 samples for training, 50 for
+validation, and 250 for ID testing, while also providing the same amount
+for OOD testing.
 The library's original example ships without a validation split; we hold out 50 samples for
 one here to compare grid search against marginal-likelihood tuning, which needs no
 validation data.
 
-\textbf{Comparison Dataset.} The library's example uses a fixed 1D range and no validation
-set, limiting direct comparison between \texttt{laplace-torch} and \texttt{bayesian-torch};
-we generate a 1200-sample sinusoidal dataset with matched train/validation/ID/OOD splits for
-a more even comparison. It is split into 600 / 200 for training and validation,
+\textbf{Comparison Dataset.} Initial results on the library-provided dataset showed
+\texttt{bayesian-torch} calibrating and predicting substantially worse relative to
+\texttt{laplace-torch} than in later experiments (Appendix~\ref{sec:app:sinusoid_small}),
+consistent with \texttt{bayesian-torch} needing more training data to fit a variational
+posterior from scratch, while \texttt{laplace-torch}'s post-hoc fit around a single MAP
+estimate is largely insensitive to dataset size. The library's example is also a fixed 1D
+range with no validation set. To remove this asymmetry, we generate a 1200-sample
+sinusoidal dataset with matched train/validation/ID/OOD splits for a more even comparison.
+It is split into 600 / 200 for training and validation,
 respectively, as well as 200 samples for ID and OOD testing sets each. On this dataset we
 also sweep \texttt{bayesian-torch}'s MOPED $\delta$ over $\{0.05, 0.1, 0.2\}$, the range
 validated by \citet{krishnan2020specifying} on classification, against the report's headline
-$\delta=0.5$
-(Table~\ref{tab:app:sin_delta_sweep}).
+$\delta=0.5$ (Appendix~\ref{sec:app:sinusoid_big}).
 
 
 \subsection{PovertyMap}
@@ -993,13 +1054,16 @@ add \texttt{bayesian-torch} to the comparison here.
 
 \textbf{Fixed configuration.} Unlike Two Moons and Sinusoid, PovertyMap is not a variant
 grid: \texttt{laplace-torch} uses a single configuration matching the setup released by
-\citet{daxberger2021laplace}\footnote{https://github.com/runame/laplace-redux} exactly
+\citet{daxberger2021laplace} (\texttt{laplace-redux}, Section~\ref{sec:software}) exactly
 (last-layer subset, full Hessian, prior precision fixed at $10.0$ per
 \texttt{configs/\allowbreak wilds/\allowbreak poverty/\allowbreak wilds-poverty\_laplace.yaml}
 in that repository, never tuned), and
 \texttt{bayesian-torch} uses Flipout trained from a random initialisation, with no MOPED
-warm start. MAP is not locally trained either: it is the original pre-trained WILDS ERM
-checkpoint released by \citet{daxberger2021laplace}, downloaded rather than fit, so unlike
+warm start. It additionally loops rather than tiles its $S$ Monte Carlo forward passes here,
+since tiling $S=20$ samples through a ResNet-18 at batch size 256 does not fit in GPU memory
+(Section~\ref{sec:theory:vi}). MAP is not locally trained either: it is the original
+pre-trained WILDS Empirical Risk Minimization (ERM) checkpoint released
+by \citet{daxberger2021laplace}, downloaded rather than fit, so unlike
 Two Moons and Sinusoid there is no shared MAP fit time folded into either method's reported
 total time. The aleatoric noise term is tuned independently of the prior precision for both
 methods: \texttt{laplace-torch}'s $\sigma_{\text{noise}}$ is fit by gradient descent on
@@ -1007,12 +1071,16 @@ validation NLL, and \texttt{bayesian-torch}'s with the same \texttt{optimize\_no
 routine used for Sinusoid. We additionally test one alternative \texttt{laplace-torch}
 prior-precision tuning method and two alternative \texttt{bayesian-torch} prior/KL-scaling
 conventions against each method's headline configuration
-(Table~\ref{tab:app:povertymap_variants}).
+(Appendix~\ref{sec:app:povertymap}).
 
 \section{Results}
 \label{sec:results}
 
 \subsection{Two Moons}
+
+This dataset uses the classification metrics (Accuracy, NLL, Brier score, ECE) and the
+entropy/mutual-information epistemic-uncertainty map of
+Section~\ref{sec:theory:unc_decomp}.
 
 \textbf{Initialisation and tuning.} MOPED initialisation improves NLL and Brier score
 over training from scratch, for both Flipout and BBB, at a fraction of the AvUC variants'
@@ -1034,14 +1102,14 @@ Figure~\ref{fig:tm_reliability_combined} overlays the reliability diagrams of Fl
 scratch / ELBO, BBB / MOPED / ELBO, Full / all weights / gridsearch, and Kron / last layer /
 gridsearch: all four track the diagonal closely with overlapping uncertainty bands.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.75\linewidth]{5seed_two_moons_combined_reliability.png}
 \caption{Combined 5-seed reliability diagram for the four best-tuned Two Moons variants.}
 \label{fig:tm_reliability_combined}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{subfigure}{\linewidth}
 \includegraphics[width=\linewidth]{5seed_two_moons_bayesian_ece_bar.png}
@@ -1061,7 +1129,7 @@ epistemic uncertainty map of the best-calibrated variant, Full / all weights / g
 Uncertainty is concentrated in a narrow band along the decision boundary and negligible over
 the rest of the input space.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.6\linewidth]{5seed_two_moons_gridsearch_full_all_weights_epistemic_map.png}
 \caption{5-seed mean epistemic uncertainty for the best-calibrated Two Moons variant, Full / all weights / gridsearch.}
@@ -1069,8 +1137,8 @@ the rest of the input space.
 \end{figure}
 
 \textbf{Training time.} Figure~\ref{fig:tm_fit_time_bars} plots total time for every
-variant of both methods; full timing is in Tables~\ref{tab:app:tm_bt_timing}
-and~\ref{tab:app:tm_la_timing}. For \texttt{bayesian-torch}, AvUC loss costs an order of
+variant of both methods; full timing is in Tables~\ref{tab:app:tm_bt}
+and~\ref{tab:app:tm_la}. For \texttt{bayesian-torch}, AvUC loss costs an order of
 magnitude more total time than ELBO, for both Flipout and BBB, MOPED or scratch. For
 \texttt{laplace-torch}, full Hessian over all weights is by far the most expensive variant
 (Total $\approx 1195\,\text{s}$, versus under $20\,\text{s}$ for every other variant);
@@ -1079,7 +1147,7 @@ single shared MAP step ($9.4 \pm 1.6\,\text{s}$) is included in this total for a
 \texttt{laplace-torch} variants and for \texttt{bayesian-torch}'s MOPED variants;
 \texttt{bayesian-torch}'s scratch variants skip it.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{subfigure}{\linewidth}
 \includegraphics[width=\linewidth]{5seed_two_moons_bayesian_total_time_bar.png}
@@ -1094,34 +1162,19 @@ single shared MAP step ($9.4 \pm 1.6\,\text{s}$) is included in this total for a
 \label{fig:tm_fit_time_bars}
 \end{figure}
 
-\textbf{Inference time.} Figure~\ref{fig:tm_inf_time_bars} plots inference time for every
-variant of both methods; full timing is in Tables~\ref{tab:app:tm_bt_timing}
-and~\ref{tab:app:tm_la_timing}. For \texttt{laplace-torch}, last-layer-subset variants infer
-$32$-$126\times$ faster than all-weights variants ($0.43$-$0.65\,\text{ms}$ vs.\
-$20.7$-$54.2\,\text{ms}$), regardless of Hessian structure or tuning method;
-\texttt{bayesian-torch}'s variants show no comparable split, ranging from $2.2$ to
-$44.6\,\text{ms}$.
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}{\linewidth}
-\includegraphics[width=\linewidth]{5seed_two_moons_bayesian_inf_time_bar.png}
-\caption{\texttt{bayesian-torch}}
-\end{subfigure}
-\\[6pt]
-\begin{subfigure}{\linewidth}
-\includegraphics[width=\linewidth]{5seed_two_moons_laplace_inf_time_bar.png}
-\caption{\texttt{laplace-torch}}
-\end{subfigure}
-\caption{5-seed mean inference time by variant, both methods.}
-\label{fig:tm_inf_time_bars}
-\end{figure}
+\textbf{Inference time.} \texttt{laplace-torch}'s last-layer-subset variants infer
+$11$-$260\times$ faster than all-weights variants ($0.44$-$1.92\,\text{ms}$ vs.\
+$20.5$-$114.4\,\text{ms}$), regardless of Hessian structure or tuning method;
+\texttt{bayesian-torch}'s variants show no comparable split, ranging from $2.1$ to
+$31.4\,\text{ms}$ (Tables~\ref{tab:app:tm_bt} and~\ref{tab:app:tm_la}).
 
 \subsection{Sinusoid}
 
-Results on the small library-provided sinusoid dataset (Section~\ref{sec:imp:sinusoid}) are
-reported separately in Appendix~\ref{sec:app:sinusoid_small}. The following covers the
-larger comparison dataset.
+This dataset uses the regression metrics (RMSE, NLL, regression calibration error) and the
+additive-variance epistemic uncertainty of Section~\ref{sec:theory:unc_decomp}. Results on
+the small library-provided sinusoid dataset (Section~\ref{sec:imp:sinusoid}) are reported
+separately in Appendix~\ref{sec:app:sinusoid_small}. The following covers the larger
+comparison dataset.
 
 \textbf{Initialisation and tuning.} For \texttt{bayesian-torch}, MOPED initialisation is
 worse than training from scratch on this dataset, for both Flipout and BBB: scratch is both
@@ -1142,14 +1195,14 @@ overlays the calibration curves of \texttt{bayesian-torch}'s two best-calibrated
 (Flipout / scratch, BBB / scratch) against \texttt{laplace-torch}'s Kron / all weights /
 adam loop and Kron / last layer / adam loop variants.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.75\linewidth]{5seed_sinusoid_comparison_combined_calibration.png}
 \caption{Combined 5-seed calibration diagram for the Sinusoid comparison dataset.}
 \label{fig:sin_big_cal_combined}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{subfigure}{\linewidth}
 \includegraphics[width=\linewidth]{5seed_sinusoid_comparison_bayesian_calibration_error_bar.png}
@@ -1164,29 +1217,22 @@ adam loop and Kron / last layer / adam loop variants.
 \label{fig:sin_big_cal_bars}
 \end{figure}
 
-\textbf{Best-calibrated variant.} Figures~\ref{fig:sin_big_best_pred}
-and~\ref{fig:sin_big_best_ood} show the mean prediction and epistemic uncertainty of the
-best-calibrated variant overall, Kron / all weights / adam loop. The mean prediction tracks
-$\sin(x)$ closely inside the training range, with a tight total-uncertainty band; epistemic
-uncertainty is low inside the training range and grows once $x$ leaves it.
+\textbf{Best-calibrated variant.} Figure~\ref{fig:sin_big_best_pred} shows the mean
+prediction of the best-calibrated variant overall, Kron / all weights / adam loop, tracking
+$\sin(x)$ closely inside the training range with a tight total-uncertainty band; its
+epistemic uncertainty growth outside the training range is quantified below (Out-of-distribution
+generalisation).
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.75\linewidth]{sinusoid_comparison_kron_all_adam_loop_prediction.png}
 \caption{5-seed mean prediction for the best-calibrated Sinusoid comparison-dataset variant, Kron / all weights / adam loop.}
 \label{fig:sin_big_best_pred}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.75\linewidth]{sinusoid_comparison_kron_all_adam_loop_ood_epistemic.png}
-\caption{5-seed epistemic uncertainty vs.\ $x$ for the best-calibrated Sinusoid comparison-dataset variant, Kron / all weights / adam loop.}
-\label{fig:sin_big_best_ood}
-\end{figure}
-
 \textbf{Training time.} Figure~\ref{fig:sin_big_fit_time_bars} plots total time for every
-variant of both methods; full timing is in Tables~\ref{tab:app:sin_big_bt_timing}
-and~\ref{tab:app:sin_big_la_timing}. For \texttt{bayesian-torch}, MOPED's own fit time is
+variant of both methods; full timing is in Tables~\ref{tab:app:sin_big_bt}
+and~\ref{tab:app:sin_big_la}. For \texttt{bayesian-torch}, MOPED's own fit time is
 lower than scratch's for both Flipout and BBB, but adding the shared MAP step flips the
 ordering for Flipout: Flipout / moped has the highest total time of the four, despite being
 worse calibrated; for BBB, MOPED remains cheaper even with the MAP step included. For
@@ -1198,7 +1244,7 @@ gridsearch- and marglik-tuned variants ($14.18$-$14.19\,\text{s}$). A single sha
 variants and for \texttt{bayesian-torch}'s MOPED variants; \texttt{bayesian-torch}'s scratch
 variants skip it.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{subfigure}{\linewidth}
 \includegraphics[width=\linewidth]{5seed_sinusoid_comparison_bayesian_total_time_bar.png}
@@ -1213,44 +1259,29 @@ variants skip it.
 \label{fig:sin_big_fit_time_bars}
 \end{figure}
 
-\textbf{Inference time.} Figure~\ref{fig:sin_big_inf_time_bars} plots inference time for
-every variant of both methods; full timing is in Tables~\ref{tab:app:sin_big_bt_timing}
-and~\ref{tab:app:sin_big_la_timing}. For \texttt{bayesian-torch}, BBB infers roughly 20
-times slower than Flipout, for both scratch and MOPED initialisations. For
-\texttt{laplace-torch}, Kron / last layer variants infer $3$-$4\times$ faster than Kron /
-all weights and Full / all weights ($0.36$-$0.42\,\text{ms}$ vs.\ $1.25$-$1.36\,\text{ms}$),
-regardless of tuning method.
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}{\linewidth}
-\includegraphics[width=\linewidth]{5seed_sinusoid_comparison_bayesian_inf_time_bar.png}
-\caption{\texttt{bayesian-torch}}
-\end{subfigure}
-\\[6pt]
-\begin{subfigure}{\linewidth}
-\includegraphics[width=\linewidth]{5seed_sinusoid_comparison_laplace_inf_time_bar.png}
-\caption{\texttt{laplace-torch}}
-\end{subfigure}
-\caption{5-seed mean inference time by variant, both methods, Sinusoid comparison dataset.}
-\label{fig:sin_big_inf_time_bars}
-\end{figure}
+\textbf{Inference time.} \texttt{bayesian-torch}'s BBB infers roughly 35 times slower than
+Flipout, for both scratch and MOPED initialisations. \texttt{laplace-torch}'s Kron / last
+layer variants infer $3$-$4\times$ faster than Kron / all weights and Full / all weights
+($0.35$-$0.40\,\text{ms}$ vs.\ $1.28$-$1.41\,\text{ms}$), regardless of tuning method
+(Tables~\ref{tab:app:sin_big_bt} and~\ref{tab:app:sin_big_la}).
 
 \textbf{Out-of-distribution generalisation.} Figure~\ref{fig:sin_epi_ratio_bars} plots
-the epistemic ratio (OOD std / ID std) for every variant of both methods; full ID and OOD
-metrics are in Table~\ref{tab:app:sin_big_ood}. Point-prediction RMSE increases going OOD
-for both methods: \texttt{bayesian-torch}'s OOD/ID RMSE ratio ranges from $1.66$ (BBB /
-moped) to $7.99$ (Flipout / scratch); \texttt{laplace-torch}'s ratio is $4.90$ for every
+the epistemic ratio (OOD std / ID std) for every variant of both methods; full OOD metrics
+are in Table~\ref{tab:app:sin_big_ood} (ID RMSE and NLL are in
+Tables~\ref{tab:app:sin_big_bt} and~\ref{tab:app:sin_big_la}). Point-prediction RMSE
+increases going OOD
+for both methods: \texttt{bayesian-torch}'s OOD/ID RMSE ratio ranges from $1.71$ (BBB /
+moped) to $8.17$ (Flipout / scratch); \texttt{laplace-torch}'s ratio is $5.12$ for every
 variant (all share the same MAP mean). Epistemic uncertainty responds very differently
 between methods: the three gridsearch-tuned \texttt{laplace-torch} variants (Kron / last
 layer, Kron / all weights, Full / all weights) have the three highest epistemic ratios in
 the table (Table~\ref{tab:app:sin_big_ood}); the remaining four \texttt{laplace-torch}
 variants (marglik- and adam-loop-tuned) range from $7.3$ to $9.8$.
 \texttt{bayesian-torch}'s scratch variants' epistemic ratios stay close to
-$1$ ($1.19$ Flipout, $1.18$ BBB); its MOPED variants' ratios fall below $1$ ($0.91$ Flipout,
-$0.91$ BBB).
+$1$ ($1.26$ Flipout, $1.23$ BBB); its MOPED variants diverge: BBB falls below $1$ ($0.89$),
+Flipout stays above it ($1.18$).
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{subfigure}{\linewidth}
 \includegraphics[width=\linewidth]{5seed_sinusoid_bayesian_epistemic_ratio_bar.png}
@@ -1267,23 +1298,24 @@ $0.91$ BBB).
 
 \subsection{PovertyMap}
 
-\textbf{Calibration error.} Figure~\ref{fig:pm_cal_error_bar} plots ID and OOD calibration
+This dataset uses the same regression metrics and additive-variance epistemic uncertainty
+(Section~\ref{sec:theory:unc_decomp}) as Sinusoid.
+
+\textbf{Calibration.} Figure~\ref{fig:pm_cal_error_bar} plots ID and OOD calibration
 error for both methods, mean $\pm$ std over 5 folds; full RMSE, NLL, and calibration error
 values are in Table~\ref{tab:app:povertymap} and Figure~\ref{fig:pm_rmse_nll_bar} in the
 Appendix. \texttt{bayesian-torch} has lower calibration error than \texttt{laplace-torch},
-both ID ($1.35$ vs.\ $3.59$) and OOD ($26.1$ vs.\ $35.3$).
+both ID ($1.35$ vs.\ $3.59$) and OOD ($26.1$ vs.\ $35.3$). Figure~\ref{fig:pm_calibration}
+plots the calibration reliability diagram for both methods, ID and OOD.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{povertymap_cal_error_bar.png}
 \caption{PovertyMap calibration error, ID and OOD, both methods (5 folds).}
 \label{fig:pm_cal_error_bar}
 \end{figure}
 
-\textbf{Calibration.} Figure~\ref{fig:pm_calibration} plots the calibration reliability
-diagram for both methods, ID and OOD.
-
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{povertymap_calibration_curves.png}
 \caption{PovertyMap calibration reliability diagrams, ID and OOD, both methods (mean $\pm$ 1$\sigma$, 5 folds).}
@@ -1295,47 +1327,40 @@ methods, mean $\pm$ std over 5 folds; full values are in Table~\ref{tab:app:pove
 \texttt{bayesian-torch} takes $959.8 \pm 111.0\,\text{s}$ to train, roughly $22\times$
 longer than \texttt{laplace-torch}'s $43.8 \pm 4.7\,\text{s}$.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.6\linewidth]{povertymap_total_time_bar.png}
 \caption{PovertyMap total time, both methods (5 folds).}
 \label{fig:pm_total_time_bar}
 \end{figure}
 
-\textbf{Inference time.} Figure~\ref{fig:pm_inference_time_bar} plots inference time for
-both methods, ID and OOD, mean $\pm$ std over 5 folds; full values are in
-Table~\ref{tab:app:povertymap}. \texttt{laplace-torch} infers faster than
-\texttt{bayesian-torch}, both ID ($2.3$ vs.\ $17.0\,\text{s}$) and OOD ($6.3$ vs.\
-$61.2\,\text{s}$).
+\textbf{Inference time.} \texttt{laplace-torch} infers faster than \texttt{bayesian-torch},
+both ID ($2.3$ vs.\ $17.0\,\text{s}$) and OOD ($6.3$ vs.\ $61.2\,\text{s}$);
+\texttt{bayesian-torch}'s PovertyMap variant loops over MC samples instead of tiling them
+into a single forward pass like its other Flipout variants (Section~\ref{sec:imp})
+(Table~\ref{tab:app:povertymap}).
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{povertymap_inference_time_bar.png}
-\caption{PovertyMap inference time, ID and OOD, both methods (5 folds).}
-\label{fig:pm_inference_time_bar}
-\end{figure}
-
-\textbf{Variant ablations.} Table~\ref{tab:app:povertymap_variants} compares each method's
-headline configuration against alternative tuning and scaling choices.
-\texttt{laplace-torch}'s NLL-gridsearched prior precision ($\approx 0.10$-$0.12$, versus the
-headline's fixed $10.0$) gives lower OOD NLL ($0.7785$ vs.\ $0.8193$) and OOD calibration
-error ($33.4067$ vs.\ $35.3130$), at a slightly higher ID NLL and calibration error; RMSE is
-unchanged ID and OOD. \texttt{bayesian-torch}'s headline configuration (fixed $\tau=0.1$,
-prior precision scaled by $N$, matching \citet{daxberger2021laplace}'s released training
-script) has lower error than both alternatives tested, on every metric, ID and OOD:
-annealing $\tau$ per its original warm-up schedule~\citep{osawa2019practical}, and scaling
-the prior by batch size instead of $N$ (\texttt{bayesian-torch}'s own default convention),
-both underperform it across the board.
+\textbf{Variant ablations.}
+\texttt{laplace-torch}'s NLL-gridsearched prior precision ($\approx 0.10$-$0.12$) and its
+fixed headline value ($10.0$) stay within a few percent of each other on every metric, ID and
+OOD. \texttt{bayesian-torch}'s three prior variants agree closely on RMSE and NLL, ID and
+OOD, but spread further on calibration error. The headline configuration (fixed
+$\tau=0.1$, prior precision scaled by $N$, matching \citet{daxberger2021laplace}'s released
+training script) has the lowest OOD calibration error by a wide margin over both
+$\tau$-annealing~\citep{osawa2019practical} and scaling the prior by batch size instead of
+$N$ (\texttt{bayesian-torch}'s own default convention). On ID calibration error, though, the
+batch-size-scaled default is instead the best of the three. Full per-variant metrics are in
+the notebooks.
 
 \section{Discussion}
 \label{sec:discussion}
 
 Two \texttt{laplace-torch} design choices trade off in opposite directions. Restricting the
-Hessian to the last layer cuts inference cost dramatically ($32$-$126\times$ on Two Moons),
+Hessian to the last layer cuts inference cost dramatically ($11$-$260\times$ on Two Moons),
 while the choice of tuning method dominates OOD behaviour. Marginal-likelihood and
 gridsearch tuning give similar in-distribution calibration once Hessian and weight subset
-are fixed (e.g.\ Kron/last calibration error $0.347$ vs.\ $0.337$, Kron/all $0.340$ vs.\
-$0.327$ on Sinusoid-comparison, both within noise), but they diverge sharply out of
+are fixed (e.g.\ Kron/last calibration error $0.347$ vs.\ $0.345$, Kron/all $0.340$ vs.\
+$0.333$ on Sinusoid-comparison, both within noise), but they diverge sharply out of
 distribution: gridsearch reaches epistemic ratios of $77.1$ (Kron/last) and $47.6$
 (Kron/all), versus marginal-likelihood's $7.29$ and $9.84$ for the same configurations.
 Adam-loop's distinguishing feature is jointly tuning the aleatoric noise term alongside the
@@ -1371,7 +1396,7 @@ Two Moons the two are close, with \texttt{laplace-torch}'s best variant still sl
 and on OOD calibration error, though \texttt{laplace-torch} trains roughly $22\times$ faster
 and infers $7$-$10\times$ faster and matches or beats \texttt{bayesian-torch} on OOD RMSE
 and NLL; but on both Sinusoid datasets, \texttt{laplace-torch}'s best-calibrated variant
-clearly beats \texttt{bayesian-torch}'s ($0.250$ vs.\ $1.026$ small, $0.327$ vs.\ $0.422$
+clearly beats \texttt{bayesian-torch}'s ($0.250$ vs.\ $1.026$ small, $0.327$ vs.\ $0.454$
 comparison). This is not a general \texttt{bayesian-torch}-can-match-\texttt{laplace-torch}
 story; it holds only on classification and the largest regression task. On inference time
 \texttt{laplace-torch} generally wins, though only its last-layer variants do so on Two
@@ -1387,10 +1412,9 @@ this experiment.
 Testing all possible combinations of the variants possible in both libraries is rather
 time-intensive, and so the experiments are limited to a subset of the possible
 combinations. Ideally, all combinations could be tested to see what trends are consistent
-across all combinations, and which are specific to a particular one. We see, for example,
-that hyperparameter tuning is a very important part of the performance of some
-implementations, and there is no set-in-stone strategy for finding the best
-hyperparameters.
+across all combinations, and which are specific to a particular one. Hyperparameter tuning,
+for example, is a very important part of the performance of some implementations, and there
+is no set-in-stone strategy for finding the best hyperparameters.
 
 There still remains the question of how well the OOD detection works in practice. This is
 indeed discussed in \citet{daxberger2021laplace}, where results for \texttt{laplace-torch}
@@ -1401,6 +1425,18 @@ complex datasets, to see if the trends observed here hold in more realistic sett
 Additionally, further work could be done to explore the impact of different hyperparameter
 tuning strategies on the performance of both libraries, and to investigate the
 effectiveness of OOD detection in practice.
+
+\section{Code Availability}
+\label{sec:software}
+
+\begin{itemize}[leftmargin=*]
+	\item \texttt{bayesian-torch}:
+	      \url{https://github.com/IntelLabs/bayesian-torch}
+	\item \texttt{laplace-torch}:
+	      \url{https://aleximmer.com/Laplace}
+	\item \texttt{laplace-redux} (reproduces \citet{daxberger2021laplace}):
+	      \url{https://github.com/runame/laplace-redux}
+\end{itemize}
 
 \appendix
 \section{Appendix: Full Metric Tables and Visualizations}
@@ -1417,84 +1453,43 @@ out-of-distribution analysis below.
 \begin{table}[H]
 \centering
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{llccc}
+\begin{tabular}{llcccccc}
 \toprule
-Type & Init & RMSE & NLL & Cal. Error \\
+Type & Init & RMSE & NLL & Cal. Error & Fit (s) & Inf (ms) & Total (s) \\
 \midrule
-Flipout & scratch & $0.596 \pm 0.087$ & $\bm{0.932 \pm 0.158}$ & $1.094 \pm 0.292$ \\
-Flipout & moped & $0.782 \pm 0.177$ & $1.472 \pm 0.177$ & $3.974 \pm 0.526$ \\
-BBB & scratch & $0.697 \pm 0.024$ & $1.096 \pm 0.057$ & $\bm{1.026 \pm 0.447}$ \\
-BBB & moped & $\bm{0.590 \pm 0.031}$ & $1.568 \pm 0.052$ & $7.076 \pm 0.604$ \\
+Flipout & scratch & $0.596 \pm 0.087$ & $\bm{0.932 \pm 0.158}$ & $1.094 \pm 0.292$ & $160.26$ & $6.54$ & $160.26$ \\
+Flipout & moped & $0.782 \pm 0.177$ & $1.472 \pm 0.177$ & $3.974 \pm 0.526$ & $1.71$ & $\bm{6.40}$ & $60.73$ \\
+BBB & scratch & $0.697 \pm 0.024$ & $1.096 \pm 0.057$ & $\bm{1.026 \pm 0.447}$ & $120.22$ & $48.57$ & $120.22$ \\
+BBB & moped & $\bm{0.590 \pm 0.031}$ & $1.568 \pm 0.052$ & $7.076 \pm 0.604$ & $\bm{0.46}$ & $49.42$ & $\bm{59.48}$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{bayesian-torch} on Sinusoid (small dataset): 5-seed metrics (mean $\pm$ std).}
+\caption{\texttt{bayesian-torch} on Sinusoid (small dataset): 5-seed metrics and timing (mean $\pm$ std). Total time is fit time plus the shared MAP step ($59.0\,\text{s}$) for MOPED variants, fit time alone for scratch.}
 \label{tab:app:sin_small_bt}
 \end{table}
 
 \begin{table}[H]
 \centering
-\begin{tabular}{llccc}
-\toprule
-Type & Init & Fit (s) & Inf (ms) & Total (s) \\
-\midrule
-Flipout & scratch & $160.26$ & $6.54$ & $160.26$ \\
-Flipout & moped & $1.71$ & $\bm{6.40}$ & $60.73$ \\
-BBB & scratch & $120.22$ & $48.57$ & $120.22$ \\
-BBB & moped & $\bm{0.46}$ & $49.42$ & $\bm{59.48}$ \\
-\bottomrule
-\end{tabular}
-\caption{\texttt{bayesian-torch} on Sinusoid (small dataset): 5-seed timing (mean $\pm$ std). Total time is fit time plus the shared MAP step ($59.0\,\text{s}$) for MOPED variants, fit time alone for scratch.}
-\label{tab:app:sin_small_bt_timing}
-\end{table}
-
-\begin{table}[H]
-\centering
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lllcc}
+\begin{tabular}{lllcccccc}
 \toprule
-Hessian & Scope & Tuning & NLL & Cal. Error \\
+Hessian & Scope & Tuning & NLL & Cal. Error & Fit (s) & Tune (s) & Inf (ms) & Total (s) \\
 \midrule
-Diag & all & marglik & $0.323 \pm 0.011$ & $0.627 \pm 0.272$ \\
-Diag & all & gridsearch & $0.312 \pm 0.026$ & $0.544 \pm 0.313$ \\
-Kron & all & marglik & $0.276 \pm 0.024$ & $0.275 \pm 0.138$ \\
-Kron & all & gridsearch & $0.274 \pm 0.025$ & $\bm{0.250 \pm 0.116}$ \\
-Full & all & marglik & $0.276 \pm 0.029$ & $0.272 \pm 0.146$ \\
-Full & all & gridsearch & $0.276 \pm 0.031$ & $0.274 \pm 0.154$ \\
-Full & last layer & marglik & $0.278 \pm 0.032$ & $0.283 \pm 0.154$ \\
-Full & last layer & gridsearch & $0.276 \pm 0.032$ & $0.278 \pm 0.155$ \\
-Kron & last layer & marglik & $0.278 \pm 0.031$ & $0.280 \pm 0.152$ \\
-Kron & last layer & gridsearch & $\bm{0.273 \pm 0.029}$ & $0.259 \pm 0.139$ \\
-Kron & all & adam loop & $0.276 \pm 0.025$ & $0.276 \pm 0.140$ \\
-Kron & last layer & adam loop & $0.278 \pm 0.032$ & $0.284 \pm 0.155$ \\
+Diag & all & marglik & $0.323 \pm 0.011$ & $0.627 \pm 0.272$ & $0.17$ & $\bm{0.06}$ & $3.89$ & $\bm{59.25}$ \\
+Diag & all & gridsearch & $0.312 \pm 0.026$ & $0.544 \pm 0.313$ & $0.18$ & $10.88$ & $3.49$ & $70.08$ \\
+Kron & all & marglik & $0.276 \pm 0.024$ & $0.275 \pm 0.138$ & $0.51$ & $0.08$ & $1.42$ & $59.60$ \\
+Kron & all & gridsearch & $0.274 \pm 0.025$ & $\bm{0.250 \pm 0.116}$ & $0.51$ & $14.55$ & $3.96$ & $74.08$ \\
+Full & all & marglik & $0.276 \pm 0.029$ & $0.272 \pm 0.146$ & $5.40$ & $12.85$ & $2.66$ & $77.27$ \\
+Full & all & gridsearch & $0.276 \pm 0.031$ & $0.274 \pm 0.154$ & $5.55$ & $19.44$ & $3.26$ & $84.01$ \\
+Full & last layer & marglik & $0.278 \pm 0.032$ & $0.283 \pm 0.154$ & $0.13$ & $4.29$ & $2.06$ & $63.43$ \\
+Full & last layer & gridsearch & $0.276 \pm 0.032$ & $0.278 \pm 0.155$ & $\bm{0.12}$ & $9.10$ & $1.63$ & $68.23$ \\
+Kron & last layer & marglik & $0.278 \pm 0.031$ & $0.280 \pm 0.152$ & $0.23$ & $0.07$ & $2.40$ & $59.32$ \\
+Kron & last layer & gridsearch & $\bm{0.273 \pm 0.029}$ & $0.259 \pm 0.139$ & $0.23$ & $2.07$ & $\bm{0.35}$ & $61.31$ \\
+Kron & all & adam loop & $0.276 \pm 0.025$ & $0.276 \pm 0.140$ & $0.47$ & $0.88$ & $4.03$ & $60.36$ \\
+Kron & last layer & adam loop & $0.278 \pm 0.032$ & $0.284 \pm 0.155$ & $0.22$ & $0.59$ & $1.06$ & $59.83$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{laplace-torch} on Sinusoid (small dataset): 5-seed metrics (mean $\pm$ std). RMSE is identical across all variants ($0.317 \pm 0.009$), since it depends only on the shared MAP mean.}
+\caption{\texttt{laplace-torch} on Sinusoid (small dataset): 5-seed metrics and timing (mean $\pm$ std). RMSE is identical across all variants ($0.317 \pm 0.009$), since it depends only on the shared MAP mean. Total time is the shared MAP step ($59.0\,\text{s}$) plus fit plus tune time, since every variant requires the MAP step.}
 \label{tab:app:sin_small_la}
-\end{table}
-
-\begin{table}[H]
-\centering
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{lllcccc}
-\toprule
-Hessian & Scope & Tuning & Fit (s) & Tune (s) & Inf (ms) & Total (s) \\
-\midrule
-Diag & all & marglik & $0.17$ & $\bm{0.06}$ & $3.89$ & $\bm{59.25}$ \\
-Diag & all & gridsearch & $0.18$ & $10.88$ & $3.49$ & $70.08$ \\
-Kron & all & marglik & $0.51$ & $0.08$ & $1.42$ & $59.60$ \\
-Kron & all & gridsearch & $0.51$ & $14.55$ & $3.96$ & $74.08$ \\
-Full & all & marglik & $5.40$ & $12.85$ & $2.66$ & $77.27$ \\
-Full & all & gridsearch & $5.55$ & $19.44$ & $3.26$ & $84.01$ \\
-Full & last layer & marglik & $0.13$ & $4.29$ & $2.06$ & $63.43$ \\
-Full & last layer & gridsearch & $\bm{0.12}$ & $9.10$ & $1.63$ & $68.23$ \\
-Kron & last layer & marglik & $0.23$ & $0.07$ & $2.40$ & $59.32$ \\
-Kron & last layer & gridsearch & $0.23$ & $2.07$ & $\bm{0.35}$ & $61.31$ \\
-Kron & all & adam loop & $0.47$ & $0.88$ & $4.03$ & $60.36$ \\
-Kron & last layer & adam loop & $0.22$ & $0.59$ & $1.06$ & $59.83$ \\
-\bottomrule
-\end{tabular}}
-\caption{\texttt{laplace-torch} on Sinusoid (small dataset): 5-seed timing (mean $\pm$ std). Total time is the shared MAP step ($59.0\,\text{s}$) plus fit plus tune time, since every variant requires the MAP step.}
-\label{tab:app:sin_small_la_timing}
 \end{table}
 
 \textbf{Tuning.} For \texttt{bayesian-torch}, scratch initialisation reaches
@@ -1515,14 +1510,14 @@ against \texttt{laplace-torch}'s single best (Kron / all weights / gridsearch): 
 \texttt{bayesian-torch} curves show an S-shape; Kron / all weights / gridsearch tracks the
 diagonal closely across the full range.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.75\linewidth]{5seed_sinusoid_combined_calibration.png}
 \caption{Combined 5-seed calibration diagram for the best-calibrated Sinusoid variants.}
 \label{fig:sin_cal_combined}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{subfigure}{\linewidth}
 \includegraphics[width=\linewidth]{5seed_sinusoid_bayesian_calibration_error_bar.png}
@@ -1537,36 +1532,28 @@ diagonal closely across the full range.
 \label{fig:sin_cal_bars}
 \end{figure}
 
-\textbf{Best-calibrated variant.} Figures~\ref{fig:sin_best_pred}
-and~\ref{fig:sin_best_ood} show the mean prediction and epistemic uncertainty of the
-best-calibrated variant overall, Kron / all weights / gridsearch. The mean prediction tracks
-$\sin(x)$ closely inside the training range $[0,8]$, with a tight total-uncertainty band.
-Epistemic uncertainty is near zero inside the training range and grows once $x$ leaves it,
-more steeply to the left ($x<0$) than to the right.
+\textbf{Best-calibrated variant.} Figure~\ref{fig:sin_best_pred} shows the mean prediction
+of the best-calibrated variant overall, Kron / all weights / gridsearch, tracking $\sin(x)$
+closely inside the training range $[0,8]$ with a tight total-uncertainty band; its epistemic
+uncertainty growth outside the training range is quantified below (Out-of-distribution
+generalisation).
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.75\linewidth]{5seed_sinusoid_kron_all_gridsearch_prediction.png}
 \caption{5-seed mean prediction for the best-calibrated Sinusoid variant, Kron / all weights / gridsearch.}
 \label{fig:sin_best_pred}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.75\linewidth]{5seed_sinusoid_kron_all_gridsearch_ood_epistemic.png}
-\caption{5-seed epistemic uncertainty vs.\ $x$ for the best-calibrated Sinusoid variant, Kron / all weights / gridsearch.}
-\label{fig:sin_best_ood}
-\end{figure}
-
 \textbf{Training time.} Figure~\ref{fig:sin_fit_time_bars} plots total time for every
-variant of both methods; full timing is in Tables~\ref{tab:app:sin_small_bt_timing}
-and~\ref{tab:app:sin_small_la_timing}. For \texttt{bayesian-torch}, MOPED roughly halves
+variant of both methods; full timing is in Tables~\ref{tab:app:sin_small_bt}
+and~\ref{tab:app:sin_small_la}. For \texttt{bayesian-torch}, MOPED roughly halves
 total time relative to scratch, for both Flipout and BBB. For \texttt{laplace-torch}, full
 Hessian over all weights is the most expensive variant (Total $\approx 84\,\text{s}$ here,
 versus $\approx 1195\,\text{s}$ on Two Moons); the cheapest variants add well under a second
 of fit and tune time on top of the shared MAP step.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{subfigure}{\linewidth}
 \includegraphics[width=\linewidth]{5seed_sinusoid_bayesian_total_time_bar.png}
@@ -1581,30 +1568,14 @@ of fit and tune time on top of the shared MAP step.
 \label{fig:sin_fit_time_bars}
 \end{figure}
 
-\textbf{Inference time.} Figure~\ref{fig:sin_inf_time_bars} plots inference time for
-every variant of both methods; full timing is in Tables~\ref{tab:app:sin_small_bt_timing}
-and~\ref{tab:app:sin_small_la_timing}. \texttt{laplace-torch} infers faster than
-\texttt{bayesian-torch} for every variant, though both methods stay under a tenth of a
-second.
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}{\linewidth}
-\includegraphics[width=\linewidth]{5seed_sinusoid_bayesian_inf_time_bar.png}
-\caption{\texttt{bayesian-torch}}
-\end{subfigure}
-\\[6pt]
-\begin{subfigure}{\linewidth}
-\includegraphics[width=\linewidth]{5seed_sinusoid_laplace_inf_time_bar.png}
-\caption{\texttt{laplace-torch}}
-\end{subfigure}
-\caption{5-seed mean inference time by variant, both methods.}
-\label{fig:sin_inf_time_bars}
-\end{figure}
+\textbf{Inference time.} \texttt{laplace-torch} infers faster than \texttt{bayesian-torch}
+for every variant, though both methods stay under a tenth of a second
+(Tables~\ref{tab:app:sin_small_bt} and~\ref{tab:app:sin_small_la}).
 
 \textbf{Out-of-distribution generalisation.} Figure~\ref{fig:sin_small_epi_ratio_bars}
-plots the epistemic ratio (OOD std / ID std) for every variant of both methods; full ID and
-OOD metrics are in Table~\ref{tab:app:sin_small_ood}. As on the comparison dataset
+plots the epistemic ratio (OOD std / ID std) for every variant of both methods; full OOD
+metrics are in Table~\ref{tab:app:sin_small_ood} (ID RMSE and NLL are in
+Tables~\ref{tab:app:sin_small_bt} and~\ref{tab:app:sin_small_la}). As on the comparison dataset
 (Section~\ref{sec:results}), every \texttt{laplace-torch} variant's epistemic uncertainty
 grows going OOD; Kron / last layer / gridsearch (ratio $60.8$), Kron / all weights /
 gridsearch ($50.0$), and Full / all weights / marglik ($39.6$) grow the most, Diagonal the
@@ -1612,7 +1583,7 @@ least ($1.4$-$1.8$). \texttt{bayesian-torch}'s scratch variants grow only modest
 ($1.23$-$1.27$), and its MOPED variants' epistemic uncertainty shrinks going OOD
 ($0.79$-$0.92$).
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{subfigure}{\linewidth}
 \includegraphics[width=\linewidth]{5seed_sinusoid_small_bayesian_epistemic_ratio_bar.png}
@@ -1631,29 +1602,29 @@ least ($1.4$-$1.8$). \texttt{bayesian-torch}'s scratch variants grow only modest
 \centering
 \scriptsize
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{llccccccc}
+\begin{tabular}{llccccc}
 \toprule
-Method & Variant & ID RMSE & OOD RMSE & ID NLL & OOD NLL & ID Epi & OOD Epi & Epi Ratio \\
+Method & Variant & OOD RMSE & OOD NLL & ID Epi & OOD Epi & Epi Ratio \\
 \midrule
-BT & Flipout / scratch & $0.596 \pm 0.087$ & $1.535 \pm 0.158$ & $0.932 \pm 0.159$ & $4.837 \pm 0.979$ & $0.183 \pm 0.014$ & $0.225 \pm 0.014$ & $1.228 \pm 0.064$ \\
-BT & Flipout / moped & $0.782 \pm 0.177$ & $1.468 \pm 0.402$ & $1.472 \pm 0.177$ & $1.850 \pm 0.291$ & $1.392 \pm 0.289$ & $1.094 \pm 0.248$ & $\bm{0.785 \pm 0.099}$ \\
-BT & BBB / scratch & $0.697 \pm 0.024$ & $1.177 \pm 0.095$ & $1.097 \pm 0.058$ & $2.466 \pm 0.369$ & $0.161 \pm 0.011$ & $\bm{0.204 \pm 0.014}$ & $1.266 \pm 0.025$ \\
-BT & BBB / moped & $0.590 \pm 0.031$ & $\bm{1.149 \pm 0.069}$ & $1.568 \pm 0.052$ & $\bm{1.680 \pm 0.049}$ & $1.700 \pm 0.102$ & $1.565 \pm 0.127$ & $0.920 \pm 0.046$ \\
-Laplace & Diag / all / marglik & $\bm{0.317 \pm 0.009}$ & $1.725 \pm 0.211$ & $0.324 \pm 0.011$ & $8.807 \pm 2.084$ & $0.269 \pm 0.015$ & $0.369 \pm 0.078$ & $1.378 \pm 0.297$ \\
-Laplace & Diag / all / gridsearch & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.312 \pm 0.026$ & $9.978 \pm 2.857$ & $0.234 \pm 0.077$ & $0.472 \pm 0.282$ & $1.836 \pm 0.799$ \\
-Laplace & Kron / all / marglik & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.276 \pm 0.024$ & $2.641 \pm 0.884$ & $0.120 \pm 0.008$ & $1.970 \pm 0.376$ & $16.571 \pm 3.679$ \\
-Laplace & Kron / all / gridsearch & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.274 \pm 0.025$ & $7.028 \pm 5.002$ & $0.117 \pm 0.044$ & $7.980 \pm 9.069$ & $49.977 \pm 52.155$ \\
-Laplace & Full / all / marglik & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.276 \pm 0.029$ & $2.309 \pm 0.134$ & $0.085 \pm 0.007$ & $3.330 \pm 0.427$ & $39.587 \pm 6.311$ \\
-Laplace & Full / all / gridsearch & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.276 \pm 0.031$ & $8.754 \pm 5.432$ & $0.064 \pm 0.023$ & $1.835 \pm 2.283$ & $20.855 \pm 22.602$ \\
-Laplace & Full / last layer / marglik & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.278 \pm 0.032$ & $7.486 \pm 2.772$ & $0.064 \pm 0.005$ & $0.840 \pm 0.092$ & $13.252 \pm 1.872$ \\
-Laplace & Full / last layer / gridsearch & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.276 \pm 0.032$ & $10.351 \pm 6.047$ & $\bm{0.056 \pm 0.018}$ & $1.869 \pm 2.148$ & $25.169 \pm 26.321$ \\
-Laplace & Kron / last layer / marglik & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.278 \pm 0.031$ & $7.708 \pm 2.828$ & $0.068 \pm 0.005$ & $0.696 \pm 0.093$ & $10.267 \pm 1.753$ \\
-Laplace & Kron / last layer / gridsearch & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $\bm{0.273 \pm 0.029}$ & $8.011 \pm 4.780$ & $0.075 \pm 0.027$ & $6.161 \pm 6.729$ & $60.798 \pm 61.883$ \\
-Laplace & Kron / all / adam loop & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.276 \pm 0.025$ & $2.647 \pm 0.892$ & $0.120 \pm 0.008$ & $1.966 \pm 0.377$ & $16.588 \pm 3.695$ \\
-Laplace & Kron / last layer / adam loop & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ & $0.278 \pm 0.032$ & $7.742 \pm 2.844$ & $0.068 \pm 0.005$ & $0.695 \pm 0.093$ & $10.290 \pm 1.757$ \\
+BT & Flipout / scratch & $1.535 \pm 0.158$ & $4.837 \pm 0.979$ & $0.183 \pm 0.014$ & $0.225 \pm 0.014$ & $1.228 \pm 0.064$ \\
+BT & Flipout / moped & $1.468 \pm 0.402$ & $1.850 \pm 0.291$ & $1.392 \pm 0.289$ & $1.094 \pm 0.248$ & $\bm{0.785 \pm 0.099}$ \\
+BT & BBB / scratch & $1.177 \pm 0.095$ & $2.466 \pm 0.369$ & $0.161 \pm 0.011$ & $\bm{0.204 \pm 0.014}$ & $1.266 \pm 0.025$ \\
+BT & BBB / moped & $\bm{1.149 \pm 0.069}$ & $\bm{1.680 \pm 0.049}$ & $1.700 \pm 0.102$ & $1.565 \pm 0.127$ & $0.920 \pm 0.046$ \\
+Laplace & Diag / all / marglik & $1.725 \pm 0.211$ & $8.807 \pm 2.084$ & $0.269 \pm 0.015$ & $0.369 \pm 0.078$ & $1.378 \pm 0.297$ \\
+Laplace & Diag / all / gridsearch & $1.725 \pm 0.211$ & $9.978 \pm 2.857$ & $0.234 \pm 0.077$ & $0.472 \pm 0.282$ & $1.836 \pm 0.799$ \\
+Laplace & Kron / all / marglik & $1.725 \pm 0.211$ & $2.641 \pm 0.884$ & $0.120 \pm 0.008$ & $1.970 \pm 0.376$ & $16.571 \pm 3.679$ \\
+Laplace & Kron / all / gridsearch & $1.725 \pm 0.211$ & $7.028 \pm 5.002$ & $0.117 \pm 0.044$ & $7.980 \pm 9.069$ & $49.977 \pm 52.155$ \\
+Laplace & Full / all / marglik & $1.725 \pm 0.211$ & $2.309 \pm 0.134$ & $0.085 \pm 0.007$ & $3.330 \pm 0.427$ & $39.587 \pm 6.311$ \\
+Laplace & Full / all / gridsearch & $1.725 \pm 0.211$ & $8.754 \pm 5.432$ & $0.064 \pm 0.023$ & $1.835 \pm 2.283$ & $20.855 \pm 22.602$ \\
+Laplace & Full / last layer / marglik & $1.725 \pm 0.211$ & $7.486 \pm 2.772$ & $0.064 \pm 0.005$ & $0.840 \pm 0.092$ & $13.252 \pm 1.872$ \\
+Laplace & Full / last layer / gridsearch & $1.725 \pm 0.211$ & $10.351 \pm 6.047$ & $\bm{0.056 \pm 0.018}$ & $1.869 \pm 2.148$ & $25.169 \pm 26.321$ \\
+Laplace & Kron / last layer / marglik & $1.725 \pm 0.211$ & $7.708 \pm 2.828$ & $0.068 \pm 0.005$ & $0.696 \pm 0.093$ & $10.267 \pm 1.753$ \\
+Laplace & Kron / last layer / gridsearch & $1.725 \pm 0.211$ & $8.011 \pm 4.780$ & $0.075 \pm 0.027$ & $6.161 \pm 6.729$ & $60.798 \pm 61.883$ \\
+Laplace & Kron / all / adam loop & $1.725 \pm 0.211$ & $2.647 \pm 0.892$ & $0.120 \pm 0.008$ & $1.966 \pm 0.377$ & $16.588 \pm 3.695$ \\
+Laplace & Kron / last layer / adam loop & $1.725 \pm 0.211$ & $7.742 \pm 2.844$ & $0.068 \pm 0.005$ & $0.695 \pm 0.093$ & $10.290 \pm 1.757$ \\
 \bottomrule
 \end{tabular}}
-\caption{Both methods on Sinusoid (small dataset), ID vs OOD: 5-seed metrics (mean $\pm$ std).}
+\caption{Both methods on Sinusoid (small dataset), OOD metrics: 5-seed metrics (mean $\pm$ std). ID RMSE and NLL are in Tables~\ref{tab:app:sin_small_bt} and~\ref{tab:app:sin_small_la}.}
 \label{tab:app:sin_small_ood}
 \end{table*}
 
@@ -1662,109 +1633,51 @@ Laplace & Kron / last layer / adam loop & $0.317 \pm 0.009$ & $1.725 \pm 0.211$ 
 Full metric and timing tables for every Two Moons variant of both methods are below, along
 with accuracy and NLL bar charts not shown in the main Results (Section~\ref{sec:results}).
 
-\begin{table}[H]
+\begin{table*}[!t]
 \centering
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lllcccc}
+\begin{tabular}{lllccccccc}
 \toprule
-Type & Init & Loss & Acc & NLL & BS & ECE \\
+Type & Init & Loss & Acc & NLL & BS & ECE & Fit (s) & Inf (ms) & Total (s) \\
 \midrule
-Flipout & scratch & ELBO & $0.9145 \pm 0.0101$ & $0.2200 \pm 0.0188$ & $0.0643 \pm 0.0064$ & $\bm{0.0175 \pm 0.0026}$ \\
-Flipout & scratch & AvUC & $0.9023 \pm 0.0105$ & $0.2497 \pm 0.0152$ & $0.0734 \pm 0.0053$ & $0.0394 \pm 0.0224$ \\
-Flipout & moped & ELBO & $0.9150 \pm 0.0064$ & $0.2138 \pm 0.0147$ & $0.0628 \pm 0.0051$ & $0.0198 \pm 0.0080$ \\
-Flipout & moped & AvUC & $0.9106 \pm 0.0055$ & $0.2205 \pm 0.0135$ & $0.0652 \pm 0.0043$ & $0.0199 \pm 0.0087$ \\
-BBB & scratch & ELBO & $0.9108 \pm 0.0093$ & $0.2228 \pm 0.0191$ & $0.0653 \pm 0.0065$ & $0.0202 \pm 0.0026$ \\
-BBB & scratch & AvUC & $0.9080 \pm 0.0096$ & $0.2330 \pm 0.0150$ & $0.0680 \pm 0.0053$ & $0.0317 \pm 0.0063$ \\
-BBB & moped & ELBO & $\bm{0.9152 \pm 0.0072}$ & $\bm{0.2121 \pm 0.0141}$ & $\bm{0.0625 \pm 0.0048}$ & $0.0182 \pm 0.0047$ \\
-BBB & moped & AvUC & $0.9137 \pm 0.0067$ & $0.2143 \pm 0.0147$ & $0.0631 \pm 0.0050$ & $0.0198 \pm 0.0081$ \\
+Flipout & scratch & ELBO & $0.9145 \pm 0.0101$ & $0.2200 \pm 0.0188$ & $0.0643 \pm 0.0064$ & $\bm{0.0175 \pm 0.0026}$ & $39.79$ & $31.39$ & $39.79$ \\
+Flipout & scratch & AvUC & $0.9023 \pm 0.0105$ & $0.2497 \pm 0.0152$ & $0.0734 \pm 0.0053$ & $0.0394 \pm 0.0224$ & $662.95$ & $2.51$ & $662.95$ \\
+Flipout & moped & ELBO & $0.9150 \pm 0.0064$ & $0.2138 \pm 0.0147$ & $0.0628 \pm 0.0051$ & $0.0198 \pm 0.0080$ & $26.66$ & $2.53$ & $36.07$ \\
+Flipout & moped & AvUC & $0.9106 \pm 0.0055$ & $0.2205 \pm 0.0135$ & $0.0652 \pm 0.0043$ & $0.0199 \pm 0.0087$ & $351.12$ & $\bm{2.08}$ & $360.53$ \\
+BBB & scratch & ELBO & $0.9108 \pm 0.0093$ & $0.2228 \pm 0.0191$ & $0.0653 \pm 0.0065$ & $0.0202 \pm 0.0026$ & $29.95$ & $28.92$ & $\bm{29.95}$ \\
+BBB & scratch & AvUC & $0.9080 \pm 0.0096$ & $0.2330 \pm 0.0150$ & $0.0680 \pm 0.0053$ & $0.0317 \pm 0.0063$ & $672.14$ & $25.98$ & $672.14$ \\
+BBB & moped & ELBO & $\bm{0.9152 \pm 0.0072}$ & $\bm{0.2121 \pm 0.0141}$ & $\bm{0.0625 \pm 0.0048}$ & $0.0182 \pm 0.0047$ & $\bm{21.10}$ & $26.33$ & $30.52$ \\
+BBB & moped & AvUC & $0.9137 \pm 0.0067$ & $0.2143 \pm 0.0147$ & $0.0631 \pm 0.0050$ & $0.0198 \pm 0.0081$ & $370.60$ & $25.83$ & $380.02$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{bayesian-torch} on Two Moons: 5-seed metrics (mean $\pm$ std).}
+\caption{\texttt{bayesian-torch} on Two Moons: 5-seed metrics and timing (mean $\pm$ std). Total time is fit time plus the shared MAP step ($9.4\,\text{s}$) for MOPED variants, fit time alone for scratch.}
 \label{tab:app:tm_bt}
-\end{table}
+\end{table*}
 
-\begin{table}[H]
-\centering
-\begin{tabular}{lllccc}
-\toprule
-Type & Init & Loss & Fit (s) & Inf (ms) & Total (s) \\
-\midrule
-Flipout & scratch & ELBO & $39.79$ & $26.18$ & $39.79$ \\
-Flipout & scratch & AvUC & $662.95$ & $\bm{2.21}$ & $662.95$ \\
-Flipout & moped & ELBO & $26.66$ & $3.30$ & $36.07$ \\
-Flipout & moped & AvUC & $351.12$ & $15.97$ & $360.53$ \\
-BBB & scratch & ELBO & $29.95$ & $27.24$ & $\bm{29.95}$ \\
-BBB & scratch & AvUC & $672.14$ & $27.00$ & $672.14$ \\
-BBB & moped & ELBO & $\bm{21.10}$ & $27.09$ & $30.52$ \\
-BBB & moped & AvUC & $370.60$ & $44.61$ & $380.02$ \\
-\bottomrule
-\end{tabular}
-\caption{\texttt{bayesian-torch} on Two Moons: 5-seed timing (mean $\pm$ std). Total time is fit time plus the shared MAP step ($9.4\,\text{s}$) for MOPED variants, fit time alone for scratch.}
-\label{tab:app:tm_bt_timing}
-\end{table}
-
-\begin{table}[H]
+\begin{table*}[!t]
 \centering
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lllccc}
+\begin{tabular}{lllccccccc}
 \toprule
-Hessian & Scope & Tuning & NLL & BS & ECE \\
+Hessian & Scope & Tuning & NLL & BS & ECE & Fit (s) & Tune (s) & Inf (ms) & Total (s) \\
 \midrule
-Diag & all weights & gridsearch & $0.2065 \pm 0.0143$ & $0.0616 \pm 0.0047$ & $0.0152 \pm 0.0033$ \\
-Diag & all weights & marglik & $0.2102 \pm 0.0124$ & $0.0620 \pm 0.0044$ & $0.0232 \pm 0.0056$ \\
-Full & all weights & gridsearch & $0.2065 \pm 0.0143$ & $0.0616 \pm 0.0047$ & $\bm{0.0150 \pm 0.0033}$ \\
-Full & all weights & marglik & $0.3808 \pm 0.0189$ & $0.1069 \pm 0.0072$ & $0.2048 \pm 0.0180$ \\
-Kron & all weights & gridsearch & $0.2065 \pm 0.0143$ & $0.0616 \pm 0.0047$ & $0.0150 \pm 0.0033$ \\
-Kron & all weights & marglik & $0.2889 \pm 0.0141$ & $0.0777 \pm 0.0046$ & $0.1204 \pm 0.0153$ \\
-Full & last layer & gridsearch & $0.2065 \pm 0.0143$ & $0.0616 \pm 0.0047$ & $0.0151 \pm 0.0033$ \\
-Full & last layer & marglik & $0.2346 \pm 0.0110$ & $0.0657 \pm 0.0038$ & $0.0591 \pm 0.0129$ \\
-Kron & last layer & gridsearch & $\bm{0.2065 \pm 0.0143}$ & $\bm{0.0616 \pm 0.0047}$ & $0.0150 \pm 0.0033$ \\
-Kron & last layer & marglik & $0.2294 \pm 0.0108$ & $0.0648 \pm 0.0038$ & $0.0531 \pm 0.0122$ \\
+Diag & all weights & gridsearch & $0.2065 \pm 0.0143$ & $0.0616 \pm 0.0047$ & $0.0152 \pm 0.0033$ & $0.23$ & $4.34$ & $114.41$ & $13.99$ \\
+Diag & all weights & marglik & $0.2102 \pm 0.0124$ & $0.0620 \pm 0.0044$ & $0.0232 \pm 0.0056$ & $\bm{0.23}$ & $\bm{0.07}$ & $20.54$ & $\bm{9.71}$ \\
+Full & all weights & gridsearch & $0.2065 \pm 0.0143$ & $0.0616 \pm 0.0047$ & $\bm{0.0150 \pm 0.0033}$ & $1180.70$ & $8.41$ & $71.64$ & $1198.53$ \\
+Full & all weights & marglik & $0.3808 \pm 0.0189$ & $0.1069 \pm 0.0072$ & $0.2048 \pm 0.0180$ & $1181.83$ & $1.87$ & $31.88$ & $1193.11$ \\
+Kron & all weights & gridsearch & $0.2065 \pm 0.0143$ & $0.0616 \pm 0.0047$ & $0.0150 \pm 0.0033$ & $0.53$ & $5.17$ & $26.37$ & $15.12$ \\
+Kron & all weights & marglik & $0.2889 \pm 0.0141$ & $0.0777 \pm 0.0046$ & $0.1204 \pm 0.0153$ & $0.52$ & $0.10$ & $21.28$ & $10.03$ \\
+Full & last layer & gridsearch & $0.2065 \pm 0.0143$ & $0.0616 \pm 0.0047$ & $0.0151 \pm 0.0033$ & $8.25$ & $1.50$ & $1.92$ & $19.16$ \\
+Full & last layer & marglik & $0.2346 \pm 0.0110$ & $0.0657 \pm 0.0038$ & $0.0591 \pm 0.0129$ & $8.32$ & $0.09$ & $0.56$ & $17.82$ \\
+Kron & last layer & gridsearch & $\bm{0.2065 \pm 0.0143}$ & $\bm{0.0616 \pm 0.0047}$ & $0.0150 \pm 0.0033$ & $0.42$ & $1.89$ & $0.45$ & $11.72$ \\
+Kron & last layer & marglik & $0.2294 \pm 0.0108$ & $0.0648 \pm 0.0038$ & $0.0531 \pm 0.0122$ & $0.43$ & $0.08$ & $\bm{0.44}$ & $9.92$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{laplace-torch} on Two Moons: 5-seed metrics (mean $\pm$ std). Accuracy is identical across all variants ($0.9154 \pm 0.0056$), since it depends only on the shared MAP mean.}
+\caption{\texttt{laplace-torch} on Two Moons: 5-seed metrics and timing (mean $\pm$ std). Accuracy is identical across all variants ($0.9154 \pm 0.0056$), since it depends only on the shared MAP mean. Total time is the shared MAP step ($9.4\,\text{s}$) plus fit plus tune time, since every variant requires the MAP step.}
 \label{tab:app:tm_la}
-\end{table}
+\end{table*}
 
-\begin{table}[H]
-\centering
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{lllcccc}
-\toprule
-Hessian & Scope & Tuning & Fit (s) & Tune (s) & Inf (ms) & Total (s) \\
-\midrule
-Diag & all weights & gridsearch & $0.23$ & $4.34$ & $54.19$ & $13.99$ \\
-Diag & all weights & marglik & $\bm{0.23}$ & $\bm{0.07}$ & $20.71$ & $\bm{9.71}$ \\
-Full & all weights & gridsearch & $1180.70$ & $8.41$ & $35.31$ & $1198.53$ \\
-Full & all weights & marglik & $1181.83$ & $1.87$ & $33.14$ & $1193.11$ \\
-Kron & all weights & gridsearch & $0.53$ & $5.17$ & $21.89$ & $15.12$ \\
-Kron & all weights & marglik & $0.52$ & $0.10$ & $21.77$ & $10.03$ \\
-Full & last layer & gridsearch & $8.25$ & $1.50$ & $0.65$ & $19.16$ \\
-Full & last layer & marglik & $8.32$ & $0.09$ & $0.55$ & $17.82$ \\
-Kron & last layer & gridsearch & $0.42$ & $1.89$ & $0.44$ & $11.72$ \\
-Kron & last layer & marglik & $0.43$ & $0.08$ & $\bm{0.43}$ & $9.92$ \\
-\bottomrule
-\end{tabular}}
-\caption{\texttt{laplace-torch} on Two Moons: 5-seed timing (mean $\pm$ std). Total time is the shared MAP step ($9.4\,\text{s}$) plus fit plus tune time, since every variant requires the MAP step.}
-\label{tab:app:tm_la_timing}
-\end{table}
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}{\linewidth}
-\includegraphics[width=\linewidth]{5seed_two_moons_bayesian_accuracy_bar.png}
-\caption{\texttt{bayesian-torch}}
-\end{subfigure}
-\\[6pt]
-\begin{subfigure}{\linewidth}
-\includegraphics[width=\linewidth]{5seed_two_moons_laplace_accuracy_bar.png}
-\caption{\texttt{laplace-torch}}
-\end{subfigure}
-\caption{5-seed accuracy by variant, both methods.}
-\label{fig:app:tm_accuracy_bars}
-\end{figure}
-
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{subfigure}{\linewidth}
 \includegraphics[width=\linewidth]{5seed_two_moons_bayesian_nll_bar.png}
@@ -1779,161 +1692,89 @@ Kron & last layer & marglik & $0.43$ & $0.08$ & $\bm{0.43}$ & $9.92$ \\
 \label{fig:app:tm_nll_bars}
 \end{figure}
 
-\textbf{Accuracy and NLL.} Figures~\ref{fig:app:tm_accuracy_bars} and~\ref{fig:app:tm_nll_bars}
-plot accuracy and NLL for every variant of both methods; full values are in
-Tables~\ref{tab:app:tm_bt} and~\ref{tab:app:tm_la}. \texttt{bayesian-torch}'s accuracy ranges
+\textbf{Accuracy and NLL.} Figure~\ref{fig:app:tm_nll_bars} plots NLL for every variant of
+both methods; full values, including accuracy, are in Tables~\ref{tab:app:tm_bt}
+and~\ref{tab:app:tm_la}. \texttt{bayesian-torch}'s accuracy ranges
 $0.9023$-$0.9152$ across variants; \texttt{laplace-torch}'s accuracy is $0.9154 \pm 0.0056$
 for every variant. NLL ranges $0.2121$-$0.2497$ for \texttt{bayesian-torch} and
 $0.2065$-$0.3808$ for \texttt{laplace-torch}.
 
 \subsection{Sinusoid: Comparison Dataset (600/200/200/200 split), ID vs OOD}
+\label{sec:app:sinusoid_big}
 
 \begin{table}[H]
 \centering
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{llccc}
+\begin{tabular}{llcccccc}
 \toprule
-Type & Init & RMSE & NLL & Cal. Error \\
+Type & Init & RMSE & NLL & Cal. Error & Fit (s) & Inf (ms) & Total (s) \\
 \midrule
-Flipout & scratch & $0.320 \pm 0.007$ & $0.321 \pm 0.016$ & $0.483 \pm 0.294$ \\
-Flipout & moped & $0.394 \pm 0.093$ & $0.598 \pm 0.298$ & $1.546 \pm 1.587$ \\
-BBB & scratch & $\bm{0.316 \pm 0.006}$ & $\bm{0.311 \pm 0.010}$ & $\bm{0.422 \pm 0.303}$ \\
-BBB & moped & $0.636 \pm 0.043$ & $1.348 \pm 0.129$ & $3.548 \pm 1.153$ \\
+Flipout & scratch & $0.320 \pm 0.006$ & $0.319 \pm 0.015$ & $0.520 \pm 0.334$ & $12.97$ & $0.25$ & $\bm{12.97}$ \\
+Flipout & moped & $0.398 \pm 0.106$ & $0.589 \pm 0.324$ & $1.203 \pm 1.321$ & $8.37$ & $\bm{0.25}$ & $22.04$ \\
+BBB & scratch & $\bm{0.316 \pm 0.005}$ & $\bm{0.310 \pm 0.010}$ & $\bm{0.454 \pm 0.318}$ & $20.67$ & $8.63$ & $20.67$ \\
+BBB & moped & $0.604 \pm 0.018$ & $1.339 \pm 0.104$ & $3.456 \pm 1.049$ & $\bm{2.55}$ & $8.64$ & $16.22$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{bayesian-torch} on Sinusoid (comparison dataset), in-distribution: 5-seed metrics (mean $\pm$ std).}
+\caption{\texttt{bayesian-torch} on Sinusoid (comparison dataset), in-distribution: 5-seed metrics and timing (mean $\pm$ std). Total time is fit time plus the shared MAP step ($13.7\,\text{s}$) for MOPED variants, fit time alone for scratch.}
 \label{tab:app:sin_big_bt}
 \end{table}
 
 \begin{table}[H]
 \centering
-\begin{tabular}{llccc}
-\toprule
-Type & Init & Fit (s) & Inf (ms) & Total (s) \\
-\midrule
-Flipout & scratch & $12.97$ & $0.47$ & $\bm{12.97}$ \\
-Flipout & moped & $8.37$ & $\bm{0.45}$ & $22.04$ \\
-BBB & scratch & $20.67$ & $8.81$ & $20.67$ \\
-BBB & moped & $\bm{2.55}$ & $8.79$ & $16.22$ \\
-\bottomrule
-\end{tabular}
-\caption{\texttt{bayesian-torch} on Sinusoid (comparison dataset): 5-seed timing (mean $\pm$ std). Total time is fit time plus the shared MAP step ($13.7\,\text{s}$) for MOPED variants, fit time alone for scratch.}
-\label{tab:app:sin_big_bt_timing}
-\end{table}
-
-\begin{table}[H]
-\centering
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lllcc}
+\begin{tabular}{lllcccccc}
 \toprule
-Hessian & Scope & Tuning & NLL & Cal. Error \\
+Hessian & Scope & Tuning & NLL & Cal. Error & Fit (s) & Tune (s) & Inf (ms) & Total (s) \\
 \midrule
-Kron & last layer & marglik & $0.247 \pm 0.031$ & $0.345 \pm 0.251$ \\
-Kron & last layer & gridsearch & $0.247 \pm 0.031$ & $0.347 \pm 0.253$ \\
-Kron & last layer & adam loop & $0.246 \pm 0.030$ & $0.337 \pm 0.252$ \\
-Kron & all weights & marglik & $0.246 \pm 0.031$ & $0.333 \pm 0.242$ \\
-Kron & all weights & gridsearch & $\bm{0.245 \pm 0.031}$ & $0.340 \pm 0.247$ \\
-Kron & all weights & adam loop & $0.246 \pm 0.030$ & $\bm{0.327 \pm 0.239}$ \\
-Full & all weights & gridsearch & $0.247 \pm 0.031$ & $0.346 \pm 0.256$ \\
+Kron & last layer & marglik & $0.247 \pm 0.031$ & $0.345 \pm 0.251$ & $0.09$ & $\bm{0.42}$ & $0.40$ & $\bm{14.18}$ \\
+Kron & last layer & gridsearch & $0.247 \pm 0.031$ & $0.347 \pm 0.253$ & $\bm{0.02}$ & $0.50$ & $\bm{0.35}$ & $14.19$ \\
+Kron & last layer & adam loop & $0.246 \pm 0.030$ & $0.337 \pm 0.252$ & $0.02$ & $5.97$ & $0.35$ & $19.66$ \\
+Kron & all weights & marglik & $0.246 \pm 0.031$ & $0.333 \pm 0.242$ & $0.03$ & $0.65$ & $1.39$ & $14.35$ \\
+Kron & all weights & gridsearch & $\bm{0.245 \pm 0.031}$ & $0.340 \pm 0.247$ & $0.03$ & $0.87$ & $1.41$ & $14.57$ \\
+Kron & all weights & adam loop & $0.246 \pm 0.030$ & $\bm{0.327 \pm 0.239}$ & $0.03$ & $7.99$ & $1.28$ & $21.68$ \\
+Full & all weights & gridsearch & $0.247 \pm 0.031$ & $0.346 \pm 0.256$ & $0.88$ & $0.50$ & $1.31$ & $15.05$ \\
 \bottomrule
 \end{tabular}}
-\caption{\texttt{laplace-torch} on Sinusoid (comparison dataset), in-distribution: 5-seed metrics (mean $\pm$ std). RMSE is identical across all variants ($0.309 \pm 0.009$), since it depends only on the shared MAP mean.}
+\caption{\texttt{laplace-torch} on Sinusoid (comparison dataset), in-distribution: 5-seed metrics and timing (mean $\pm$ std). RMSE is identical across all variants ($0.309 \pm 0.009$), since it depends only on the shared MAP mean. Total time is the shared MAP step ($13.7\,\text{s}$) plus fit plus tune time, since every variant requires the MAP step.}
 \label{tab:app:sin_big_la}
-\end{table}
-
-\begin{table}[H]
-\centering
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{lllcccc}
-\toprule
-Hessian & Scope & Tuning & Fit (s) & Tune (s) & Inf (ms) & Total (s) \\
-\midrule
-Kron & last layer & marglik & $0.09$ & $\bm{0.42}$ & $0.42$ & $\bm{14.18}$ \\
-Kron & last layer & gridsearch & $\bm{0.02}$ & $0.50$ & $0.36$ & $14.19$ \\
-Kron & last layer & adam loop & $0.02$ & $5.97$ & $\bm{0.36}$ & $19.66$ \\
-Kron & all weights & marglik & $0.03$ & $0.65$ & $1.36$ & $14.35$ \\
-Kron & all weights & gridsearch & $0.03$ & $0.87$ & $1.35$ & $14.57$ \\
-Kron & all weights & adam loop & $0.03$ & $7.99$ & $1.32$ & $21.68$ \\
-Full & all weights & gridsearch & $0.88$ & $0.50$ & $1.25$ & $15.05$ \\
-\bottomrule
-\end{tabular}}
-\caption{\texttt{laplace-torch} on Sinusoid (comparison dataset): 5-seed timing (mean $\pm$ std). Total time is the shared MAP step ($13.7\,\text{s}$) plus fit plus tune time, since every variant requires the MAP step.}
-\label{tab:app:sin_big_la_timing}
 \end{table}
 
 \begin{table*}[!t]
 \centering
 \scriptsize
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{llccccccc}
+\begin{tabular}{llccccc}
 \toprule
-Method & Variant & ID RMSE & OOD RMSE & ID NLL & OOD NLL & ID Epi & OOD Epi & Epi Ratio \\
+Method & Variant & OOD RMSE & OOD NLL & ID Epi & OOD Epi & Epi Ratio \\
 \midrule
-Laplace & Kron / last layer / marglik & $\bm{0.322 \pm 0.002}$ & $1.579 \pm 0.080$ & $0.295 \pm 0.007$ & $9.147 \pm 2.688$ & $\bm{0.035 \pm 0.001}$ & $0.255 \pm 0.080$ & $7.286 \pm 2.140$ \\
-Laplace & Kron / last layer / gridsearch & $0.322 \pm 0.002$ & $1.579 \pm 0.080$ & $0.294 \pm 0.007$ & $7.315 \pm 5.044$ & $0.037 \pm 0.010$ & $3.658 \pm 4.803$ & $77.148 \pm 97.780$ \\
-Laplace & Kron / last layer / adam loop & $0.322 \pm 0.002$ & $1.579 \pm 0.080$ & $0.293 \pm 0.007$ & $9.058 \pm 2.664$ & $0.035 \pm 0.001$ & $0.255 \pm 0.081$ & $7.257 \pm 2.134$ \\
-Laplace & Kron / all weights / marglik & $0.322 \pm 0.002$ & $1.579 \pm 0.080$ & $0.294 \pm 0.007$ & $5.449 \pm 1.988$ & $0.060 \pm 0.002$ & $0.593 \pm 0.237$ & $9.839 \pm 3.723$ \\
-Laplace & Kron / all weights / gridsearch & $0.322 \pm 0.002$ & $1.579 \pm 0.080$ & $\bm{0.292 \pm 0.007}$ & $7.125 \pm 4.920$ & $0.062 \pm 0.023$ & $3.868 \pm 5.094$ & $47.567 \pm 63.874$ \\
-Laplace & Kron / all weights / adam loop & $0.322 \pm 0.002$ & $1.579 \pm 0.080$ & $0.293 \pm 0.006$ & $5.403 \pm 1.963$ & $0.060 \pm 0.002$ & $0.594 \pm 0.236$ & $9.793 \pm 3.694$ \\
-Laplace & Full / all weights / gridsearch & $0.322 \pm 0.002$ & $1.579 \pm 0.080$ & $0.294 \pm 0.007$ & $7.496 \pm 4.882$ & $0.037 \pm 0.011$ & $4.130 \pm 5.153$ & $87.621 \pm 107.921$ \\
-BT & Flipout / scratch & $0.327 \pm 0.003$ & $2.613 \pm 0.096$ & $0.334 \pm 0.011$ & $20.380 \pm 1.315$ & $0.123 \pm 0.023$ & $0.145 \pm 0.020$ & $1.189 \pm 0.070$ \\
-BT & Flipout / moped & $0.393 \pm 0.087$ & $2.294 \pm 0.578$ & $0.597 \pm 0.296$ & $12.878 \pm 5.906$ & $0.431 \pm 0.294$ & $0.392 \pm 0.264$ & $\bm{0.909 \pm 0.060}$ \\
-BT & BBB / scratch & $0.325 \pm 0.000$ & $2.506 \pm 0.073$ & $0.327 \pm 0.003$ & $18.993 \pm 0.711$ & $0.118 \pm 0.010$ & $\bm{0.139 \pm 0.014}$ & $1.177 \pm 0.047$ \\
-BT & BBB / moped & $0.626 \pm 0.039$ & $\bm{1.040 \pm 0.131}$ & $1.344 \pm 0.129$ & $\bm{1.519 \pm 0.111}$ & $1.274 \pm 0.221$ & $1.154 \pm 0.155$ & $0.913 \pm 0.057$ \\
+Laplace & Kron / last layer / marglik & $1.583 \pm 0.075$ & $9.112 \pm 2.439$ & $\bm{0.035 \pm 0.001}$ & $0.255 \pm 0.080$ & $7.286 \pm 2.140$ \\
+Laplace & Kron / last layer / gridsearch & $1.583 \pm 0.075$ & $7.346 \pm 5.045$ & $0.037 \pm 0.010$ & $3.658 \pm 4.803$ & $77.148 \pm 97.780$ \\
+Laplace & Kron / last layer / adam loop & $1.583 \pm 0.075$ & $9.023 \pm 2.416$ & $0.035 \pm 0.001$ & $0.255 \pm 0.081$ & $7.257 \pm 2.134$ \\
+Laplace & Kron / all weights / marglik & $1.583 \pm 0.075$ & $5.418 \pm 1.829$ & $0.060 \pm 0.002$ & $0.593 \pm 0.237$ & $9.839 \pm 3.723$ \\
+Laplace & Kron / all weights / gridsearch & $1.583 \pm 0.075$ & $7.153 \pm 4.923$ & $0.062 \pm 0.023$ & $3.868 \pm 5.094$ & $47.567 \pm 63.874$ \\
+Laplace & Kron / all weights / adam loop & $1.583 \pm 0.075$ & $5.372 \pm 1.805$ & $0.060 \pm 0.002$ & $0.594 \pm 0.236$ & $9.793 \pm 3.694$ \\
+Laplace & Full / all weights / gridsearch & $1.583 \pm 0.075$ & $7.530 \pm 4.882$ & $0.037 \pm 0.011$ & $4.130 \pm 5.153$ & $87.621 \pm 107.921$ \\
+BT & Flipout / scratch & $2.613 \pm 0.080$ & $20.080 \pm 1.575$ & $0.122 \pm 0.019$ & $0.152 \pm 0.021$ & $1.262 \pm 0.161$ \\
+BT & Flipout / moped & $2.273 \pm 0.576$ & $11.660 \pm 6.142$ & $0.416 \pm 0.325$ & $0.416 \pm 0.212$ & $1.178 \pm 0.438$ \\
+BT & BBB / scratch & $2.511 \pm 0.061$ & $18.868 \pm 0.901$ & $0.118 \pm 0.009$ & $\bm{0.144 \pm 0.013}$ & $1.227 \pm 0.077$ \\
+BT & BBB / moped & $\bm{1.032 \pm 0.039}$ & $\bm{1.513 \pm 0.054}$ & $1.265 \pm 0.190$ & $1.127 \pm 0.152$ & $\bm{0.894 \pm 0.053}$ \\
 \bottomrule
 \end{tabular}}
-\caption{Both methods on Sinusoid (comparison dataset), ID vs OOD: 5-seed metrics (mean $\pm$ std).}
+\caption{Both methods on Sinusoid (comparison dataset), OOD metrics: 5-seed metrics (mean $\pm$ std). ID RMSE and NLL are in Tables~\ref{tab:app:sin_big_bt} and~\ref{tab:app:sin_big_la}.}
 \label{tab:app:sin_big_ood}
 \end{table*}
 
-\textbf{MOPED delta sweep.} Table~\ref{tab:app:sin_delta_sweep} compares
-\texttt{bayesian-torch}'s report-default MOPED $\delta=0.5$ against the $\delta \in \{0.05,
-0.1, 0.2\}$ range validated by \citet{krishnan2020specifying} on classification, for both
-Flipout and BBB. For both architectures, $\delta=0.5$ has the worst ID calibration error of
-the four values tested ($1.546$ Flipout, $3.548$ BBB), and $\delta=0.05$ the best ($0.546$
-Flipout, $0.915$ BBB), close to the scratch baselines ($0.482$, $0.422$). ID RMSE decreases
-monotonically from $\delta=0.5$ to $\delta=0.05$ for both architectures.
-Figures~\ref{fig:sin_flipout_delta_cal} and~\ref{fig:sin_bbb_delta_cal} overlay the
-calibration curves for scratch, $\delta=0.5$, and every swept $\delta$.
-
-\begin{table*}[!t]
-\centering
-\footnotesize
-\begin{tabular}{lcccccc}
-\toprule
-Variant & ID RMSE & ID NLL & ID Cal Error & OOD RMSE & OOD NLL & Epi Ratio \\
-\midrule
-Flipout / scratch (ref) & $0.327 \pm 0.003$ & $0.334 \pm 0.011$ & $0.482 \pm 0.294$ & $2.613 \pm 0.096$ & $20.380 \pm 1.315$ & $1.189 \pm 0.070$ \\
-Flipout / moped / $\delta=$0.5 & $0.393 \pm 0.087$ & $0.597 \pm 0.296$ & $1.546 \pm 1.587$ & $2.294 \pm 0.578$ & $12.878 \pm 5.906$ & $0.909 \pm 0.060$ \\
-BBB / scratch (ref) & $0.325 \pm 0.000$ & $0.327 \pm 0.003$ & $\bm{0.422 \pm 0.303}$ & $2.506 \pm 0.073$ & $18.993 \pm 0.711$ & $1.177 \pm 0.047$ \\
-BBB / moped / $\delta=$0.5 & $0.626 \pm 0.039$ & $1.344 \pm 0.129$ & $3.548 \pm 1.153$ & $\bm{1.040 \pm 0.131}$ & $\bm{1.519 \pm 0.111}$ & $0.913 \pm 0.057$ \\
-Flipout / moped / $\delta=$0.05 & $\bm{0.318 \pm 0.001}$ & $\bm{0.325 \pm 0.010}$ & $0.546 \pm 0.213$ & $1.534 \pm 0.078$ & $8.011 \pm 0.743$ & $0.521 \pm 0.108$ \\
-Flipout / moped / $\delta=$0.1 & $0.320 \pm 0.003$ & $0.362 \pm 0.037$ & $0.828 \pm 0.293$ & $1.670 \pm 0.141$ & $8.981 \pm 1.906$ & $0.641 \pm 0.123$ \\
-Flipout / moped / $\delta=$0.2 & $0.328 \pm 0.011$ & $0.368 \pm 0.063$ & $0.608 \pm 0.210$ & $2.317 \pm 0.369$ & $16.309 \pm 5.159$ & $0.877 \pm 0.166$ \\
-BBB / moped / $\delta=$0.05 & $0.321 \pm 0.002$ & $0.353 \pm 0.018$ & $0.915 \pm 0.326$ & $1.542 \pm 0.084$ & $7.929 \pm 0.794$ & $\bm{0.506 \pm 0.059}$ \\
-BBB / moped / $\delta=$0.1 & $0.332 \pm 0.006$ & $0.452 \pm 0.061$ & $1.663 \pm 0.589$ & $1.540 \pm 0.081$ & $6.869 \pm 0.547$ & $0.572 \pm 0.025$ \\
-BBB / moped / $\delta=$0.2 & $0.388 \pm 0.023$ & $0.750 \pm 0.039$ & $2.619 \pm 0.305$ & $1.475 \pm 0.112$ & $3.869 \pm 0.283$ & $0.652 \pm 0.046$ \\
-\bottomrule
-\end{tabular}
-\caption{\texttt{bayesian-torch} MOPED $\delta$ sweep on Sinusoid (comparison dataset): 5-seed metrics (mean $\pm$ std). Scratch rows repeated for reference; the report's headline MOPED variants use $\delta=0.5$.}
-\label{tab:app:sin_delta_sweep}
-\end{table*}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.75\linewidth]{sinusoid_flipout_moped_delta_calibration.png}
-\caption{Flipout MOPED $\delta$ sweep calibration diagram, scratch and $\delta \in \{0.05, 0.1, 0.2, 0.5\}$ (mean $\pm$ std, 5 seeds).}
-\label{fig:sin_flipout_delta_cal}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.75\linewidth]{sinusoid_bbb_moped_delta_calibration.png}
-\caption{BBB MOPED $\delta$ sweep calibration diagram, scratch and $\delta \in \{0.05, 0.1, 0.2, 0.5\}$ (mean $\pm$ std, 5 seeds).}
-\label{fig:sin_bbb_delta_cal}
-\end{figure}
+\textbf{MOPED delta sweep.} ID RMSE decreases monotonically as $\delta$ shrinks from $0.5$
+to $0.05$ for both architectures, with $\delta=0.05$ closest to the scratch baselines. ID
+calibration error follows the same monotonic pattern for BBB, but not for Flipout, whose
+calibration error is lowest at $\delta=0.05$ and $\delta=0.2$, highest at $\delta=0.5$. BBB at
+$\delta=0.5$ is the exception on OOD: despite having the worst ID calibration error and RMSE
+among the four $\delta$ values tested, it achieves the best OOD RMSE and OOD NLL of every
+\texttt{bayesian-torch} variant on this dataset. Calibration diagrams overlaying scratch,
+$\delta=0.5$, and every swept $\delta$, and full per-$\delta$ metrics, are in the notebooks.
 
 \subsection{PovertyMap: Full Results}
+\label{sec:app:povertymap}
 
 \begin{table*}[!t]
 \centering
@@ -1946,28 +1787,8 @@ laplace-torch & $0.4494$ & $\bm{0.5159}$ & $0.6205$ & $\bm{0.8193}$ & $3.5858$ &
 bayesian-torch & $\bm{0.4073}$ & $0.5160$ & $\bm{0.5234}$ & $0.8342$ & $\bm{1.3471}$ & $\bm{26.0950}$ & $959.80$ & $17.02$ & $61.24$ \\
 \bottomrule
 \end{tabular}
-\caption{Both methods on PovertyMap, ID vs OOD: 5-fold metrics.}
+\caption{Both methods on PovertyMap, ID vs OOD: 5-fold metrics and timing.}
 \label{tab:app:povertymap}
-\end{table*}
-
-\begin{table*}[!t]
-\centering
-\footnotesize
-\begin{tabular}{lcccccc}
-\toprule
-Variant & ID RMSE & ID NLL & ID Cal. Err. & OOD RMSE & OOD NLL & OOD Cal. Err. \\
-\midrule
-MAP (frozen checkpoint) & $0.4494$ & -- & -- & $0.5159$ & -- & -- \\
-Laplace / redux-style ($\tau_{\text{prior}}=10.0$, headline) & $0.4494$ & $0.6205$ & $3.5858$ & $\bm{0.5159}$ & $0.8193$ & $35.3130$ \\
-Laplace / NLL-gridsearch ($\tau_{\text{prior}}\approx 0.10$-$0.12$) & $0.4494$ & $0.6224$ & $3.8719$ & $\bm{0.5159}$ & $\bm{0.7785}$ & $\bm{33.4067}$ \\
-BT / fixed $\tau=0.1$, $N$-scaled prior (headline) & $\bm{0.4073}$ & $\bm{0.5234}$ & $1.3471$ & $0.5160$ & $0.8342$ & $\bm{26.0950}$ \\
-BT / $\tau$-annealing ($0.1\to1.0$)~\citep{osawa2019practical} & $0.4195$ & $0.5491$ & $1.6001$ & $0.5205$ & $0.8485$ & $35.0979$ \\
-BT / batch-size-scaled prior (\texttt{bayesian-torch} default) & $0.4115$ & $0.5303$ & $\bm{1.1037}$ & $0.5278$ & $0.8651$ & $39.1151$ \\
-\bottomrule
-\end{tabular}
-\caption{PovertyMap variant ablations, ID vs OOD: 5-fold mean metrics. BT abbreviates
-\texttt{bayesian-torch}. MAP is a point estimate, with no NLL/calibration error defined.}
-\label{tab:app:povertymap_variants}
 \end{table*}
 
 \textbf{RMSE and NLL.} Figure~\ref{fig:pm_rmse_nll_bar} plots ID and OOD RMSE and NLL for
@@ -1976,35 +1797,14 @@ Table~\ref{tab:app:povertymap}. \texttt{bayesian-torch} has lower ID RMSE ($0.40
 $0.449$) and ID NLL ($0.523$ vs.\ $0.621$); OOD RMSE is effectively tied ($0.516$ vs.\
 $0.516$), and \texttt{laplace-torch} has lower OOD NLL ($0.819$ vs.\ $0.834$).
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{povertymap_rmse_nll_bar.png}
 \caption{PovertyMap RMSE and NLL, ID and OOD, both methods (5 folds).}
 \label{fig:pm_rmse_nll_bar}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{povertymap_per_fold_rmse.png}
-\caption{PovertyMap per-fold RMSE, ID and OOD, both methods.}
-\label{fig:pm_per_fold_rmse}
-\end{figure}
-
 % conference papers do not normally have an appendix
-
-
-% use section* for acknowledgement % \section*{Acknowledgment} % The authors would like to
-thank...
-
-
-
-
-% trigger a \newpage just before the given reference % number - used to balance the columns
-on the last page % adjust value as needed - may need to be readjusted if % the document is
-modified later %\IEEEtriggeratref{8} % The "triggered" command can be changed if desired:
-%\IEEEtriggercmd{\enlargethispage{-5in}}
-
-
 
 \clearpage
 % references section

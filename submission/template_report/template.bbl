@@ -1,4 +1,4 @@
-\begin{thebibliography}{11}
+\begin{thebibliography}{10}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -20,24 +20,17 @@ Erik Daxberger, Agustinus Kristiadi, Alexander Immer, Runa Eschenhagen,
 \newblock In \emph{Advances in Neural Information Processing Systems
   (NeurIPS)}, 2021.
 
+\bibitem[Depeweg(2019)]{depeweg2019modeling}
+Stefan Depeweg.
+\newblock \emph{Modeling Epistemic and Aleatoric Uncertainty with {Bayesian}
+  Neural Networks and Latent Variables}.
+\newblock PhD thesis, Technische Universit\"at M\"unchen, 2019.
+
 \bibitem[Goan and Fookes(2020)]{goan2020bayesian}
 Ethan Goan and Clinton Fookes.
 \newblock {Bayesian} neural networks: An introduction and survey.
 \newblock In \emph{Case Studies in Applied {Bayesian} Data Science}, pages
   45--87. Springer, 2020.
-
-\bibitem[Immer et~al.(2024)Immer, Daxberger, Kristiadi, Eschenhagen, Bauer, and
-  Hennig]{aleximmer2024laplace}
-Alexander Immer, Erik Daxberger, Agustinus Kristiadi, Runa Eschenhagen,
-  Matthias Bauer, and Philipp Hennig.
-\newblock \texttt{laplace-torch}: Laplace approximations for deep learning.
-\newblock \url{https://aleximmer.com/Laplace}, 2024.
-
-\bibitem[{Intel Labs}(2021)]{intel2021bayesiantorch}
-{Intel Labs}.
-\newblock \texttt{bayesian-torch}: A library for {Bayesian} neural network
-  layers and uncertainty estimation in deep learning.
-\newblock \url{https://github.com/IntelLabs/bayesian-torch}, 2021.
 
 \bibitem[Krishnan and Tickoo(2020)]{krishnan2020avuc}
 Ranganath Krishnan and Omesh Tickoo.

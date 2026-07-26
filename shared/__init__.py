@@ -16,6 +16,8 @@ from .models import (
     get_sinusoid_mlp,
     la_predict,
     build_laplace_variant,
+    tune_laplace_adam_loop,
+    build_sinusoid_bt,
     bt_mc_forward,
     bt_predict,
     optimize_noise_std_bt,
@@ -30,9 +32,14 @@ from .metrics import (
     uncertainty_calibration_summary,
     standard_metrics,
     regression_metrics,
+    regression_calibration_curve,
+    aggregate_seed_metrics,
     combine_predictive_std,
 )
 from .plotting import (
     plot_boundary,
     plot_reliability_diagrams,
+    plot_regression_prediction_bands,
+    plot_regression_ood_epistemic,
+    plot_regression_calibration,
 )

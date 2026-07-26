@@ -43,10 +43,10 @@ def train_map(
 ):
     """Train a MAP model. Returns the trained model, per-epoch losses, and fit_time.
 
-    If both val_loader and patience are given, tracks validation loss each epoch and
-    stops early (keeping the best-val-loss state) once patience epochs pass without
-    improvement. With either left as None, behaves exactly as before (fixed epochs,
-    no early stopping) so existing callers are unaffected.
+    If val_loader and patience are both given, tracks validation loss each epoch
+    and stops early (keeping the best-val-loss state) once patience epochs pass
+    without improvement. Otherwise trains for a fixed number of epochs with no
+    early stopping.
     """
     if checkpoint_exists(checkpoint_path):
         checkpoint = load_checkpoint(checkpoint_path, map_location=device)
@@ -168,7 +168,65 @@ def build_laplace_variant(
     )
 
 
-def bt_mc_forward(net: nn.Module, X: torch.Tensor, n_samples: int) -> torch.Tensor:
+def tune_laplace_adam_loop(la, n_steps: int = 1000, lr: float = 1e-1) -> None:
+    """Tune a fitted Laplace object's prior precision and sigma_noise jointly
+    by maximizing the log marginal likelihood via Adam.
+
+    Mutates la.prior_precision and la.sigma_noise in place.
+
+    Args:
+        la: A fitted Laplace object (regression).
+        n_steps: Number of Adam steps.
+        lr: Adam learning rate.
+    """
+    log_prior = torch.ones(1, requires_grad=True)
+    log_sigma = torch.ones(1, requires_grad=True)
+    hyp_opt = torch.optim.Adam([log_prior, log_sigma], lr=lr)
+    for _ in range(n_steps):
+        hyp_opt.zero_grad()
+        (-la.log_marginal_likelihood(log_prior.exp(), log_sigma.exp())).backward()
+        hyp_opt.step()
+    la.prior_precision = log_prior.exp().detach()
+    la.sigma_noise = log_sigma.exp().detach()
+
+
+def build_sinusoid_bt(
+    model_type: str,
+    moped: bool,
+    seed: int,
+    map_weights: dict | None = None,
+    moped_delta: float = 0.5,
+):
+    """Convert a fresh sinusoid MLP into a Bayesian-Torch variant via dnn_to_bnn.
+
+    Args:
+        model_type: "Flipout" or "Reparameterization".
+        moped: If True, warm start posterior means from map_weights and enable
+            MOPED prior initialisation.
+        seed: Seed passed to get_sinusoid_mlp for the underlying architecture.
+        map_weights: MAP state dict to load before conversion, required if moped.
+        moped_delta: MOPED prior scale factor.
+
+    Returns:
+        The converted model, with model_type stashed as an attribute so
+        bt_mc_forward can dispatch between tiling (Flipout) and looping
+        (Reparameterization) at prediction time.
+    """
+    from bayesian_torch.models.dnn_to_bnn import dnn_to_bnn
+
+    net = get_sinusoid_mlp(seed)
+    if moped and map_weights is not None:
+        net.load_state_dict(map_weights)
+    dnn_to_bnn(net, {
+        "prior_mu": 0.0, "prior_sigma": 1.0,
+        "posterior_mu_init": 0.0, "posterior_rho_init": -3.0,
+        "type": model_type, "moped_enable": moped, "moped_delta": moped_delta,
+    })
+    net.model_type = model_type
+    return net
+
+
+def bt_mc_forward(net: nn.Module, X: torch.Tensor, n_samples: int, seed: int | None = None) -> torch.Tensor:
     """MC-sample a Bayesian-Torch model: tiles the batch for Flipout (independent
     per-row samples in one forward pass), loops for Reparameterization/BBB (one shared
     weight sample per forward pass, so tiling would just repeat it). Dispatches on
@@ -177,7 +235,13 @@ def bt_mc_forward(net: nn.Module, X: torch.Tensor, n_samples: int) -> torch.Tens
     Tiling needs n_samples copies of the batch to fit in memory. For large models
     pass an explicit always-loop callable instead to functions that accept one
     (e.g. optimize_noise_std_bt's mc_forward_fn).
+
+    If seed is given, torch.manual_seed(seed) is called immediately before sampling,
+    making the draw reproducible regardless of prior RNG state. Left as None, the
+    draw depends on whatever the global RNG state happens to be at call time.
     """
+    if seed is not None:
+        torch.manual_seed(seed)
     if getattr(net, "model_type", None) == "Flipout":
         X_tiled = X.repeat(n_samples, *([1] * (X.dim() - 1)))
         out = net(X_tiled)
@@ -185,11 +249,11 @@ def bt_mc_forward(net: nn.Module, X: torch.Tensor, n_samples: int) -> torch.Tens
     return torch.stack([net(X) for _ in range(n_samples)])
 
 
-def bt_predict(net: nn.Module, X: torch.Tensor, n_samples: int):
+def bt_predict(net: nn.Module, X: torch.Tensor, n_samples: int, seed: int | None = None):
     """MC mean/std regression prediction via bt_mc_forward."""
     net.eval()
     with torch.no_grad():
-        preds = bt_mc_forward(net, X, n_samples)
+        preds = bt_mc_forward(net, X, n_samples, seed=seed)
     return preds.mean(0).squeeze().cpu().numpy(), preds.std(0).squeeze().cpu().numpy()
 
 
@@ -225,7 +289,7 @@ def optimize_noise_std_bt(
     return log_sigma_noise.exp().item()
 
 
-# Monkeypatch LLLaplace.load_state_dict to be tolerant of stored sample data.
+# Patch LLLaplace.load_state_dict to be tolerant of stored sample data.
 try:
     from laplace.lllaplace import LLLaplace
 
